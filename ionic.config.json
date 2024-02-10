@@ -1,0 +1,7 @@
+{
+  "name": "wedding-app-admin",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
