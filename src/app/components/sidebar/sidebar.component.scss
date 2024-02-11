@@ -1,0 +1,48 @@
+.border-top {
+    @apply border-t border-t-gray-200
+}
+
+.active {
+    @apply bg-red-400 dark:bg-gray-400 dark:text-white shadow-md text-white border-none
+}
+
+#buttonHover[title]:hover {
+
+    &::after {
+        position: absolute;
+        background-color: aqua !important;
+    }
+}
+
+.hide {
+    display: none;
+    transition: display .1s ease-in-out;
+}
+
+.show {
+    display: block;
+    /* animation: showAnimator 0.3s ease-in-out; */
+    transition: all 0.3s ease-in-out;
+}
+
+@keyframes showAnimator {
+    0% {
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    75% {
+        opacity: 0.75;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

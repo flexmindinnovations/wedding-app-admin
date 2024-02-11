@@ -1,0 +1,21 @@
+<header class="flex items-center justify-between px-8 min-h-20 dark:bg-gray-700 dark:text-white">
+  <div class="left-content flex-auto max-w-[10%]">
+    <h1 class="m-0 text-lg font-bold">{{currentPage}}</h1>
+  </div>
+  <nav class="flex-grow">
+    <ul class="flex items-center justify-end gap-4">
+      <li class="w-2/4">
+        <app-search />
+      </li>
+      <!-- <li>
+        <app-dropdown />
+      </li> -->
+      <li>
+        <app-dark-mode />
+      </li>
+      <li>
+        <app-user-menu />
+      </li>
+    </ul>
+  </nav>
+</header>

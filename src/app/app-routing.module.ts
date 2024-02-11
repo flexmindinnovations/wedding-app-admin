@@ -1,15 +1,21 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { DashboardPage } from './pages/dashboard/dashboard.page';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'folder/Inbox',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
+    path: '',
+    loadChildren: () => import('../app/components/layout/layout.module').then(m => m.LayoutModule)
+  },
+  {
+    path: '**',
+    loadChildren: () =>
+      import('../app/pages/not-found/not-found.module').then(m => m.NotFoundPageModule)
   }
 ];
 
@@ -19,4 +25,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

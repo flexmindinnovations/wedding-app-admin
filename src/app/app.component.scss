@@ -1,13 +1,13 @@
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
-
+/* 
 ion-menu.md ion-content {
   --padding-start: 8px;
   --padding-end: 8px;
   --padding-top: 20px;
   --padding-bottom: 20px;
-}
+} */
 
 ion-menu.md ion-list {
   padding: 20px 0;
@@ -116,4 +116,11 @@ ion-note {
 
 ion-item.selected {
   --color: var(--ion-color-primary);
+}
+
+:host {
+  ion-menu {
+  --side-min-width: 0 !important;
+  --side-max-width: 0;
+  }
 }

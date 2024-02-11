@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "title": "Dashboard",
+        "route": "/",
+        "isActive": false,
+        "icon": "home-outline"
+    },
+    {
+        "id": 2,
+        "title": "Users",
+        "route": "users",
+        "isActive": false,
+        "icon": "people-outline"
+    },
+    {
+        "id": 3,
+        "title": "Events",
+        "route": "events",
+        "isActive": false,
+        "icon": "code-outline"
+    },
+    {
+        "id": 4,
+        "title": "Blogs",
+        "route": "blog",
+        "isActive": false,
+        "icon": "document-outline"
+    },
+    {
+        "id": 5,
+        "title": "Locations",
+        "route": "locations",
+        "isActive": false,
+        "icon": "navigate-outline"
+    },
+    {
+        "id": 6,
+        "title": "Cast",
+        "route": "cast",
+        "isActive": false,
+        "icon": "briefcase-outline"
+    }
+]
