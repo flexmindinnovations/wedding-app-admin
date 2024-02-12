@@ -6,14 +6,6 @@
     @apply bg-red-400 dark:bg-gray-400 dark:text-white shadow-md text-white border-none
 }
 
-#buttonHover[title]:hover {
-
-    &::after {
-        position: absolute;
-        background-color: aqua !important;
-    }
-}
-
 .hide {
     display: none;
     transition: display .1s ease-in-out;

@@ -1,20 +1,20 @@
 <div class="sidebar-container flex flex-col min-h-screen">
   <header class="ion-no-border min-h-20 dark:bg-gray-700 dark:text-white h-[10%] py-2 flex items-center justify-center">
-    @if (isSidebarExpanded) { <p class="toggle-item font-bold text-2xl" [ngClass]="showTitles ? 'show' : 'hide'">
+    @if (isSidebarExpanded) { <p class="toggle-item font-bold md:text-lg text-2xl" [ngClass]="showTitles ? 'show' : 'hide'">
       {{sidebarHeaderText}}</p> }
-    @else { <ion-icon class="text-2xl" name="person-outline"></ion-icon> }
+    @else { <ion-icon class="sm:text-sm md:text-lg lg:text-2xl" name="person-outline"></ion-icon> }
   </header>
   <section class="flex-grow h-full dark:bg-gray-700 dark:text-white">
     <ul class="py-3">
       @for (item of sidebarItems; track item.id) {
       <li (click)="handleSidebarItemClick(item)" class="cursor-pointer px-3 mb-2">
         <div
-          class="item-container hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white rounded-lg flex items-center gap-3 h-12"
+          class="item-container hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white rounded-lg flex items-center gap-1 md:gap-2 lg:gap-3 h-12"
           [ngClass]="[item.isActive ? 'active' : '']">
           <div class="icon flex items-center justify-center w-full max-w-[4.5rem] min-w-[3.5rem]">
-            <ion-icon class="text-2xl" [name]="item.icon"></ion-icon>
+            <ion-icon class="sm:text-sm md:text-lg lg:text-2xl" [name]="item.icon"></ion-icon>
           </div>
-          <p class="m-0 text-xl toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">{{item.title}}</p>
+          <p class="m-0 text-sm md:text-base lg:text-base toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">{{item.title}}</p>
         </div>
       </li>
       }
@@ -27,17 +27,10 @@
       </div>
       <button class="h-14 w-14 flex items-center justify-center dark:bg-gray-700 dark:!text-white
       dark:hover:bg-gray-700 hover:bg-white" type="button" (click)="handleSidebarToggle()"
-        [ngClass]="isSidebarExpanded ? '' : '!w-full'" [title]="buttonHelp" data-popover-target="buttonHover">
+        [ngClass]="isSidebarExpanded ? '' : '!w-full'" [title]="buttonHelp">
         <ion-icon class="text-3xl text-gray-700 dark:text-white"
           name="chevron-{{sidebarToggleIcon}}-outline"></ion-icon>
       </button>
-      <!-- <div data-popover id="buttonHover" role="tooltip"
-        class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-        <div class="px-3 py-2">
-          <p>{{buttonHelp}}</p>
-        </div>
-        <div data-popper-arrow></div>
-      </div> -->
     </div>
   </footer>
 </div>
