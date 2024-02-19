@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
   getCurrentPage() {
     this.sidebarItemService.getCurrentPage().subscribe({
       next: (data: any) => {
-        this.currentPage = data?.title;
+        this.currentPage = data.title ? data?.title : data;
       }
     })
   }

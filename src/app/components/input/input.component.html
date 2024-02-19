@@ -1,0 +1,9 @@
+<div class="input">
+  @if(isMultiline){
+  <ion-textarea [value]="value" [label]="label" [formControl]="control" (ionInput)="handleOnChange($event)"
+    (ionBlur)="onTouched()" labelPlacement="floating" fill="outline"></ion-textarea>
+  } @else {
+  <ion-input [type]="type" [value]="value" [label]="label" [formControl]="control" (ionInput)="handleOnChange($event)"
+    (ionBlur)="onTouched()" labelPlacement="floating" fill="outline" [required]="isRequired"/>
+  }
+</div>

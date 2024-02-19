@@ -46,7 +46,7 @@
     "@capacitor/cli": "5.7.0",
     "@ionic/angular-toolkit": "^9.0.0",
     "@tailwindcss/aspect-ratio": "latest",
-    "@tailwindcss/forms": "latest",
+    "@tailwindcss/formflows": "latest",
     "@tailwindcss/line-clamp": "latest",
     "@tailwindcss/typography": "latest",
     "@types/jasmine": "~5.1.0",

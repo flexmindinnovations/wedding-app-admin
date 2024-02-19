@@ -12,6 +12,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { IonicModule } from "@ionic/angular";
 import { CommonModule } from "@angular/common";
 import { AppComponent } from "./app.component";
+import { ThemeDropdownComponent } from "./components/theme-dropdown/theme-dropdown.component";
 
 @NgModule({
     declarations: [
@@ -19,18 +20,26 @@ import { AppComponent } from "./app.component";
         SidebarComponent,
         LayoutComponent,
         HeaderComponent,
-        DropdownComponent,
+        ThemeDropdownComponent,
         UserMenuComponent,
         SearchComponent,
         DarkModeComponent,
-        SearchModalComponent
+        SearchModalComponent,
+        DropdownComponent,
+        ButtonComponent,
     ],
     imports: [
         CommonModule,
         HttpClientModule,
         IonicModule
     ],
-    exports: [],
+    exports: [
+        ButtonComponent,
+        DropdownComponent,
+        CommonModule,
+        HttpClientModule,
+        IonicModule
+    ],
     providers: []
 })
 

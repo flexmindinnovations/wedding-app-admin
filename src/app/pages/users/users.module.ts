@@ -8,16 +8,15 @@ import { UsersPageRoutingModule } from './users-routing.module';
 
 import { UsersPage } from './users.page';
 import { SharedModule } from 'src/app/shared.module';
-import { ButtonComponent } from 'src/app/components/button/button.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    SharedModule,
     UsersPageRoutingModule,
-
   ],
-  declarations: [UsersPage, ButtonComponent]
+  declarations: [UsersPage]
 })
 export class UsersPageModule {}

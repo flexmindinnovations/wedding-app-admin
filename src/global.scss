@@ -36,5 +36,5 @@ border-right {
 
 
 .main {
-  @apply h-[calc(100%-80px)] bg-gray-100 w-full ease-in-out dark:bg-gray-700 dark:text-white
+  @apply bg-white w-full ease-in-out dark:bg-gray-700 dark:text-white flex-grow overflow-auto;
 }

@@ -1,0 +1,62 @@
+:host(app-input) {
+    border: 0;
+}
+
+::ng-deep ion-input {
+
+    .native-wrapper {
+
+        input {
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+::ng-deep ion-text-area {
+
+    .native-wrapper {
+
+        textarea {
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+::ng-deep [type='text'],
+[type='date'],
+[type='email'],
+[type='url'],
+[type='password'],
+[type='number'],
+[type='datetime-local'],
+[type='month'],
+[type='search'],
+[type='tel'],
+[type='time'],
+[type='week'],
+[multiple],
+input,
+textarea,
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+
+    :hover {
+        --border-color: var(--ion-color-step-750, #404040);
+    }
+}
+
+::ng-deep [type='date'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+}

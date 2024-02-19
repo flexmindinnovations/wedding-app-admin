@@ -3,7 +3,7 @@
 }
 
 .active {
-    @apply bg-red-400 dark:bg-gray-400 dark:text-white shadow-md text-white border-none
+    @apply bg-red-400 hover:bg-red-600 dark:bg-gray-400 dark:text-white shadow-md text-white border-none
 }
 
 .hide {

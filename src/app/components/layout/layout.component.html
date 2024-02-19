@@ -1,6 +1,8 @@
-<div class="bg-white dark:bg-gray-900 border-b border-b-gray-100">
-  <app-header></app-header>
+<div class="layout flex flex-col min-h-screen">
+  <div class="bg-white dark:bg-gray-900 border-b h-20 border-b-gray-100">
+    <app-header></app-header>
+  </div>
+  <ion-content class="dark:bg-gray-900 flex-grow-1 max-h-[calc(100%-5rem)]:">
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-content>
 </div>
-<ion-content class="dark:bg-gray-900">
-  <ion-router-outlet id="main-content"></ion-router-outlet>
-</ion-content>

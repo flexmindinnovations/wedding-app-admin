@@ -23,7 +23,11 @@ module.exports = {
       },
 
     },
-    extend: {},
+    extend: {
+      backgroundImage : {
+        'logo': 'url(/assets/icon/logo.jpg)'
+      }
+    },
   },
   plugins: [require('@tailwindcss/aspect-ratio')
     , require('@tailwindcss/forms')

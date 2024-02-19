@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 
 @Component({
   selector: 'app-users',
@@ -6,14 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./users.page.scss'],
 })
 export class UsersPage implements OnInit {
-  constructor() { }
+  router = inject(Router);
+  sidebarItemService = inject(SidebarItemsService);
 
   ngOnInit() {
   }
 
   handleClick() {
-    console.log('button click');
-    
+    this.sidebarItemService.setCurrentPage('Add User');
+    this.router.navigateByUrl('users/add');
   }
 
 }

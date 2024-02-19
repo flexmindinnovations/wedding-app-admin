@@ -1,8 +1,11 @@
 <div class="sidebar-container flex flex-col min-h-screen">
   <header class="ion-no-border min-h-20 dark:bg-gray-700 dark:text-white h-[10%] py-2 flex items-center justify-center">
-    @if (isSidebarExpanded) { <p class="toggle-item font-bold md:text-lg text-2xl" [ngClass]="showTitles ? 'show' : 'hide'">
-      {{sidebarHeaderText}}</p> }
-    @else { <ion-icon class="sm:text-sm md:text-lg lg:text-2xl" name="person-outline"></ion-icon> }
+    @if (isSidebarExpanded) {
+    <img class="w-3/4 min-h-12" src="/assets/icon/logo.png" alt="Logo" />
+    } @else {
+    <h1 class="logo flex items-center justify-center h-12 w-12 rounded-full shadow-lg select-none" [ngClass]="cssClass" title="Susangam">S</h1>
+    }
+
   </header>
   <section class="flex-grow h-full dark:bg-gray-700 dark:text-white">
     <ul class="py-3">
@@ -10,11 +13,12 @@
       <li (click)="handleSidebarItemClick(item)" class="cursor-pointer px-3 mb-2">
         <div
           class="item-container hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white rounded-lg flex items-center gap-1 md:gap-2 lg:gap-3 h-12"
-          [ngClass]="[item.isActive ? 'active' : '']">
-          <div class="icon flex items-center justify-center w-full max-w-[4.5rem] min-w-[3.5rem]">
+          [ngClass]="[item.isActive ? cssClass : '']">
+          <div class="icon flex items-center justify-center w-full max-w-[4.5rem] min-w-[3rem]">
             <ion-icon class="sm:text-sm md:text-lg lg:text-2xl" [name]="item.icon"></ion-icon>
           </div>
-          <p class="m-0 text-sm md:text-base lg:text-base toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">{{item.title}}</p>
+          <p class="m-0 text-sm md:text-base lg:text-base toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">
+            {{item.title}}</p>
         </div>
       </li>
       }
