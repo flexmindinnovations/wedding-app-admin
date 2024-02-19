@@ -1,4 +1,4 @@
-<div class="dropdown p-3">
+<div class="dropdown" [ngClass]="cssClasses">
   <ion-select  (ionChange)='handleOnChange($event)' [label]="label" labelPlacement="floating" fill="outline" [fill]="fill" (ionBlur)="onTouched()">
     <ion-select-option value="en">English</ion-select-option>
     <ion-select-option value="ar">Arabic</ion-select-option>

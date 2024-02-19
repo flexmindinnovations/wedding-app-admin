@@ -11,7 +11,6 @@ import { PersonalInfoComponent } from 'src/app/components/registerartion-process
 @NgModule({
   declarations: [
     AddEditUserPage,
-    InputComponent,
     PersonalInfoComponent,
   ],
   imports: [

@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { BranchPageRoutingModule } from './branch-routing.module';
 
 import { BranchPage } from './branch.page';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [

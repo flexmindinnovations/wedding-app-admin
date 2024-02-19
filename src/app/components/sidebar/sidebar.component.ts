@@ -21,6 +21,7 @@ export class SidebarComponent implements OnInit {
   @Output() isCollapsed = new EventEmitter();
   colorScheme = 'red';
   cssClass: any;
+  nestedRoutes = ['/users/add', '/users/edit', '/blog/add', '/blog/edit'];
 
   ngOnInit() {
     this.getSidebarItems();
@@ -34,12 +35,22 @@ export class SidebarComponent implements OnInit {
       next: (data: SideBarItem[]) => {
         this.sidebarItems = data;
         const route = window.location.pathname;
-        const activeRoute = route.substring(route.lastIndexOf('/') + 1, window.location.href.length);
         this.showTitles = this.isSidebarExpanded ? true : false;
-        if (activeRoute) this.setActiveItem(activeRoute);
-        else {
-          this.sidebarItems[0].isActive = true;
-          this.sidebarItemService.setCurrentPage(this.sidebarItems[0]);
+        const isNestedRoute = this.nestedRoutes.includes(route);
+        if (isNestedRoute) {
+          const activeRoute = route.split('/');
+          if (activeRoute.length) this.setActiveItem(activeRoute[1]);
+          else {
+            this.sidebarItems[0].isActive = true;
+            this.sidebarItemService.setCurrentPage(this.sidebarItems[0]);
+          }
+        } else {
+          const activeRoute = route.substring(route.lastIndexOf('/') + 1, window.location.href.length);
+          if (activeRoute) this.setActiveItem(activeRoute);
+          else {
+            this.sidebarItems[0].isActive = true;
+            this.sidebarItemService.setCurrentPage(this.sidebarItems[0]);
+          }
         }
       }
     })

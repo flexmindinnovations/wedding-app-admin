@@ -1,0 +1,8 @@
+.ag-data-grid {
+    height: 500px;
+    width: 100%;
+}
+
+::ng-deep .ag-ltr .ag-row-group-leaf-indent {
+    margin-left: 0;
+}

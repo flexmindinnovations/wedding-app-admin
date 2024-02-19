@@ -14,6 +14,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   @Input() formControlName: string = '';
   @Input() control!: FormControl;
   @Input() fill: 'solid' | 'outline' = 'outline';
+  @Input() cssClasses: any;
   @Input() options: any[] = [];
   value: any;
 

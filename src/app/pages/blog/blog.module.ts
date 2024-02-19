@@ -1,19 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
 import { BlogPageRoutingModule } from './blog-routing.module';
 
 import { BlogPage } from './blog.page';
+import { QuillModule } from 'ngx-quill';
+import { InputComponent } from 'src/app/components/input/input.component';
+import { ButtonComponent } from 'src/app/components/button/button.component';
+import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
-    BlogPageRoutingModule
+    BlogPageRoutingModule,
+    SharedModule,
+    QuillModule.forRoot()
   ],
   declarations: [BlogPage]
 })

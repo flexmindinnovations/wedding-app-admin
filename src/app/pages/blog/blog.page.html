@@ -1,5 +1,12 @@
 <div class="blog-content main ion-padding">
-  <div class="ion-padding">
-    <h1>Blog</h1>
+  <div class="header flex items-center justify-between px-3 min-h-16">
+    <div class="static"></div>
+    <div class="action">
+      <mt-button [title]="'Add Blog'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
+    </div>
+  </div>
+  <div class="data-grid">
+    <ag-grid-angular [className]="'ag-theme-quartz ag-data-grid'" [rowData]="rowData" [columnDefs]="colDefs">
+    </ag-grid-angular>
   </div>
 </div>

@@ -48,6 +48,7 @@ select {
     -moz-appearance: none;
     appearance: none;
     background-color: transparent;
+    padding: 0;
 
     :hover {
         --border-color: var(--ion-color-step-750, #404040);
@@ -59,4 +60,5 @@ select {
     -moz-appearance: none;
     appearance: none;
     background-color: transparent;
+    padding: 0;
 }
