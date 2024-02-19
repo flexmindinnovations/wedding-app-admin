@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AgGridAngular } from "ag-grid-angular";
 // import { AgGridModule } from 'ag-grid-angular-legacy';
 import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.component";
+import { DataGridComponent } from "./components/data-grid/data-grid.component";
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.com
         DropdownComponent,
         ButtonComponent,
         InputComponent,
-        GridButtonsComponent
+        GridButtonsComponent,
+        DataGridComponent
     ],
     imports: [
         CommonModule,
@@ -55,7 +57,8 @@ import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.com
         IonicModule,
         AgGridAngular,
         // AgGridModule,
-        GridButtonsComponent
+        GridButtonsComponent,
+        DataGridComponent
     ],
     providers: []
 })

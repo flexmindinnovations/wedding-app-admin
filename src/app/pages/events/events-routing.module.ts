@@ -7,7 +7,16 @@ const routes: Routes = [
   {
     path: '',
     component: EventsPage
+  },
+  {
+    path: 'add',
+    loadChildren: () => import('./add-edit-event/add-edit-event.module').then( m => m.AddEditEventPageModule)
+  },
+  {
+    path: 'edit/:id',
+    loadChildren: () => import('./add-edit-event/add-edit-event.module').then( m => m.AddEditEventPageModule)
   }
+
 ];
 
 @NgModule({

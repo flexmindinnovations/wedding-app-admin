@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
 import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-buttons.component';
+import { GridActions } from 'src/app/enums/grid-actions';
 
 @Component({
   selector: 'app-blog',
@@ -56,6 +57,12 @@ export class BlogPage implements OnInit {
   }
 
   handleGridActionButtonClick(event: any) {
-    console.log('>>>>> event : ', event);
+    const action = event?.src;
+    const data = event?.rowData;
+    if(action === GridActions.edit) {
+      this.router.navigateByUrl(`blog/edit/${data?.id}`)
+    } else {
+      console.log('>>>>> event delete: ', event);
+    }
   }
 }

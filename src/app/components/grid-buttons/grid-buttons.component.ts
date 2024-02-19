@@ -24,13 +24,10 @@ export class GridButtonsComponent implements OnInit, ICellRendererAngularComp {
     return true;
   }
 
-  onClick(src: string) {
+  onClick(src: number) {
     if (this.params.onClick instanceof Function) {
-      // put anything into params u want pass into parents component
-      const params = {
-        rowData: this.params.node.data,
-        src
-      }
+      const rowData = this.params?.node?.data;
+      const params = { rowData, src }
       this.params.onClick(params);
     }
   }

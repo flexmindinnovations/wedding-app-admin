@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-dark-mode',
@@ -8,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class DarkModeComponent implements OnInit {
   iconMode = '☀️';
   isLightMode = true;
+  themeService = inject(ThemeService);
   constructor() { }
 
   ngOnInit() { }
@@ -22,6 +24,8 @@ export class DarkModeComponent implements OnInit {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    this.themeService.setThemeToggle(colorTheme);
+
   }
 
 }

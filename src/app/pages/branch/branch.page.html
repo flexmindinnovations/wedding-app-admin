@@ -1,5 +1,11 @@
 <div class="main ion-padding">
-    <div class="ion-padding">
-        <h1>Branch</h1>
-      </div>
+  <div class="header flex items-center justify-between px-3 min-h-16">
+    <div class="static"></div>
+    <div class="action">
+      <mt-button [title]="'Add Branch'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
+    </div>
+  </div>
+  <div class="data-grid">
+    <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
+  </div>
 </div>

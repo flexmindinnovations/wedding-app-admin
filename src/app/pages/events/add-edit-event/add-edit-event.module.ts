@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { BranchPageRoutingModule } from './branch-routing.module';
+import { AddEditEventPageRoutingModule } from './add-edit-event-routing.module';
 
-import { BranchPage } from './branch.page';
-import { QuillModule } from 'ngx-quill';
+import { AddEditEventPage } from './add-edit-event.page';
 import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
@@ -15,9 +14,9 @@ import { SharedModule } from 'src/app/shared.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    BranchPageRoutingModule,
+    AddEditEventPageRoutingModule,
     SharedModule
   ],
-  declarations: [BranchPage]
+  declarations: [AddEditEventPage]
 })
-export class BranchPageModule {}
+export class AddEditEventPageModule {}
