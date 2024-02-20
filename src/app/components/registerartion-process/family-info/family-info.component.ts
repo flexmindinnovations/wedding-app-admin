@@ -1,18 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
-  selector: 'personal-info',
-  templateUrl: './personal-info.component.html',
-  styleUrls: ['./personal-info.component.scss'],
+  selector: 'family-info',
+  templateUrl: './family-info.component.html',
+  styleUrls: ['./family-info.component.scss'],
 })
-export class PersonalInfoComponent implements OnInit {
+export class FamilyInfoComponent  implements OnInit {
 
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
 
-  @Output() personalInfoData = new EventEmitter();
+  @Output() familyInfoData = new EventEmitter();
 
   constructor(
     private fb: FormBuilder
@@ -55,11 +55,12 @@ export class PersonalInfoComponent implements OnInit {
     const props: FormStep = {
       source: src,
       data: formVal,
-      formId: 1,
+      formId: 2,
       isCompleted: true
     }
-    this.personalInfoData.emit(props);
+    this.familyInfoData.emit(props);
     // }
   }
+
 
 }

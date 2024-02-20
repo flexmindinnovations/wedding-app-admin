@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'app-add-edit-user',
@@ -9,6 +10,8 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 export class AddEditUserPage implements OnInit {
   personalDetailsFormGroup!: FormGroup;
   contactDetailsFormGroup !: FormGroup;
+  completedStep!: FormStep;
+  currentForm: number = 1;
 
   constructor(
     private fb: FormBuilder
@@ -45,8 +48,15 @@ export class AddEditUserPage implements OnInit {
     return this.personalDetailsFormGroup.controls as { [key: string]: FormControl };
   }
 
-  handleClickOnNext(src: string) {
-    throw new Error('Method not implemented.');
+  handleClickOnNext(data: FormStep) {
+    // console.log('data: ', data);
+    this.completedStep = data;
+    if(this.completedStep.formId === 5) {
+      this.currentForm = this.completedStep.formId;
+      return;
+    } else {
+      this.currentForm = this.completedStep.formId + 1;
+    }
   }
 
 }

@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "title": "Personal Information",
+        "route": "personal",
+        "isActive": false,
+        "icon": "person"
+    },
+    {
+        "id": 2,
+        "title": "Family Information",
+        "route": "family",
+        "isActive": false,
+        "icon": "people"
+    },
+    {
+        "id": 3,
+        "title": "Contact Information",
+        "route": "contact",
+        "isActive": false,
+        "icon": "call"
+    },
+    {
+        "id": 4,
+        "title": "Other Information",
+        "route": "other",
+        "isActive": false,
+        "icon": "information-circle"
+    },
+    {
+        "id": 5,
+        "title": "Photos",
+        "route": "photos",
+        "isActive": false,
+        "icon": "images-outline"
+    }
+]

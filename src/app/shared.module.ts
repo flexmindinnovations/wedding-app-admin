@@ -19,6 +19,7 @@ import { AgGridAngular } from "ag-grid-angular";
 // import { AgGridModule } from 'ag-grid-angular-legacy';
 import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.component";
 import { DataGridComponent } from "./components/data-grid/data-grid.component";
+import { FormStepperComponent } from "./components/form-stepper/form-stepper.component";
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { DataGridComponent } from "./components/data-grid/data-grid.component";
         ButtonComponent,
         InputComponent,
         GridButtonsComponent,
-        DataGridComponent
+        DataGridComponent,
+        FormStepperComponent
     ],
     imports: [
         CommonModule,
@@ -58,7 +60,8 @@ import { DataGridComponent } from "./components/data-grid/data-grid.component";
         AgGridAngular,
         // AgGridModule,
         GridButtonsComponent,
-        DataGridComponent
+        DataGridComponent,
+        FormStepperComponent
     ],
     providers: []
 })
