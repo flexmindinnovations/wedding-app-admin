@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Optional, Self, forwardRef } from '@angular/c
 import { ControlValueAccessor, FormControl, FormsModule, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlValueAccessorConnector } from './control-value-accessor';
 import { IonicModule } from '@ionic/angular';
+import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 
 @Component({
   selector: 'app-input',
@@ -24,16 +25,26 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   onChange(value: any) { }
   onTouched() { }
 
+  colorScheme: any = COLOR_SCHEME;
+  colorVarients: any;
+
   constructor(
     @Self()
     @Optional()
     public ngControl: NgControl
   ) {
     ngControl.valueAccessor = this;
+    this.setCurrentClass();
   }
 
   ngOnInit(): void {
     // if (this.ngControl) this.ngControl.valueAccessor = this;
+  }
+
+  setCurrentClass() {
+    const colorScheme = localStorage.getItem('color-scheme');
+    this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
+    this.colorVarients = inputThemeVariables[this.colorScheme];
   }
 
   writeValue(obj: any): void {

@@ -25,7 +25,6 @@ export class DarkModeComponent implements OnInit {
       document.documentElement.classList.remove('dark');
     }
     this.themeService.setThemeToggle(colorTheme);
-
   }
 
 }

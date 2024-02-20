@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -9,6 +9,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 export class PersonalInfoComponent implements OnInit {
 
   formGroup: any;
+
+  @ViewChild('dropdownInput') dropdownInput: any;
 
   constructor(
     private fb: FormBuilder

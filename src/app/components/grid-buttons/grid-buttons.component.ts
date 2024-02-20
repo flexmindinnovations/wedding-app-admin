@@ -12,8 +12,6 @@ export class GridButtonsComponent implements OnInit, ICellRendererAngularComp {
   params: any;
   label: string = '';
 
-  constructor() { }
-
   ngOnInit() { }
 
   agInit(params: ICellRendererParams<any, any, any>): void {

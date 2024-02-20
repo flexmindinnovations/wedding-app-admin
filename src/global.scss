@@ -46,4 +46,8 @@ border-right {
 
 .main {
   @apply bg-white w-full ease-in-out dark:bg-gray-700 dark:text-white flex-grow overflow-auto;
+
+  .header {
+    @apply flex items-center justify-between min-h-16;
+  }
 }

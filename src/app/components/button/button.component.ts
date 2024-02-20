@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { buttonThemeVariables, themeVariables } from 'src/util/util';
+import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/util';
 
 @Component({
   selector: 'mt-button',
@@ -12,10 +12,8 @@ export class ButtonComponent implements OnInit {
   @Input() icon: string = '';
   @Input() textOnly = false;
   @Input('iconSlot') iconSlot: 'start' | 'end' = 'start';
-  colorScheme: any = 'red';
-  colorVarients: any = {
-    red: ''
-  };
+  colorScheme: any = COLOR_SCHEME;
+  colorVarients: any;
 
   @Output() action = new EventEmitter();
   constructor() {
@@ -27,7 +25,7 @@ export class ButtonComponent implements OnInit {
 
   setCurrentClass() {
     const colorScheme = localStorage.getItem('color-scheme');
-    this.colorScheme = colorScheme ? colorScheme : 'red';
+    this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
     this.colorVarients = buttonThemeVariables[this.colorScheme];
   }
 

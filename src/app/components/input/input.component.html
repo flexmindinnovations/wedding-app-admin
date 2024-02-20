@@ -1,9 +1,13 @@
 <div class="input">
-  @if(isMultiline){
+  <!-- @if(isMultiline){
   <ion-textarea [value]="value" [label]="label" [formControl]="control" (ionInput)="handleOnChange($event)"
     (ionBlur)="onTouched()" labelPlacement="floating" fill="outline"></ion-textarea>
   } @else {
   <ion-input [type]="type" [value]="value" [label]="label" [formControl]="control" (ionInput)="handleOnChange($event)"
     (ionBlur)="onTouched()" labelPlacement="floating" fill="outline" [required]="isRequired"/>
-  }
+  } -->
+
+  <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{label}}
+  </label>
+  <input type="text" name="username" id="username" class="p-2.5" [ngClass]="colorVarients" placeholder="username.example" required="">
 </div>

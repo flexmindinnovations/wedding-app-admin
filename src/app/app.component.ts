@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { NavigationStart, Router, RouterEvent } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SidebarItemsService } from './services/sidebar-items.service';
+import { COLOR_SCHEME } from 'src/util/util';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     initFlowbite();
+    localStorage.setItem('color-scheme', COLOR_SCHEME);
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {

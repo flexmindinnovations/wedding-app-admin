@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
-import { themeVariables } from 'src/util/util';
+import { COLOR_SCHEME, themeVariables } from 'src/util/util';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,13 +19,14 @@ export class SidebarComponent implements OnInit {
   sidebarHeaderText = 'Wedding App';
   showTitles = true;
   @Output() isCollapsed = new EventEmitter();
-  colorScheme = 'red';
+  // colorScheme = 'red';
+  colorScheme: any = COLOR_SCHEME;
   cssClass: any;
   nestedRoutes = ['users', 'branch', 'events', 'blog', '/users/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
 
   ngOnInit() {
     this.getSidebarItems();
-    this.colorScheme = localStorage.getItem('color-scheme') || 'red';
+    this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
   }
 
