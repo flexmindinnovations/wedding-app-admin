@@ -9,7 +9,7 @@ import { BranchPageRoutingModule } from './branch-routing.module';
 import { BranchPage } from './branch.page';
 import { QuillModule } from 'ngx-quill';
 import { SharedModule } from 'src/app/shared.module';
-import { AddEditBranchComponent } from './add-edit-branch/add-edit-branch.component';
+import { AddEditBranchComponent } from './add-edit-event/add-edit-event.component';
 
 @NgModule({
   imports: [

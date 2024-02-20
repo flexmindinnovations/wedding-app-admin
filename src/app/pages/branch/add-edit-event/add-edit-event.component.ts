@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
 
 @Component({
-  selector: 'app-add-edit-branch',
-  templateUrl: './add-edit-branch.component.html',
-  styleUrls: ['./add-edit-branch.component.scss'],
+  selector: 'app-add-edit-event',
+  templateUrl: './add-edit-event.component.html',
+  styleUrls: ['./add-edit-event.component.scss'],
 })
 export class AddEditBranchComponent implements OnInit {
 

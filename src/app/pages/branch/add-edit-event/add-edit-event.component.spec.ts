@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddEditBranchComponent } from './add-edit-branch.component';
+import { AddEditBranchComponent } from './add-edit-event.component';
 
 describe('AddEditBranchComponent', () => {
   let component: AddEditBranchComponent;
@@ -9,7 +9,7 @@ describe('AddEditBranchComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddEditBranchComponent ],
+      declarations: [AddEditBranchComponent],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 

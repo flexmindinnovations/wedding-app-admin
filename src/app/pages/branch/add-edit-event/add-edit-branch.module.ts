@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { AddEditBranchPageRoutingModule } from './add-edit-branch-routing.module';
 
-import { AddEditBranchPage } from './add-edit-branch.page';
+import { AddEditBranchComponent } from './add-edit-event.component';
 import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
@@ -17,6 +17,6 @@ import { SharedModule } from 'src/app/shared.module';
     AddEditBranchPageRoutingModule,
     SharedModule
   ],
-  declarations: [AddEditBranchPage]
+  declarations: [AddEditBranchComponent]
 })
 export class AddEditBranchPageModule { }
