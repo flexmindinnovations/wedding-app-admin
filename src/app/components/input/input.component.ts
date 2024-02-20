@@ -13,7 +13,7 @@ import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 export class InputComponent implements OnInit, ControlValueAccessor {
 
   @Input() label: string = '';
-  @Input() type: 'text' | 'email' | 'date' = 'text';
+  @Input() type: 'text' | 'email' | 'number' | 'date' = 'text';
   @Input() formControlName: string = '';
   @Input() control!: FormControl;
   @Input() fill: 'solid' | 'outline' = 'outline';

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { BranchPage } from './branch.page';
+import { AddEditBranchComponent } from './add-edit-branch/add-edit-branch.component';
 
 const routes: Routes = [
   {
@@ -10,11 +11,11 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    loadChildren: () => import('./add-edit-branch/add-edit-branch.module').then( m => m.AddEditBranchPageModule)
+    loadChildren: () => import('./add-edit-branch/add-edit-branch.module').then(m => m.AddEditBranchPageModule)
   },
   {
     path: 'edit/:id',
-    loadChildren: () => import('./add-edit-branch/add-edit-branch.module').then( m => m.AddEditBranchPageModule)
+    loadChildren: () => import('./add-edit-branch/add-edit-branch.module').then(m => m.AddEditBranchPageModule)
   }
 ];
 
@@ -22,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BranchPageRoutingModule {}
+export class BranchPageRoutingModule { }

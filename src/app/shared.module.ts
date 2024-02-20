@@ -39,6 +39,8 @@ import { DataGridComponent } from "./components/data-grid/data-grid.component";
     ],
     imports: [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
@@ -58,7 +60,8 @@ import { DataGridComponent } from "./components/data-grid/data-grid.component";
         AgGridAngular,
         // AgGridModule,
         GridButtonsComponent,
-        DataGridComponent
+        DataGridComponent,
+        InputComponent
     ],
     providers: []
 })
