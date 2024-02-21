@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { SideBarItem } from '../interfaces/sidebar';
+import { Observable } from 'rxjs';
+import { StepperFormItem } from '../interfaces/stepper-form';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class FormStepperService {
 
   http = inject(HttpClient);
 
-  getFormStepperItems(): Observable<SideBarItem[]> {
-    return this.http.get<SideBarItem[]>('../../assets/data/stepper-form-items.json');
+  getFormStepperItems(): Observable<StepperFormItem[]> {
+    return this.http.get<StepperFormItem[]>('../../assets/data/stepper-form-items.json');
   }
 }

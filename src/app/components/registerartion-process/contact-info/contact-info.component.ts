@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
@@ -9,6 +9,7 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 })
 export class ContactInfoComponent implements OnInit {
 
+  @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
 
@@ -52,7 +53,8 @@ export class ContactInfoComponent implements OnInit {
       data: formVal,
       formId: 3,
       action: ActionValue.previous,
-      isCompleted: this.formGroup.valid
+      // isCompleted: this.formGroup.valid
+      isCompleted: true
     }
     this.contactInfoData.emit(props);
   }

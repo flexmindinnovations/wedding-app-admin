@@ -29,7 +29,7 @@
 
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
-    <mt-button title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('family')" />
+    <mt-button [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('family')" />
     <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>
