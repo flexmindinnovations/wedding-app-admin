@@ -13,21 +13,21 @@ export class ButtonComponent implements OnInit {
   @Input() textOnly = false;
   @Input('iconSlot') iconSlot: 'start' | 'end' = 'start';
   @Input('disabled') isDisabled = false;
+  @Input() size: 'sm' | 'md' | 'lg' = 'lg';
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
 
   @Output() action = new EventEmitter();
-  constructor() {
-    this.setCurrentClass();
-  }
+  constructor() { }
 
   ngOnInit() {
+    this.setCurrentClass();
   }
 
   setCurrentClass() {
     const colorScheme = localStorage.getItem('color-scheme');
     this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
-    this.colorVarients = buttonThemeVariables[this.colorScheme];
+    this.colorVarients = buttonThemeVariables[this.colorScheme][this.size];
   }
 
 

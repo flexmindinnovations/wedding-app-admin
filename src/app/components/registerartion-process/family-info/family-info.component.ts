@@ -22,7 +22,6 @@ export class FamilyInfoComponent  implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
-    console.log('>>>>> completedStep : ', this.completedStep);
   }
 
   initFormGroup() {

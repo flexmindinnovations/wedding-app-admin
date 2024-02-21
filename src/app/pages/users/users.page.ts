@@ -57,4 +57,9 @@ export class UsersPage implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    console.log('called ngOnDestroy user');
+    
+  }
+
 }

@@ -1,5 +1,12 @@
 export const COLOR_SCHEME = 'br';
 
+const redButton = `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`;
+
+const boButton = `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-bo-500 hover:bg-bo-600 focus:ring-4 focus:outline-none focus:ring-bo-300 font-medium rounded-lg text-sm text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`;
+
+const brButton = `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-br-500 hover:bg-br-600 focus:ring-4 focus:outline-none focus:ring-br-300 font-medium rounded-lg text-sm text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`;
+
+
 export const themeVariables: any = {
     red: `
     bg-red-500 hover:bg-red-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none
@@ -13,9 +20,21 @@ export const themeVariables: any = {
 }
 
 export const buttonThemeVariables: any = {
-    red: `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`,
-    bo: `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-bo-500 hover:bg-bo-600 focus:ring-4 focus:outline-none focus:ring-bo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`,
-    br: `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-br-500 hover:bg-br-600 focus:ring-4 focus:outline-none focus:ring-br-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-400`
+    red: {
+        sm: redButton + ' px-2 py-1',
+        md: redButton + ' px-3 py-2',
+        lg: redButton + ' px-5 py-2.5'
+    },
+    bo: {
+        sm: boButton + ' px-2 py-1',
+        md: boButton + ' px-3 py-2',
+        lg: boButton + ' px-5 py-2.5'
+    },
+    br: {
+        sm: brButton + ' px-2 py-1',
+        md: brButton + ' px-3 py-2',
+        lg: brButton + ' px-5 py-2.5'
+    }
 }
 
 export const inputThemeVariables: any = {
