@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'photos',
@@ -49,6 +49,18 @@ export class PhotosComponent  implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  handleClickOnPrevious(src: string) {
+    const formVal = this.formGroup.value;
+    const props: FormStep = {
+      source: src,
+      data: formVal,
+      formId: 5,
+      action: ActionValue.previous,
+      isCompleted: this.formGroup.valid
+    }
+    this.photosData.emit(props);
+  }
+
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
     // if (this.formGroup.valid) {
@@ -56,6 +68,7 @@ export class PhotosComponent  implements OnInit {
       source: src,
       data: formVal,
       formId: 5,
+      action: ActionValue.next,
       isCompleted: true
     }
     this.photosData.emit(props);

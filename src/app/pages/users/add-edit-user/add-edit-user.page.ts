@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'app-add-edit-user',
@@ -49,13 +49,22 @@ export class AddEditUserPage implements OnInit {
   }
 
   handleClickOnNext(data: FormStep) {
-    // console.log('data: ', data);
     this.completedStep = data;
-    if(this.completedStep.formId === 5) {
-      this.currentForm = this.completedStep.formId;
-      return;
+    if (data.action === ActionValue.next) {
+      if (this.completedStep.formId === 5) {
+        this.currentForm = this.completedStep.formId;
+        return;
+      } else {
+        this.currentForm = this.completedStep.formId + 1;
+      }
     } else {
-      this.currentForm = this.completedStep.formId + 1;
+      console.log('data: ', data);
+      if (data.formId === 1) {
+        this.currentForm = this.completedStep.formId;
+        return;
+      } else {
+        this.currentForm = this.completedStep.formId - 1;
+      }
     }
   }
 

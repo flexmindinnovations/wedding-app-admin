@@ -9,5 +9,11 @@
 
   <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{label}}
   </label>
-  <input type="text" name="username" id="username" class="p-2.5" [ngClass]="colorVarients" placeholder="username.example" required="">
+  @if(isMultiline){
+  <textarea [title]="label" [name]="label" [id]="label" rows="3" class="p-2.5" [ngClass]="colorVarients"
+    [placeholder]="placeholder"></textarea>
+  } @else {
+  <input [type]="type" [name]="label" [id]="label" class="p-2.5" [ngClass]="colorVarients"
+  [placeholder]="placeholder" [required]="isRequired">
+  }
 </div>

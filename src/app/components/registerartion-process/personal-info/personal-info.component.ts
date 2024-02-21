@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'personal-info',
@@ -56,6 +56,7 @@ export class PersonalInfoComponent implements OnInit {
       source: src,
       data: formVal,
       formId: 1,
+      action: ActionValue.next,
       isCompleted: true
     }
     this.personalInfoData.emit(props);

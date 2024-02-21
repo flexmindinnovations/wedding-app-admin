@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'contact-info',
@@ -25,17 +25,13 @@ export class ContactInfoComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      surName: ['', [Validators.required]],
-      gender: ['', [Validators.required]],
-      height: ['', [Validators.required]],
-      education: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
-      occupation: ['', [Validators.required]],
-      physicalStatus: ['', [Validators.required]],
-      maritalStatus: ['', [Validators.required]],
-      hobbies: ['', ![Validators.required]]
+      contactOf: ['', [Validators.required]],
+      contactNumber: ['', [Validators.required]],
+      whatsAppNumber: ['', [Validators.required]],
+      homeAddress: ['', [Validators.required]],
+      country: ['', [Validators.required]],
+      state: ['', [Validators.required]],
+      city: ['', [Validators.required]],
     })
 
     this.formGroup.valueChanges.subscribe((event: any) => {
@@ -49,6 +45,18 @@ export class ContactInfoComponent implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  handleClickOnPrevious(src: string) {
+    const formVal = this.formGroup.value;
+    const props: FormStep = {
+      source: src,
+      data: formVal,
+      formId: 3,
+      action: ActionValue.previous,
+      isCompleted: this.formGroup.valid
+    }
+    this.contactInfoData.emit(props);
+  }
+
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
     // if (this.formGroup.valid) {
@@ -56,6 +64,7 @@ export class ContactInfoComponent implements OnInit {
       source: src,
       data: formVal,
       formId: 3,
+      action: ActionValue.next,
       isCompleted: true
     }
     this.contactInfoData.emit(props);

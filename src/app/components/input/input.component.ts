@@ -13,12 +13,13 @@ import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 export class InputComponent implements OnInit, ControlValueAccessor {
 
   @Input() label: string = '';
-  @Input() type: 'text' | 'email' | 'date' = 'text';
+  @Input() type: 'text' | 'email' | 'number' | 'date' = 'text';
   @Input() formControlName: string = '';
   @Input() control!: FormControl;
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
+  @Input() placeholder: string = '';
   value: any;
   pickerFormat: string = 'DD MM YYYY';
 
@@ -38,7 +39,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit(): void {
-    // if (this.ngControl) this.ngControl.valueAccessor = this;
+    this.placeholder = this.placeholder ? this.placeholder : 'Enter ' + this.label;
   }
 
   setCurrentClass() {

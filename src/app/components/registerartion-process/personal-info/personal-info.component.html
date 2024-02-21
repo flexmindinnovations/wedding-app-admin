@@ -1,5 +1,5 @@
-<div class="personal-info-container ion-padding">
-  <form [formGroup]="formGroup" class="ion-padding">
+<div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
+  <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
       <app-input label="First Name" type="text" class="flex-grow-1" [control]="formGroupControl['firstName']"
         formControlName="firstName" [required]="true" />
@@ -28,19 +28,11 @@
       <app-dropdown label="Education" class="" [control]="formGroupControl['education']" formControlName="education"
         [options]="[]" />
 
-      <app-dropdown label="Height" class="" [control]="formGroupControl['physicalStatus']"
-        formControlName="physicalStatus" [options]="[]" />
-
-      <app-input label="Hobbies" class="flex-grow-1 col-span-2" type="text" [control]="formGroupControl['hobbies']"
+      <app-input label="Hobbies" class="flex-grow-1 col-span-3" type="text" [control]="formGroupControl['hobbies']"
         formControlName="hobbies" [isMultiline]=true />
     </div>
   </form>
-  <pre class="text-xs">
-      <p>Form Values: </p>
-      <code>{{formGroup.value | json}}</code>
-    </pre>
-
-  <div class="action-buttons flex items-center justify-end">
+  <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end">
     <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>

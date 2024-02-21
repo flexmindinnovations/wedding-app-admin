@@ -1,8 +1,8 @@
-<div class="main ion-padding">
+<div class="main ion-padding flex flex-col">
     <div class="stepper border-b border-b-gray-100">
         <form-stepper [completedStepInfo]="completedStep" class="w-full"></form-stepper>
     </div>
-    <div class="forms-container max-h-[85%] overflow-auto">
+    <div class="forms-container flex-grow h-full overflow-auto">
         @switch (currentForm) {
         @case (1) {
         <personal-info (personalInfoData)="handleClickOnNext($event)"></personal-info>

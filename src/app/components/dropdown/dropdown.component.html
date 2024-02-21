@@ -1,19 +1,19 @@
-<div>
+<div class="flex flex-col gap-2">
   <!-- <ion-select  (ionChange)='handleOnChange($event)' [label]="label" labelPlacement="floating" fill="outline" [fill]="fill" (ionBlur)="onTouched()">
     <ion-select-option value="en">English</ion-select-option>
     <ion-select-option value="ar">Arabic</ion-select-option>
   </ion-select> -->
 
-
-  <button [id]="buttonId" data-dropdown-placement="bottom" class="flex items-center justify-start w-full gap-3"
+  <label>{{label}}</label>
+  <button #triggerButton [id]="buttonId" data-dropdown-placement="bottom" class="flex items-center justify-between w-full gap-3 border-gray-300"
     (click)="handleDropdownToggle()" [ngClass]="colorVarients" type="button">
-    {{label}}
+    <p>-- Select --</p>
     <ion-icon class="transition delay-150 ease-in-out" [name]="dropdownIcon"></ion-icon>
   </button>
 
-  <!-- Dropdown menu -->
-  <div [id]="menuId" class="z-20 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-    <div class="p-3">
+  <!-- Dropdown menu  -->
+  <div #menuEl [id]="menuId" [ngStyle]="{'width': menuWidth}" class="z-20 shadow-lg hidden bg-white rounded-lg borser border-gray-300 shadowdark:bg-gray-700">
+    <div class="p-3 bg-gray-100 rounded-t-lg rounded-t-r-lg">
       <label for="input-group-search" class="sr-only">Search</label>
       <div class="relative">
         <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">

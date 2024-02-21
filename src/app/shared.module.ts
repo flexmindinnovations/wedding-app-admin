@@ -20,6 +20,7 @@ import { AgGridAngular } from "ag-grid-angular";
 import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.component";
 import { DataGridComponent } from "./components/data-grid/data-grid.component";
 import { FormStepperComponent } from "./components/form-stepper/form-stepper.component";
+import { ImagePickerComponent } from "./components/image-picker/image-picker.component";
 
 @NgModule({
     declarations: [
@@ -37,7 +38,8 @@ import { FormStepperComponent } from "./components/form-stepper/form-stepper.com
         InputComponent,
         GridButtonsComponent,
         DataGridComponent,
-        FormStepperComponent
+        FormStepperComponent,
+        ImagePickerComponent
     ],
     imports: [
         CommonModule,
@@ -61,7 +63,8 @@ import { FormStepperComponent } from "./components/form-stepper/form-stepper.com
         // AgGridModule,
         GridButtonsComponent,
         DataGridComponent,
-        FormStepperComponent
+        FormStepperComponent,
+        ImagePickerComponent
     ],
     providers: []
 })

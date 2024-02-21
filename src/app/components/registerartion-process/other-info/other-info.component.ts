@@ -1,13 +1,13 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
 @Component({
   selector: 'other-info',
   templateUrl: './other-info.component.html',
   styleUrls: ['./other-info.component.scss'],
 })
-export class OtherInfoComponent  implements OnInit {
+export class OtherInfoComponent implements OnInit {
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
 
@@ -24,17 +24,8 @@ export class OtherInfoComponent  implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      surName: ['', [Validators.required]],
-      gender: ['', [Validators.required]],
-      height: ['', [Validators.required]],
-      education: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
-      occupation: ['', [Validators.required]],
-      physicalStatus: ['', [Validators.required]],
-      maritalStatus: ['', [Validators.required]],
-      hobbies: ['', ![Validators.required]]
+      expectations: ['', [Validators.required]],
+      extraInformation: ['', [Validators.required]]
     })
 
     this.formGroup.valueChanges.subscribe((event: any) => {
@@ -48,6 +39,18 @@ export class OtherInfoComponent  implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  handleClickOnPrevious(src: string) {
+    const formVal = this.formGroup.value;
+    const props: FormStep = {
+      source: src,
+      data: formVal,
+      formId: 4,
+      action: ActionValue.previous,
+      isCompleted: this.formGroup.valid
+    }
+    this.otherInfoData.emit(props);
+  }
+
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
     // if (this.formGroup.valid) {
@@ -55,7 +58,8 @@ export class OtherInfoComponent  implements OnInit {
       source: src,
       data: formVal,
       formId: 4,
-      isCompleted: true
+      action: ActionValue.next,
+      isCompleted: this.formGroup.valid
     }
     this.otherInfoData.emit(props);
     // }

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
-import { FormStep } from 'src/app/interfaces/form-step-item';
+import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
 import { COLOR_SCHEME, stepperThemeVariables } from 'src/util/util';
@@ -17,6 +17,7 @@ export class FormStepperComponent implements OnInit, OnChanges {
   formStepperService = inject(FormStepperService);
 
   currentStepData!: FormStep;
+  themesParams = stepperThemeVariables['lastItem'];
 
   colorVarients: any;
   constructor() {
@@ -29,18 +30,28 @@ export class FormStepperComponent implements OnInit, OnChanges {
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     const currentValue = simpleChanges['completedStepInfo'].currentValue;
-    if (currentValue) {
-      this.currentStepData = currentValue;
-      this.proceedToNextStep(this.currentStepData);
-    }
+    if (currentValue) this.handleStepperDirection(currentValue);
+  }
+
+  handleStepperDirection(value: any) {
+    this.currentStepData = value;
+    if (value.action === ActionValue.previous) this.proceedToPreviousStep(value);
+    else this.proceedToNextStep(value);
+  }
+
+  proceedToPreviousStep(stepData: FormStep) {
+    this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
+    const previousPage: any = stepData?.formId - 1;
+    const previousItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.id === (previousPage >= 1 ? previousPage : previousPage));
+    this.registrationSteps[previousItemIndex].isActive = true;
   }
 
   proceedToNextStep(stepData: FormStep) {
     this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
-    const nextItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.id === stepData?.formId + 1);
-    if (nextItemIndex > -1) {
-      this.registrationSteps[nextItemIndex].isActive = true;
-    }
+    const totalSteps = this.registrationSteps.length;
+    const nextPage: any = stepData?.formId + 1;
+    const nextItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.id === (nextPage > totalSteps ? nextPage - 1 : nextPage));
+    this.registrationSteps[nextItemIndex].isActive = true;
   }
 
   getFormStepperItems() {
