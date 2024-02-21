@@ -1,0 +1,15 @@
+<div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
+  <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
+    <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
+      <app-input label="Expectations" class="flex-grow-1 col-span-3" type="text"
+        [control]="formGroupControl['expectations']" formControlName="expectations" [isMultiline]=true />
+
+      <app-input label="Extra Information" class="flex-grow-1 col-span-3" type="text"
+        [control]="formGroupControl['extraInformation']" formControlName="extraInformation" [isMultiline]=true />
+    </div>
+  </form>
+  <div class="action-buttons max-h-14 w-full flex items-center justify-end gap-5 ion-padding-horizontal">
+    <mt-button title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('other')" />
+    <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('other')" />
+  </div>
+</div>

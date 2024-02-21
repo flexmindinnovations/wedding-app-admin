@@ -1,0 +1,15 @@
+<div class="image-picker bg-gray-100 p-3 rounded-md flex items-center justify-start gap-2">
+  <div class="text flex flex-col items-start justify-start px-1 gap-4">
+    <label class="flex items-center justify-start gap-2">{{label}}</label>
+    <input #filePicker type="file" accept="jpg | jpeg | png" class="hidden" />
+    <div class="action flex flex-col items-start justify-start gap-2">
+      <mt-button title="Browse" [textOnly]="true" (action)="filePicker.click()" />
+      <span class="text-xs opacity-70">{{imagePath}}</span>
+    </div>
+  </div>
+  @if (showPreview) {
+  <div class="preview h-36 w-[50%] ml-auto rounded-md flex items-start justify-center gap-4 bg-gray-200">
+    <img [src]="imgSrc" class="h-full w-full object-scale-down" [alt]="label" />
+  </div>
+  }
+</div>

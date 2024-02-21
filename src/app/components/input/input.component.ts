@@ -19,6 +19,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
+  @Input() placeholder: string = '';
   value: any;
   pickerFormat: string = 'DD MM YYYY';
 
@@ -38,7 +39,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit(): void {
-    // if (this.ngControl) this.ngControl.valueAccessor = this;
+    this.placeholder = this.placeholder ? this.placeholder : 'Enter ' + this.label;
   }
 
   setCurrentClass() {

@@ -29,12 +29,55 @@ export const inputThemeVariables: any = {
 
 export const dropdownThemeVariables: any = {
     red: `
-    text-gray-900 border border-gray-300 ring-gray-300 ring-1 focus:ring-2 focus:ring-red-600 focus:border-br-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-red-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800
     `,
     bo: `
-    text-gray-900 border border-gray-300 ring-gray-300 ring-1 focus:ring-2 focus:ring-bo-600 focus:border-br-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-bo-600 dark:hover:bg-bo-500 dark:focus:ring-bo-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-bo-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-bo-600 dark:hover:bg-bo-500 dark:focus:ring-bo-800
     `,
     br: `
-    text-gray-900 border border-gray-300 ring-gray-300 ring-1 focus:ring-2 focus:ring-br-600 focus:border-br-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-br-600 dark:hover:bg-br-500 dark:focus:ring-br-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-br-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-br-600 dark:hover:bg-br-500 dark:focus:ring-br-800
     `
+}
+
+export const stepperThemeVariables: any = {
+    lastItem: {
+        line: {
+            active: `text-${COLOR_SCHEME}-600 dark:text-${COLOR_SCHEME}-500`,
+            inactive: ``
+        },
+        bg: {
+            active: `flex items-center justify-center w-10 h-10 bg-${COLOR_SCHEME}-100 rounded-full lg:h-12 lg:w-12 dark:bg-${COLOR_SCHEME}-800 shrink-0`,
+            inactive: `flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0`
+        }
+    },
+    red: {
+        line: {
+            active: `flex w-full items-center text-red-600 dark:text-red-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-red-100 after:border-4 after:inline-block dark:after:border-red-800`,
+            inactive: `flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700`
+        },
+        bg: {
+            active: `flex items-center justify-center w-10 h-10 bg-red-100 rounded-full lg:h-12 lg:w-12 dark:bg-red-800 shrink-0`,
+            inactive: `flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0`
+        }
+    },
+    bo: {
+        line: {
+            active: `flex w-full items-center text-bo-600 dark:text-bo-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-bo-100 after:border-4 after:inline-block dark:after:border-bo-800`,
+            inactive: `flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700`
+        },
+        bg: {
+            active: `flex items-center justify-center w-10 h-10 bg-bo-100 rounded-full lg:h-12 lg:w-12 dark:bg-bo-800 shrink-0`,
+            inactive: `flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0`
+        }
+    },
+    br: {
+        line: {
+            active: `flex w-full items-center text-br-600 dark:text-br-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-br-100 after:border-4 after:inline-block dark:after:border-br-800`,
+            inactive: `flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700`
+        },
+        bg: {
+            active: `flex items-center justify-center w-10 h-10 bg-br-100 rounded-full lg:h-12 lg:w-12 dark:bg-br-800 shrink-0`,
+            inactive: `flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0`
+        }
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Optional, Self } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Optional, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, dropdownThemeVariables } from 'src/util/util';
 import { Dropdown } from 'flowbite';
@@ -20,7 +20,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   @Input() options: any[] = [];
   value: any;
   buttonId = 'dropdownSearchButton';
-  menuId = 'dropdownMenuEl';
+  menuId: any = 'dropdownMenuEl';
 
   onChange(value: any) { }
   onTouched() { }
@@ -54,6 +54,10 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
     id: 'dropdownMenu',
     override: true
   };
+
+  @ViewChild('triggerButton', { static: true }) triggerButton!: ElementRef;
+  @ViewChild('menuEl', { static: true }) menuEl!: ElementRef;
+  menuWidth: any;
 
   constructor(
     @Self()
@@ -99,20 +103,50 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   }
 
   handleDropdownToggle() {
-    this.isVisible = !this.isVisible;
     const targetEl = document.getElementById(this.menuId);
     const triggerEl = document.getElementById(this.buttonId);
-    const dropdown = new Dropdown(targetEl, triggerEl, this.dropdownOptions, this.instanceOptions);
-    if (dropdown.isVisible()) dropdown.hide();
-    else dropdown.show();
+    setTimeout(() => {
+      const dropdown = new Dropdown(targetEl, triggerEl, this.dropdownOptions, this.instanceOptions);
+      if (this.isVisible) dropdown.hide();
+      else dropdown.show();
+      this.menuWidth = this.triggerButton.nativeElement.offsetWidth + 'px';
+      const buttonOffset = this.triggerButton.nativeElement.offsetWidth;
+      const menuEl: Element | any = document.querySelector(`#${this.menuId}`);
+      const matrix = this.getTransform(this.menuEl.nativeElement);
+      const customTranslation = `translate3d(${buttonOffset}, ${matrix[1]}, ${matrix[2]})`;
+      menuEl.style.transform = customTranslation;
+      this.isVisible = !this.isVisible;
+      this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
+    })
+  }
 
-    // if(targetEl?.classList.contains('hidden')) {
-    //   targetEl?.classList.remove('hidden');
-    //   targetEl.classList.add('block');
-    // } else {
-    //   targetEl?.classList.remove('block');
-    //   targetEl?.classList.add('hidden');
-    // }
-    this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
+  getTransform(el: Element) {
+    var transform = window.getComputedStyle(el, null).getPropertyValue('transform');
+    function rotate_degree(matrix: any) {
+      if (matrix !== 'none') {
+        var values = matrix.split('(')[1].split(')')[0].split(',');
+        var a = values[0];
+        var b = values[1];
+        var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+      } else {
+        var angle = 0;
+      }
+      return (angle < 0) ? angle += 360 : angle;
+    }
+
+    let results: any = transform.match(/matrix(?:(3d)\(-{0,1}\d+\.?\d*(?:, -{0,1}\d+\.?\d*)*(?:, (-{0,1}\d+\.?\d*))(?:, (-{0,1}\d+\.?\d*))(?:, (-{0,1}\d+\.?\d*)), -{0,1}\d+\.?\d*\)|\(-{0,1}\d+\.?\d*(?:, -{0,1}\d+\.?\d*)*(?:, (-{0,1}\d+\.?\d*))(?:, (-{0,1}\d+\.?\d*))\))/);
+
+    let result: any = [0, 0, 0];
+    if (results) {
+      if (results[1] == '3d') {
+        result = results.slice(2, 5);
+      } else {
+        results.push(0);
+        result = results.slice(5, 9); // returns the [X,Y,Z,1] value;
+      }
+
+      result.push(rotate_degree(transform));
+    };
+    return result;
   }
 }
