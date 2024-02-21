@@ -51,3 +51,12 @@ border-right {
     @apply flex items-center justify-between min-h-16;
   }
 }
+
+label,
+.input {
+  @apply dark:bg-gray-700 dark:text-white
+}
+
+.dropdown-button {
+  @apply dark:bg-gray-700 dark:text-white dark:border dark:border-gray-600 dark:hover:bg-gray-200
+}

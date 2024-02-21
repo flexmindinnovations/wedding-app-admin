@@ -1,13 +1,8 @@
-<div class="flex flex-col gap-2">
-  <!-- <ion-select  (ionChange)='handleOnChange($event)' [label]="label" labelPlacement="floating" fill="outline" [fill]="fill" (ionBlur)="onTouched()">
-    <ion-select-option value="en">English</ion-select-option>
-    <ion-select-option value="ar">Arabic</ion-select-option>
-  </ion-select> -->
-
+<div class="dropdown-container flex flex-col gap-2">
   <label>{{label}}</label>
   <button #triggerButton [id]="buttonId" data-dropdown-placement="bottom"
-    class="flex items-center justify-between w-full gap-3 border-gray-300" (click)="handleDropdownToggle()"
-    [ngClass]="colorVarients" type="button">
+    class="dropdown-button flex items-center justify-between w-full gap-3 border-gray-300"
+    (click)="handleDropdownToggle()" [ngClass]="colorVarients" type="button">
     <p>-- Select --</p>
     <ion-icon class="transition delay-150 ease-in-out" [name]="dropdownIcon"></ion-icon>
   </button>

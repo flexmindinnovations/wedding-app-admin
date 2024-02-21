@@ -8,16 +8,16 @@
         <personal-info (personalInfoData)="handleClickOnNext($event)"></personal-info>
         }
         @case (2) {
-        <family-info (familyInfoData)="handleClickOnNext($event)"></family-info>
+        <family-info [completedStep]="completedStep" (familyInfoData)="handleClickOnNext($event)"></family-info>
         }
         @case (3) {
-        <contact-info (contactInfoData)="handleClickOnNext($event)"></contact-info>
+        <contact-info [completedStep]="completedStep" (contactInfoData)="handleClickOnNext($event)"></contact-info>
         }
         @case (4) {
-        <other-info (otherInfoData)="handleClickOnNext($event)"></other-info>
+        <other-info [completedStep]="completedStep" (otherInfoData)="handleClickOnNext($event)"></other-info>
         }
         @case (5) {
-        <photos (photosData)="handleClickOnNext($event)"></photos>
+        <photos [completedStep]="completedStep" (photosData)="handleClickOnNext($event)"></photos>
         }
         }
     </div>

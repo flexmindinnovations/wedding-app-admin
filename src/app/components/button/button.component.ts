@@ -12,6 +12,7 @@ export class ButtonComponent implements OnInit {
   @Input() icon: string = '';
   @Input() textOnly = false;
   @Input('iconSlot') iconSlot: 'start' | 'end' = 'start';
+  @Input('disabled') isDisabled = false;
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
 

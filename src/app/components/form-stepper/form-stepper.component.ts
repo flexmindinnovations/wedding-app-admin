@@ -49,9 +49,10 @@ export class FormStepperComponent implements OnInit, OnChanges {
   proceedToNextStep(stepData: FormStep) {
     this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
     const totalSteps = this.registrationSteps.length;
-    const nextPage: any = stepData?.formId + 1;
-    const nextItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.id === (nextPage > totalSteps ? nextPage - 1 : nextPage));
+    const nextPage: any = stepData?.formId < totalSteps ? stepData?.formId + 1 : stepData?.formId;
+    const nextItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.id === nextPage);
     this.registrationSteps[nextItemIndex].isActive = true;
+    this.registrationSteps[nextItemIndex - 1].isCompleted = stepData.isCompleted;
   }
 
   getFormStepperItems() {

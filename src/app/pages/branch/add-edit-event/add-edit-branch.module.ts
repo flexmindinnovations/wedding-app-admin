@@ -8,6 +8,7 @@ import { AddEditBranchPageRoutingModule } from './add-edit-branch-routing.module
 
 import { AddEditBranchComponent } from './add-edit-event.component';
 import { SharedModule } from 'src/app/shared.module';
+import { ImagePickerComponent } from 'src/app/components/image-picker/image-picker.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { SharedModule } from 'src/app/shared.module';
     AddEditBranchPageRoutingModule,
     SharedModule
   ],
-  declarations: [AddEditBranchComponent]
+  declarations: [AddEditBranchComponent, ImagePickerComponent]
 })
 export class AddEditBranchPageModule { }

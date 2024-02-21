@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
@@ -8,6 +8,8 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
   styleUrls: ['./other-info.component.scss'],
 })
 export class OtherInfoComponent implements OnInit {
+  
+  @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
 
@@ -46,7 +48,7 @@ export class OtherInfoComponent implements OnInit {
       data: formVal,
       formId: 4,
       action: ActionValue.previous,
-      isCompleted: this.formGroup.valid
+      isCompleted: false
     }
     this.otherInfoData.emit(props);
   }
@@ -59,7 +61,8 @@ export class OtherInfoComponent implements OnInit {
       data: formVal,
       formId: 4,
       action: ActionValue.next,
-      isCompleted: this.formGroup.valid
+      // isCompleted: this.formGroup.valid
+      isCompleted: true
     }
     this.otherInfoData.emit(props);
     // }

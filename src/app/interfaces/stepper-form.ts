@@ -3,5 +3,6 @@ export interface StepperFormItem {
     title: string;
     route: string;
     isActive: boolean;
+    isCompleted: boolean;
     icon: string;
 }
