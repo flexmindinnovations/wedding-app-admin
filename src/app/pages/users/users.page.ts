@@ -23,20 +23,20 @@ export class UsersPage implements OnInit {
 
   // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "id", width: 60},
+    { field: "id", width: 60 },
     { field: "title" },
     { field: "date" },
     { field: "country" },
     { field: "state" },
     { field: "city" },
-    { 
+    {
       field: "action",
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridButtonsComponent,
         onClick: this.handleGridActionButtonClick.bind(this)
       } as IGroupCellRendererParams
-   },
+    },
   ];
 
   ngOnInit() {
@@ -50,16 +50,13 @@ export class UsersPage implements OnInit {
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
-    if(action === GridActions.edit) {
+    if (action === GridActions.edit) {
       this.router.navigateByUrl(`users/edit/${data?.id}`)
     } else {
       console.log('>>>>> event delete: ', event);
     }
   }
 
-  ngOnDestroy(): void {
-    console.log('called ngOnDestroy user');
-    
-  }
+  ngOnDestroy(): void { }
 
 }

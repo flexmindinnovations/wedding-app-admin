@@ -3,7 +3,7 @@ import { ButtonComponent } from "./components/button/button.component";
 import { DarkModeComponent } from "./components/dark-mode/dark-mode.component";
 import { DropdownComponent } from "./components/dropdown/dropdown.component";
 import { HeaderComponent } from "./components/header/header.component";
-import { LayoutComponent } from "./components/layout/layout.component";
+import { LayoutComponent } from "./components/layout-deprecated/layout.component";
 import { SearchComponent } from "./components/search/search.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { UserMenuComponent } from "./components/user-menu/user-menu.component";
@@ -21,6 +21,9 @@ import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.com
 import { DataGridComponent } from "./components/data-grid/data-grid.component";
 import { FormStepperComponent } from "./components/form-stepper/form-stepper.component";
 import { ImagePickerComponent } from "./components/image-picker/image-picker.component";
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 @NgModule({
     declarations: [
@@ -39,7 +42,9 @@ import { ImagePickerComponent } from "./components/image-picker/image-picker.com
         GridButtonsComponent,
         DataGridComponent,
         FormStepperComponent,
-        ImagePickerComponent
+        ImagePickerComponent,
+        SidebarComponent,
+        HeaderComponent
     ],
     imports: [
         CommonModule,
@@ -48,6 +53,11 @@ import { ImagePickerComponent } from "./components/image-picker/image-picker.com
         ReactiveFormsModule,
         IonicModule,
         AgGridAngular,
+        LoadingBarHttpClientModule,
+        // for Router use:
+        LoadingBarRouterModule,
+        // for Core use:
+        LoadingBarModule
         // AgGridModule.withComponents([ButtonRendererComponent])
     ],
     exports: [
@@ -64,7 +74,14 @@ import { ImagePickerComponent } from "./components/image-picker/image-picker.com
         GridButtonsComponent,
         DataGridComponent,
         FormStepperComponent,
-        ImagePickerComponent
+        ImagePickerComponent,
+        SidebarComponent,
+        HeaderComponent,
+        LoadingBarHttpClientModule,
+        // for Router use:
+        LoadingBarRouterModule,
+        // for Core use:
+        LoadingBarModule
     ],
     providers: []
 })

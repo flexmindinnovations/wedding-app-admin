@@ -1,17 +1,4 @@
 <!-- <ion-app>
-  <ion-split-pane contentId="main-content" class="bg-slate-200 dark:bg-gray-900">
-    <ion-menu class="hidden ion-no-padding border-r border-r-gray-100 md:flex lg:flex " [ngClass]="isCollapsed ? 'delay-150 duration-300 ease-out md:!w-[8%] lg:!w-[5%] md:max-w-[25%] lg:max-w-[25%]' : 'delay-150 duration-300 ease-out md:w-[20%] lg:w-[15%] md:max-w-[25%] lg:max-w-[25%]'" contentId="main-content" type="overlay">
-      <ion-content class="ion-no-padding">
-        <app-sidebar (isCollapsed)="handleIsCollapsed($event)"></app-sidebar>
-      </ion-content>
-    </ion-menu>
-    <main id="main-content" class="ion-page content w-full flex-grow-1" 
-    >
-      <app-layout [isCollapsed]="isCollapsed" class="w-full h-full"></app-layout>
-    </main>
-  </ion-split-pane>
-</ion-app> -->
-<ion-app>
   <ion-split-pane contentId="main-content" class="flex min-h-screen min-w-full bg-slate-200 dark:bg-gray-900">
      <ion-menu class="hidden ion-no-padding border-r border-r-gray-100 md:flex lg:flex " [ngClass]="isCollapsed ? menuClassess['collapsed'] : menuClassess['expanded']" contentId="main-content" type="overlay">
       <ion-content class="ion-no-padding">
@@ -20,7 +7,11 @@
     </ion-menu>
     <main id="main-content" class="ion-page content w-full flex-grow-1" 
     >
-      <app-layout [isCollapsed]="isCollapsed" class="w-full h-full"></app-layout>
+      <app-layout class="w-full h-full"></app-layout>
     </main>
   </ion-split-pane>
+</ion-app> -->
+<ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar>
+<ion-app>
+  <ion-router-outlet></ion-router-outlet>
 </ion-app>

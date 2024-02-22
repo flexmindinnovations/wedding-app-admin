@@ -1,0 +1,28 @@
+<div class="login-container main min-h-screen flex items-center justify-center bg-bo-200">
+  @if(isLoggedIn) {
+  <h1 class="m-0 text-lg text-br-500">Already logged in. Please wait, redirecting to dashboard...</h1>
+  } @else {
+  <div class="login-box w-1/4 min-h-40 min-w-40 rounded-md">
+    <div class="header w-full text-center border-b border-b-gray-100 p-3">
+      <h1 class="m-0 text-lg font-bold w-full text-center">Login</h1>
+    </div>
+    <div class="form-cotnainer p-3 border-b border-b-gray-100">
+      <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-4">
+        <app-input label="Username" class="w-full" [control]="formGroupControl['username']"
+          formControlName="username" />
+
+        <app-input type="password" class="w-full" label="Password" [control]="formGroupControl['username']"
+          formControlName="password" />
+
+        <div class="actions flex items-center w-full justify-center p-3">
+          <button type="button"
+            class="text-center p-3 text-white flex items-center justify-center rounded-md shadow-md hover:bg-br-700 bg-br-500 disabled:bg-gray-300 disabled:cursor-not-allowed w-full"
+            (click)="handleSignIn()" [disabled]="isLoading">
+            <p>{{isLoading ? 'Signing In ...' : 'Sign In'}}</p>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+</div>
