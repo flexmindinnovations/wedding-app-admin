@@ -1,0 +1,21 @@
+<!-- <ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar> -->
+<ion-split-pane contentId="main-content" class="flex min-h-screen min-w-full bg-slate-200 dark:bg-gray-900">
+  <ion-menu class="hidden ion-no-padding border-r border-r-gray-100 md:flex lg:flex "
+    [ngClass]="isCollapsed ? menuClassess['collapsed'] : menuClassess['expanded']" contentId="main-content"
+    type="overlay">
+    <ion-content class="ion-no-padding">
+      <app-sidebar (isCollapsed)="handleIsCollapsed($event)"></app-sidebar>
+    </ion-content>
+  </ion-menu>
+  <main id="main-content" class="ion-page content w-full flex-grow-1">
+    <!-- <app-layout [isCollapsed]="isCollapsed" class="w-full h-full"></app-layout> -->
+    <div class="layout flex flex-col min-h-screen">
+      <div class="bg-white dark:bg-gray-900 border-b h-20 border-b-gray-100">
+        <app-header></app-header>
+      </div>
+      <ion-content class="dark:bg-gray-900 flex-grow-1 max-h-[calc(100%-5rem)]">
+        <ion-router-outlet id="main-content"></ion-router-outlet>
+      </ion-content>
+    </div>
+  </main>
+</ion-split-pane>

@@ -27,8 +27,6 @@ export class SearchComponent implements OnInit {
     const { data, role } = await modal.onWillDismiss();
     console.log('data: ', data);
     console.log('role: ', role);
-
-
   }
 
 

@@ -20,4 +20,4 @@ import { SharedModule } from 'src/app/shared.module';
   ],
   declarations: [UsersPage]
 })
-export class UsersPageModule {}
+export class UsersPageModule { }

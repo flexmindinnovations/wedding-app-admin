@@ -43,8 +43,8 @@
     },
     {
         "id": 7,
-        "title": "Cast",
-        "route": "cast",
+        "title": "Other",
+        "route": "Other",
         "isActive": false,
         "icon": "briefcase-outline"
     }

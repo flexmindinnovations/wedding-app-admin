@@ -10,10 +10,10 @@
   <label for="username">{{label}}
   </label>
   @if(isMultiline){
-  <textarea [title]="label" [name]="label" [id]="label" rows="3" class="p-2.5" [ngClass]="colorVarients"
-    [placeholder]="placeholder"></textarea>
+  <textarea [title]="label" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" rows="3"
+    class="p-2.5" [ngClass]="colorVarients" [placeholder]="placeholder"></textarea>
   } @else {
-  <input [type]="type" [name]="label" [id]="label" class="p-2.5" [ngClass]="colorVarients" [placeholder]="placeholder"
-    [required]="isRequired">
+  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" class="p-2.5"
+    [ngClass]="colorVarients" [placeholder]="placeholder" [required]="isRequired">
   }
 </div>

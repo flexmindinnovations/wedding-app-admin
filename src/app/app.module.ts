@@ -13,7 +13,12 @@ import { TitleCasePipe } from '@angular/common';
   declarations: [
     // AppComponent,
   ],
-  imports: [BrowserModule, IonicModule.forRoot(), SharedModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    SharedModule,
+    AppRoutingModule,
+  ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, TitleCasePipe],
   bootstrap: [AppComponent],
 })

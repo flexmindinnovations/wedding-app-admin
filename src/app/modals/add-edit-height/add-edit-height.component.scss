@@ -1,0 +1,12 @@
+:host(app-search-modal) {
+    @apply p-3 dark:bg-gray-400
+}
+
+.add-edit-master-modal {}
+
+::ng-deep ion-modal.add-edit-master-modal::part(content) {
+    height: 300px;
+    width: 300px;
+
+    @apply rounded-md
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
@@ -7,7 +7,7 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
   templateUrl: './add-edit-user.page.html',
   styleUrls: ['./add-edit-user.page.scss'],
 })
-export class AddEditUserPage implements OnInit {
+export class AddEditUserPage implements OnInit, OnDestroy {
   personalDetailsFormGroup!: FormGroup;
   contactDetailsFormGroup !: FormGroup;
   completedStep!: FormStep;
@@ -67,5 +67,7 @@ export class AddEditUserPage implements OnInit {
       }
     }
   }
+
+  ngOnDestroy(): void { }
 
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
@@ -9,7 +9,7 @@ import { COLOR_SCHEME, stepperThemeVariables } from 'src/util/util';
   templateUrl: './form-stepper.component.html',
   styleUrls: ['./form-stepper.component.scss'],
 })
-export class FormStepperComponent implements OnInit, OnChanges {
+export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() completedStepInfo: FormStep | any;
   colorScheme: any = COLOR_SCHEME;
@@ -72,4 +72,7 @@ export class FormStepperComponent implements OnInit, OnChanges {
     this.colorVarients = stepperThemeVariables[this.colorScheme];
   }
 
+  ngOnDestroy(): void {
+      this.registrationSteps = [];
+  }
 }

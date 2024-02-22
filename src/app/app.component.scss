@@ -117,10 +117,3 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
-
-:host {
-  ion-menu {
-  --side-min-width: 0 !important;
-  --side-max-width: 0;
-  }
-}
