@@ -1,10 +1,10 @@
 <div class="sidebar-container flex flex-col min-h-screen">
-  <header class="ion-no-border min-h-20 dark:bg-gray-700 dark:text-white h-[10%] py-2 flex items-center justify-center">
+  <header class="ion-no-border min-h-24 dark:bg-gray-700 dark:text-white h-[10%] py-2 flex items-center justify-center">
     @if (isSidebarExpanded) {
-    <img class="w-3/4 min-h-12" src="/assets/icon/logo.png" alt="Logo" />
+    <img class="logo-image w-3/4 min-h-12" src="/assets/icon/logo.png" alt="Logo" />
     } @else {
-    <h1 class="logo flex items-center justify-center h-12 w-12 rounded-full shadow-lg select-none" [ngClass]="cssClass"
-      title="Susangam">S</h1>
+    <h1 class="logo logo-text flex items-center justify-center h-12 w-12 rounded-full shadow-lg select-none"
+      [ngClass]="cssClass" title="Susangam">S</h1>
     }
 
   </header>

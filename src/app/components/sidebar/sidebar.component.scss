@@ -12,9 +12,14 @@
 }
 
 .show {
+    // display: block;
+    animation: showAnimator .6s ease-in-out;
     display: block;
-    /* animation: showAnimator 0.3s ease-in-out; */
-    transition: all 0.3s ease-in-out;
+}
+
+.logo-image, .logo-text {
+    animation: showAnimator .8s ease-in-out;
+    display: flex;
 }
 
 @keyframes showAnimator {
@@ -23,11 +28,11 @@
     }
 
     25% {
-        opacity: 0.25;
+        opacity: 0;
     }
 
     50% {
-        opacity: 0.5;
+        opacity: 0;
     }
 
     75% {
