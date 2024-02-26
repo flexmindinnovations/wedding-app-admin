@@ -18,6 +18,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() cssClasses: any;
   @Input() options: any[] = [];
+  @Input() isMultiSelect: boolean = false;
   value: any;
   buttonId = 'dropdownSearchButton';
   menuId: any = 'dropdownMenuEl';
@@ -30,6 +31,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
   dropdownIcon = 'chevron-down-outline';
+  dropdown: any;
 
   dropdownOptions: any = {
     placement: 'bottom',
@@ -45,7 +47,6 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
       console.log('dropdown has been shown');
     },
     onToggle: () => {
-      console.log('dropdown has been toggled');
       this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
     },
   }
@@ -106,9 +107,9 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
     const targetEl = document.getElementById(this.menuId);
     const triggerEl = document.getElementById(this.buttonId);
     setTimeout(() => {
-      const dropdown = new Dropdown(targetEl, triggerEl, this.dropdownOptions, this.instanceOptions);
-      if (this.isVisible) dropdown.hide();
-      else dropdown.show();
+      this.dropdown = new Dropdown(targetEl, triggerEl, this.dropdownOptions, this.instanceOptions);
+      if (this.isVisible) this.dropdown.hide();
+      else this.dropdown.show();
       this.menuWidth = this.triggerButton.nativeElement.offsetWidth + 'px';
       const buttonOffset = this.triggerButton.nativeElement.offsetWidth;
       const menuEl: Element | any = document.querySelector(`#${this.menuId}`);
@@ -148,5 +149,12 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
       result.push(rotate_degree(transform));
     };
     return result;
+  }
+
+  onItemChange(event: any) {
+    this.writeValue(event);
+    this.dropdown.hide();
+    this.isVisible = !this.isVisible;
+    this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
   }
 }

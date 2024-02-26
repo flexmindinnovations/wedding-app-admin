@@ -15,6 +15,7 @@ export class BranchService {
     return this.http.get(`${this.endpoint}/GetBranchList`);
   }
 
+
   addNewBranch(payload: any): Observable<any> {
     return this.http.post(`${this.endpoint}/Post`, payload);
   }

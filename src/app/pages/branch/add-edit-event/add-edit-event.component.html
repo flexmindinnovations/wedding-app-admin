@@ -8,8 +8,8 @@
         <app-input label="Name" type="text" class="" [control]="formGroupControl['name']" formControlName="name"
           [required]="true" />
 
-        <app-dropdown label="Country" class="" [control]="formGroupControl['gender']" formControlName="country"
-          [options]="[]" />
+        <app-dropdown label="Country" class="" [control]="formGroupControl['country']" formControlName="country"
+          [options]="countryList" />
 
         <app-dropdown label="State" class="" [control]="formGroupControl['state']" formControlName="state"
           [options]="[]" />
