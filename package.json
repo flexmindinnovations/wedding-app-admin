@@ -33,6 +33,7 @@
     "ag-grid-angular": "^31.0.3",
     "flowbite": "^2.2.1",
     "ionicons": "^7.0.0",
+    "ng-http-loader": "^15.0.0",
     "ngx-quill": "^25.0.3",
     "quill": "^2.0.0-rc.2",
     "rxjs": "~7.8.0",

@@ -12,6 +12,9 @@
   </ion-split-pane>
 </ion-app> -->
 <ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar>
+<ng-http-loader [backdrop]="true" [backgroundColor]="loaderTheme" [debounceDelay]="20" [extraDuration]="100"
+  [minDuration]="300" [opacity]="'.7'" [backdropBackgroundColor]="'#000000'" [spinner]="spinkit.skThreeBounce">
+</ng-http-loader>
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

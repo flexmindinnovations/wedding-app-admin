@@ -4,6 +4,7 @@ import { NavigationStart, Router, RouterEvent } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SidebarItemsService } from './services/sidebar-items.service';
 import { COLOR_SCHEME } from 'src/util/util';
+import { Spinkit } from 'ng-http-loader';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -15,6 +16,8 @@ export class AppComponent implements OnInit {
   router = inject(Router);
   titleCasePipe = inject(TitleCasePipe);
   sidebarItemService = inject(SidebarItemsService);
+  public spinkit = Spinkit; 
+  loaderTheme = COLOR_SCHEME === 'br' ? '#1e9aff' : COLOR_SCHEME === 'bo' ? '#ff7f0a' : '#3d51e6';
 
   menuClassess = {
     collapsed: `delay-150 duration-300 ease-out md:!w-[8%] lg:!w-[5%] md:max-w-[25%] lg:max-w-[25%]`,

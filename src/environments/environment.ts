@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  endpoint: 'https://webapi.susangam.com/'
+  endpoint: 'https://webapi.susangam.com'
 };
 
 /*

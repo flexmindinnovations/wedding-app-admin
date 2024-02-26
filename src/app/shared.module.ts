@@ -24,6 +24,7 @@ import { ImagePickerComponent } from "./components/image-picker/image-picker.com
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { NgHttpLoaderModule } from "ng-http-loader";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
         ReactiveFormsModule,
         IonicModule,
         AgGridAngular,
-        LoadingBarHttpClientModule,
+        // LoadingBarHttpClientModule,
+        NgHttpLoaderModule.forRoot(),
         // for Router use:
         LoadingBarRouterModule,
         // for Core use:
@@ -77,7 +79,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
         ImagePickerComponent,
         SidebarComponent,
         HeaderComponent,
-        LoadingBarHttpClientModule,
+        // LoadingBarHttpClientModule,
         // for Router use:
         LoadingBarRouterModule,
         // for Core use:
