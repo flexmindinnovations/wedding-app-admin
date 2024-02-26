@@ -1,16 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { HttpConfigService } from './http-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchService {
   endpoint = environment.endpoint + '/api/Branch';
-  http = inject(HttpClient);
-
-  constructor() { }
+  http = inject(HttpConfigService);
 
   getBranchList(): Observable<any> {
     return this.http.get(`${this.endpoint}/GetBranchList`);
