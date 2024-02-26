@@ -25,6 +25,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height.component";
+import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell-status.component";
 
 @NgModule({
     declarations: [
@@ -46,7 +47,8 @@ import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height
         ImagePickerComponent,
         SidebarComponent,
         HeaderComponent,
-        AddEditHeightComponent
+        AddEditHeightComponent,
+        GridCellStatusComponent,
     ],
     imports: [
         CommonModule,
@@ -87,7 +89,8 @@ import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height
         LoadingBarRouterModule,
         // for Core use:
         LoadingBarModule,
-        AddEditHeightComponent
+        AddEditHeightComponent,
+        GridCellStatusComponent,
     ],
     providers: []
 })
