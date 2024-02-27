@@ -9,14 +9,18 @@ import { HttpConfigService } from './http-config.service';
 })
 export class SharedService {
 
-  endpoint = environment.endpoint + 'api';
+  endpoint = environment.endpoint + '/api';
   http = inject(HttpConfigService);
 
   getCountryList(): Observable<IBranch[]> {
     return this.http.get(`${this.endpoint}/Country/GetCountries`);
   }
-  getCityByState(): Observable<any> {
-    return this.http.get(`${this.endpoint}/City/getCityList?stateId=1`)
+  getStatByCountry(countryId: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/State/getStateList?countyId=${countryId}`)
+  }
+
+  getCityByState(stateId: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/City/getCityList?stateId=${stateId}`)
   }
 
 }
