@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddEditBranchPageRoutingModule } from './add-edit-branch-routing.module';
+import { MasterPageRoutingModule } from './master-routing.module';
 
-import { AddEditBranchPage } from './add-edit-branch.page';
+import { MasterPage } from './master.page';
 import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
@@ -14,9 +14,9 @@ import { SharedModule } from 'src/app/shared.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddEditBranchPageRoutingModule,
+    MasterPageRoutingModule,
     SharedModule
   ],
-  declarations: [AddEditBranchPage]
+  declarations: [MasterPage]
 })
-export class AddEditBranchPageModule { }
+export class MasterPageModule { }

@@ -25,6 +25,8 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NgHttpLoaderModule } from "ng-http-loader";
+import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height.component";
+import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell-status.component";
 
 @NgModule({
     declarations: [
@@ -45,10 +47,14 @@ import { NgHttpLoaderModule } from "ng-http-loader";
         FormStepperComponent,
         ImagePickerComponent,
         SidebarComponent,
-        HeaderComponent
+        HeaderComponent,
+        AddEditHeightComponent,
+        GridCellStatusComponent,
     ],
     imports: [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
@@ -75,6 +81,7 @@ import { NgHttpLoaderModule } from "ng-http-loader";
         // AgGridModule,
         GridButtonsComponent,
         DataGridComponent,
+        InputComponent,
         FormStepperComponent,
         ImagePickerComponent,
         SidebarComponent,
@@ -83,7 +90,9 @@ import { NgHttpLoaderModule } from "ng-http-loader";
         // for Router use:
         LoadingBarRouterModule,
         // for Core use:
-        LoadingBarModule
+        LoadingBarModule,
+        AddEditHeightComponent,
+        GridCellStatusComponent,
     ],
     providers: []
 })

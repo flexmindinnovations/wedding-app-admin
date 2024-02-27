@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AddEditBranchPage } from './add-edit-branch.page';
+import { MasterPage } from './master.page';
 
-describe('AddEditBranchPage', () => {
-  let component: AddEditBranchPage;
-  let fixture: ComponentFixture<AddEditBranchPage>;
+describe('MasterPage', () => {
+  let component: MasterPage;
+  let fixture: ComponentFixture<MasterPage>;
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(AddEditBranchPage);
+    fixture = TestBed.createComponent(MasterPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

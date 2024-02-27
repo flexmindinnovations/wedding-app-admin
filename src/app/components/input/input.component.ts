@@ -39,7 +39,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit(): void {
-    this.placeholder = this.placeholder ? this.placeholder : 'Enter ' + this.label;
+    this.placeholder = this.placeholder ? this.placeholder : this.label ? 'Enter ' + this.label : '';
   }
 
   setCurrentClass() {

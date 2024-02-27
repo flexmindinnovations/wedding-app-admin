@@ -7,13 +7,13 @@
     (ionBlur)="onTouched()" labelPlacement="floating" fill="outline" [required]="isRequired"/>
   } -->
 
-  <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{label}}
+  <label for="username">{{label}}
   </label>
   @if(isMultiline){
-  <textarea [title]="label" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" rows="3" class="p-2.5" [ngClass]="colorVarients"
-    [placeholder]="placeholder"></textarea>
+  <textarea [title]="label" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" rows="3"
+    class="p-2.5" [ngClass]="colorVarients" [placeholder]="placeholder"></textarea>
   } @else {
-  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" class="p-2.5" [ngClass]="colorVarients"
-  [placeholder]="placeholder" [required]="isRequired">
+  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" class="p-2.5"
+    [ngClass]="colorVarients" [placeholder]="placeholder" [required]="isRequired">
   }
 </div>

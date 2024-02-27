@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -13,10 +13,11 @@ import { SharedModule } from 'src/app/shared.module';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     SharedModule,
     UsersPageRoutingModule,
   ],
   declarations: [UsersPage]
 })
-export class UsersPageModule {}
+export class UsersPageModule { }

@@ -10,11 +10,11 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    loadChildren: () => import('./add-edit-user/add-edit-user.module').then( m => m.AddEditUserPageModule)
+    loadChildren: () => import('./add-edit-user/add-edit-user.module').then(m => m.AddEditUserPageModule)
   },
   {
     path: 'edit/:id',
-    loadChildren: () => import('./add-edit-user/add-edit-user.module').then( m => m.AddEditUserPageModule)
+    loadChildren: () => import('./add-edit-user/add-edit-user.module').then(m => m.AddEditUserPageModule)
   }
 
 ];
@@ -23,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class UsersPageRoutingModule {}
+export class UsersPageRoutingModule { }

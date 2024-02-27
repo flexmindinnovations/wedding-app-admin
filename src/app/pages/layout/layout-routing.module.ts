@@ -34,6 +34,11 @@ const routes: Routes = [
           import('../../pages/blog/blog.module').then(m => m.BlogPageModule)
       },
       {
+        path: 'Other',
+        loadChildren: () =>
+          import('../../pages/master/master.module').then(m => m.MasterPageModule)
+      },
+      {
         path: '**',
         loadChildren: () =>
           import('../../pages/not-found/not-found.module').then(m => m.NotFoundPageModule)

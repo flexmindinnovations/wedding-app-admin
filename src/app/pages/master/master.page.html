@@ -1,0 +1,28 @@
+<div class="users-content main ion-padding">
+  <div class="header">
+    <div class="static"></div>
+    <!-- <div class="action">
+      <mt-button [title]="'Add Height'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
+    </div> -->
+  </div>
+  <div class="data-grid grid grid-cols-2 gap-3">
+    <div class="data-grid flex flex-col gap-3">
+      <div class="action justify-end">
+        <mt-button [title]="'Add Height'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
+      </div>
+      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
+    </div>
+    <div class="data-grid flex flex-col gap-3">
+      <div class="action">
+        <mt-button [title]="'Education'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
+      </div>
+      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
+    </div>
+    <div class="data-grid flex flex-col gap-3">
+      <div class="action">
+        <mt-button [title]="'Specialization'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
+      </div>
+      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
+    </div>
+  </div>
+</div>

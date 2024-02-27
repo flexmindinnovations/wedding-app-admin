@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AddEditBranchPage } from './add-edit-branch.page';
+import { AddEditBranchComponent } from './add-edit-event.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddEditBranchPage
+    component: AddEditBranchComponent
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AddEditBranchPageRoutingModule {}
+export class AddEditBranchPageRoutingModule { }

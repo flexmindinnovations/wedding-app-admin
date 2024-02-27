@@ -2,7 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
 import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-buttons.component';
+import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { GridActions } from 'src/app/enums/grid-actions';
+import { IBranch } from 'src/app/interfaces/IBranch';
+import { BranchService } from 'src/app/services/branch.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 @Component({
   selector: 'app-branch',
@@ -12,22 +15,30 @@ import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 export class BranchPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
+  branchService = inject(BranchService);
 
-  rowData = [
-    { id: 1, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 2, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 3, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 4, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" }
-  ];
+  rowData: IBranch[] = [];
 
   // Column Definitions: Defines & controls grid columns.
+
   colDefs: ColDef[] = [
-    { field: "id", width: 60 },
-    { field: "title" },
-    { field: "date" },
-    { field: "country" },
-    { field: "state" },
-    { field: "city" },
+    { field: "branchId" },
+    { field: "branchName" },
+    { field: "countryId" },
+    { field: "stateId" },
+    { field: "cityId" },
+    { field: "cityName" },
+    { field: "countryName" },
+    { field: "stateName" },
+    { field: "branchImagePath" },
+    {
+      field: "isActive",
+      cellRenderer: 'agGroupCellRenderer',
+      cellRendererParams: {
+        innerRenderer: GridCellStatusComponent,
+      } as IGroupCellRendererParams
+    },
+
     {
       field: "action",
       cellRenderer: 'agGroupCellRenderer',
@@ -37,8 +48,41 @@ export class BranchPage implements OnInit {
       } as IGroupCellRendererParams
     },
   ];
+  // colDefs: ColDef[] = [
+  //   { field: "branchId", width: 60 },
+  //   { field: "branchName" },
+  //   // { field: "date" },
+  //   { field: "" },
+  //   { field: "state" },
+  //   { field: "city" },
+  //   {
+  //     field: "action",
+  //     cellRenderer: 'agGroupCellRenderer',
+  //     cellRendererParams: {
+  //       innerRenderer: GridButtonsComponent,
+  //       onClick: this.handleGridActionButtonClick.bind(this)
+  //     } as IGroupCellRendererParams
+  //   },
+  // ];
 
   ngOnInit() {
+    this.getBranchList();
+  }
+
+  getBranchList(): void {
+    this.branchService.getBranchList().subscribe({
+      next: (data: IBranch[]) => {
+        // let datum = data.map(e=>)
+        console.log(data[0])
+        this.rowData = data;
+
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
+
   }
 
   handleClick() {

@@ -45,13 +45,13 @@ export const inputThemeVariables: any = {
 
 export const dropdownThemeVariables: any = {
     red: `
-    text-gray-900 bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800
     `,
     bo: `
-    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-4 focus:outline-none focus:ring-bo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-bo-600 dark:hover:bg-bo-500 dark:focus:ring-bo-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-bo-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-bo-600 dark:hover:bg-bo-500 dark:focus:ring-bo-800
     `,
     br: `
-    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-4 focus:outline-none focus:ring-br-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-br-600 dark:hover:bg-br-500 dark:focus:ring-br-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-br-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-br-600 dark:hover:bg-br-500 dark:focus:ring-br-800
     `
 }
 
