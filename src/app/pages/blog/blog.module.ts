@@ -8,8 +8,6 @@ import { BlogPageRoutingModule } from './blog-routing.module';
 
 import { BlogPage } from './blog.page';
 import { QuillModule } from 'ngx-quill';
-import { InputComponent } from 'src/app/components/input/input.component';
-import { ButtonComponent } from 'src/app/components/button/button.component';
 import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({

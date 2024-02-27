@@ -1,0 +1,24 @@
+<div class="main ion-padding flex flex-col">
+  <div class="stepper border-b border-b-gray-100">
+      <form-stepper [completedStepInfo]="completedStep" class="w-full"></form-stepper>
+  </div>
+  <div class="forms-container flex-grow h-full overflow-auto">
+      @switch (currentForm) {
+      @case (1) {
+      <personal-info (personalInfoData)="handleClickOnNext($event)"></personal-info>
+      }
+      @case (2) {
+      <family-info [completedStep]="completedStep" (familyInfoData)="handleClickOnNext($event)"></family-info>
+      }
+      @case (3) {
+      <contact-info [completedStep]="completedStep" (contactInfoData)="handleClickOnNext($event)"></contact-info>
+      }
+      @case (4) {
+      <other-info [completedStep]="completedStep" (otherInfoData)="handleClickOnNext($event)"></other-info>
+      }
+      @case (5) {
+      <photos [completedStep]="completedStep" (photosData)="handleClickOnNext($event)"></photos>
+      }
+      }
+  </div>
+</div>

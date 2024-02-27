@@ -14,9 +14,9 @@ const routes: Routes = [
           import('../../pages/dashboard/dashboard.module').then(m => m.DashboardPageModule)
       },
       {
-        path: 'users',
+        path: 'customers',
         loadChildren: () =>
-          import('../../pages/users/users.module').then(m => m.UsersPageModule)
+          import('../../pages/customers/customers.module').then(m => m.CustomersPageModule)
       },
       {
         path: 'events',

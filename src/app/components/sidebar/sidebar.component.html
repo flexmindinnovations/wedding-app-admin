@@ -13,12 +13,12 @@
       @for (item of sidebarItems; track item.id) {
       <li (click)="handleSidebarItemClick(item)" class="cursor-pointer px-3 mb-2">
         <div
-          class="item-container dark:hover:bg-gray-800 dark:hover:text-white rounded-lg flex items-center gap-1 md:gap-2 lg:gap-3 h-12"
+          class="item-container dark:hover:bg-gray-800 dark:hover:text-white rounded-lg flex items-center gap-1 md:gap-1.5 lg:gap-1.5 h-12"
           [ngClass]="[item.isActive ? cssClass : '']">
-          <div class="icon flex items-center justify-center w-full max-w-[4.5rem] min-w-[3rem]">
+          <div class="icon flex items-center justify-center w-full max-w-[4.5rem] min-w-[2.5rem]">
             <ion-icon class="sm:text-sm md:text-lg lg:text-2xl" [name]="item.icon"></ion-icon>
           </div>
-          <p class="m-0 text-sm md:text-base lg:text-base toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">
+          <p class="m-0 text-sm md:text-sm lg:text-sm toggle-item" [ngClass]="showTitles ? 'show' : 'hide'">
             {{item.title}}</p>
         </div>
       </li>

@@ -8,8 +8,8 @@
     },
     {
         "id": 2,
-        "title": "Users",
-        "route": "users",
+        "title": "Customers",
+        "route": "customers",
         "isActive": false,
         "icon": "people-outline"
     },

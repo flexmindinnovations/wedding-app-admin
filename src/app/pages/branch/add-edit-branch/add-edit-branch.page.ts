@@ -3,11 +3,11 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms'
 import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
-  selector: 'app-add-edit-event',
-  templateUrl: './add-edit-event.component.html',
-  styleUrls: ['./add-edit-event.component.scss'],
+  selector: 'app-add-edit-branch',
+  templateUrl: './add-edit-branch.page.html',
+  styleUrls: ['./add-edit-branch.page.scss'],
 })
-export class AddEditBranchComponent implements OnInit {
+export class AddEditBranchPage implements OnInit {
   sharedService = inject(SharedService)
   formGroup: any;
   countryList: any;
@@ -78,4 +78,5 @@ export class AddEditBranchComponent implements OnInit {
       }
     })
   }
+
 }

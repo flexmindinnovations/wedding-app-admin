@@ -4,18 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { BranchPageRoutingModule } from './branch-routing.module';
+import { CustomersPageRoutingModule } from './customers-routing.module';
 
-import { BranchPage } from './branch.page';
+import { CustomersPage } from './customers.page';
 import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     IonicModule,
-    BranchPageRoutingModule,
+    CustomersPageRoutingModule,
     SharedModule
   ],
-  declarations: [BranchPage]
+  declarations: [CustomersPage]
 })
-export class BranchPageModule { }
+export class CustomersPageModule {}
