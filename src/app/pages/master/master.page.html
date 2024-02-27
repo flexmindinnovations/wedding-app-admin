@@ -1,28 +1,15 @@
-<div class="users-content main ion-padding">
-  <div class="header">
-    <div class="static"></div>
-    <!-- <div class="action">
-      <mt-button [title]="'Add Height'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
-    </div> -->
-  </div>
-  <div class="data-grid grid grid-cols-2 gap-3">
-    <div class="data-grid flex flex-col gap-3">
-      <div class="action justify-end">
-        <mt-button [title]="'Add Height'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
-      </div>
-      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
-    </div>
-    <div class="data-grid flex flex-col gap-3">
-      <div class="action">
-        <mt-button [title]="'Education'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
-      </div>
-      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
-    </div>
-    <div class="data-grid flex flex-col gap-3">
-      <div class="action">
-        <mt-button [title]="'Specialization'" [icon]="'add-outline'" (action)="handleClick($event)"></mt-button>
-      </div>
-      <app-data-grid [rowDefs]="rowData" [colomnDefs]="colDefs" />
-    </div>
-  </div>
+<div class="users-content main ion-padding grid grid-cols-2 gap-y-6 gap-x-5">
+
+  <master-data [title]="'Role'" (gridAction)="handleGridAddAction($event)" [rowData]="roleMasterRowData"
+    [columnDefs]="roleMasterColumnDefs" />
+
+  <master-data [title]="'Height'" (gridAction)="handleGridAddAction($event)" [rowData]="heightMasterRowData"
+    [columnDefs]="heightMasterColumnDefs" />
+
+  <master-data [title]="'Education'" (gridAction)="handleGridAddAction($event)" [rowData]="heightMasterRowData"
+    [columnDefs]="heightMasterColumnDefs" />
+
+  <master-data [title]="'Specialization'" (gridAction)="handleGridAddAction($event)" [rowData]="heightMasterRowData"
+    [columnDefs]="heightMasterColumnDefs" />
+
 </div>

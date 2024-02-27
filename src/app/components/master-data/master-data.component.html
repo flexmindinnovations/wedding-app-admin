@@ -1,0 +1,6 @@
+<div class="data-grid flex flex-col gap-3">
+  <div class="action flex items-center justify-end">
+    <mt-button [title]="gridTitle" [icon]="'add-outline'" [size]="'sm'" (action)="handleActionClick($event)"></mt-button>
+  </div>
+  <app-data-grid [rowDefs]="rowData" [columnDefs]="columnDefs" />
+</div>

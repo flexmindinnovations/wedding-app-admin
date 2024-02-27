@@ -17,8 +17,8 @@ export class LayoutComponent implements OnInit {
   sidebarItemService = inject(SidebarItemsService);
 
   menuClassess = {
-    collapsed: `delay-150 duration-300 ease-out md:!w-[8%] lg:!w-[5%] md:max-w-[25%] lg:max-w-[25%]`,
-    expanded: `delay-150 duration-300 ease-out md:w-[20%] lg:w-[15%] md:max-w-[25%] lg:max-w-[25%]`
+    collapsed: `delay-150 duration-300 ease-out md:!w-[8%] md:!min-w-[8%] lg:!min-w-[5%] lg:!w-[5%] md:max-w-[25%] lg:max-w-[25%]`,
+    expanded: `delay-150 duration-300 ease-out md:w-[20%] md:!min-w-[20%] lg:!min-w-[15%] lg:w-[15%] md:max-w-[25%] lg:max-w-[25%]`
   }
 
   constructor() { }

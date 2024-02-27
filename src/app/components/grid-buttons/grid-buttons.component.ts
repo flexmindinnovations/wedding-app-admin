@@ -25,8 +25,9 @@ export class GridButtonsComponent implements OnInit, ICellRendererAngularComp {
   onClick(src: number) {
     if (this.params.onClick instanceof Function) {
       const rowData = this.params?.node?.data;
-      const params = { rowData, src }
-      this.params.onClick(params);
+      const gridId = this.params?.column?.colId;
+      const props = { rowData, src, gridId };
+      this.params.onClick(props);
     }
   }
 }

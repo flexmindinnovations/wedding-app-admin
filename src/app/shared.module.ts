@@ -27,6 +27,8 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NgHttpLoaderModule } from "ng-http-loader";
 import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height.component";
 import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell-status.component";
+import { MasterDataComponent } from "./components/master-data/master-data.component";
+import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.component";
 
 @NgModule({
     declarations: [
@@ -50,6 +52,8 @@ import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell
         HeaderComponent,
         AddEditHeightComponent,
         GridCellStatusComponent,
+        MasterDataComponent,
+        AddEditRoleComponent
     ],
     imports: [
         CommonModule,
@@ -93,6 +97,8 @@ import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell
         LoadingBarModule,
         AddEditHeightComponent,
         GridCellStatusComponent,
+        MasterDataComponent,
+        AddEditRoleComponent
     ],
     providers: []
 })

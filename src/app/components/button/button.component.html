@@ -1,5 +1,5 @@
 <button type="button" class="!m-0" [disabled]="isDisabled" [ngClass]="colorVarients" (click)="handleButtonClick()">
-  <div class="flex items-center justify-center gap-2 min-w-14" [ngClass]="iconSlot === 'start' ? 'flex-row' : 'flex-row-reverse'">
+  <div class="flex items-center justify-center gap-1 min-w-14" [ngClass]="iconSlot === 'start' ? 'flex-row' : 'flex-row-reverse'">
     @if (!textOnly) {
       <ion-icon slot="end" class="text-base" [name]="icon"></ion-icon>
     }
