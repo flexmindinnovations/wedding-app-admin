@@ -7,6 +7,7 @@ import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
 import { ModalController } from '@ionic/angular';
 import { AddEditHeightComponent } from 'src/app/modals/add-edit-height/add-edit-height.component';
 import { AddEditRoleComponent } from 'src/app/modals/add-edit-role/add-edit-role.component';
+import { AddEditEducationComponent } from 'src/app/modals/add-edit-education/add-edit-education.component';
 
 @Component({
   selector: 'app-master',
@@ -96,11 +97,34 @@ export class MasterPage implements OnInit {
       case 'height':
         this.openAddEditHeightModal();
         break;
+      case 'education':
+        this.openAddEditEducationModal();
+        break;
     }
   }
 
+  async handleGridActionButtonClick(event: any) {
+    console.log('event: ', event);
+    const modelType = event?.gridId?.toLowerCase();
+    switch (modelType) {
+      case 'role':
+        this.openAddEditRoleModal(event);
+        break;
+      case 'height':
+        this.openAddEditHeightModal(event);
+        break;
+      case 'education':
+        this.openAddEditEducationModal(event);
+        break;
+    }
+  }
+
+  ngOnDestroy(): void { }
+
+
+  /** Modals handling */
+
   async openAddEditRoleModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
 
     let isEditMode = false;
@@ -115,7 +139,7 @@ export class MasterPage implements OnInit {
           data: event
         }
       },
-      cssClass: 'add-edit-roles-modal'
+      cssClass: 'roles-modal'
     });
     await modal.present();
 
@@ -136,29 +160,42 @@ export class MasterPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
-      cssClass: 'search-modal'
+      cssClass: 'height-modal'
     });
     console.log('>>>>> modal : ', modal);
-    modal.present();
+    await modal.present();
 
     const { data, role } = await modal.onWillDismiss();
     console.log('data: ', data);
     console.log('role: ', role);
   }
 
-  async handleGridActionButtonClick(event: any) {
-    console.log('event: ', event);
-    const modelType = event?.gridId?.toLowerCase();
-    switch (modelType) {
-      case 'role':
-        this.openAddEditRoleModal(event);
-        break;
-      case 'height':
-        this.openAddEditHeightModal(event);
-        break;
-    }
-  }
+  async openAddEditEducationModal(event?: any) {
+    console.log('data: ', event);
+    this.canShowModal = true;
 
-  ngOnDestroy(): void { }
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    console.log('isEditMode: ', isEditMode);
+
+    const modal = await this.modalCtrl.create({
+      component: AddEditEducationComponent,
+      cssClass: 'education-modal',
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Course',
+          data: event
+        }
+      }
+    });
+    console.log('>>>>> modal : ', modal);
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log('data: ', data);
+    console.log('role: ', role);
+  }
 
 }

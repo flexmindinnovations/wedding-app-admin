@@ -2,73 +2,81 @@
     {
         "id": 1,
         "module": "Customers",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 2,
         "module": "Branch",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 3,
         "module": "Events",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 4,
         "module": "Blogs",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 5,
         "module": "Roles",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 6,
         "module": "Height",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 7,
         "module": "Education",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     },
     {
         "id": 8,
         "module": "Specialization",
+        "enabled": false,
         "actions": [
-            "Can Add",
-            "Can Edit",
-            "Can Delete"
+            {"action": "Can Add", "enabled": false},
+            {"action": "Can Edit", "enabled": false},
+            {"action": "Can Delete", "enabled": false}
         ]
     }
 ]

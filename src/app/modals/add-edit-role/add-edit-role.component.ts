@@ -29,7 +29,6 @@ export class AddEditRoleComponent implements OnInit {
 
   getRoleAccessData() {
     this.accessRolesDataService.getRoleAccessData().subscribe((data: any) => {
-      console.log('data getRoleAccessData: ', data);
       this.accessRoleData = data;
     })
   }
@@ -52,11 +51,23 @@ export class AddEditRoleComponent implements OnInit {
   }
 
   handleButtonClick(event: any) {
-    console.log('event: ', event);
-    if(event?.isCancel) {
+    if (event?.isCancel) {
       this.modalControllerService.dismiss();
     }
 
+  }
+
+  handleParentStateChange(event: any, item: any) {
+    const value = event?.currentTarget.checked;
+    this.accessRoleData.forEach((role) => role.enabled = false);
+    item.enabled = value;
+    item.actions.forEach((action: any) => action.enabled = value);
+  }
+
+  handleChildStateChange(event: any, item: any) {
+    const value = event?.currentTarget.checked;
+    item.enabled = value;
+    // console.log('accessRoleData: ', this.accessRoleData);
   }
 
 }

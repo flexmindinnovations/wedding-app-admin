@@ -29,6 +29,7 @@ import { AddEditHeightComponent } from "./modals/add-edit-height/add-edit-height
 import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell-status.component";
 import { MasterDataComponent } from "./components/master-data/master-data.component";
 import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.component";
+import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.compo
         AddEditHeightComponent,
         GridCellStatusComponent,
         MasterDataComponent,
-        AddEditRoleComponent
+        AddEditRoleComponent,
+        AddEditEducationComponent
     ],
     imports: [
         CommonModule,
@@ -98,7 +100,8 @@ import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.compo
         AddEditHeightComponent,
         GridCellStatusComponent,
         MasterDataComponent,
-        AddEditRoleComponent
+        AddEditRoleComponent,
+        AddEditEducationComponent
     ],
     providers: []
 })

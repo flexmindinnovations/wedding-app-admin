@@ -1,7 +1,8 @@
-::ng-deep .add-edit-roles-modal::part(content) {
+::ng-deep .roles-modal::part(content) {
     min-width: 50%;
     min-height: 60%;
     height: auto;
+    border-radius: 6px;
 }
 
 ::ng-deep [type='checkbox']:focus, [type='radio']:focus {
@@ -13,7 +14,7 @@
     /* --tw-ring-color: #1C64F2; */
 }
 
-.add-edit-role {
+.roles-modal {
 
     .body {
 

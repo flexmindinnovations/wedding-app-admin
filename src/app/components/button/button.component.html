@@ -5,6 +5,8 @@
     @if (!textOnly) {
     <ion-icon slot="end" class="text-base" [name]="icon"></ion-icon>
     }
+    @if (!iconOnly) {
     <p class="m-0 text-sm">{{title}}</p>
+    }
   </div>
 </button>
