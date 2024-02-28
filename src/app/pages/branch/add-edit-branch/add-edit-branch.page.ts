@@ -14,9 +14,9 @@ export class AddEditBranchPage implements OnInit {
   stateList: any;
   cityList: any;
   isActive: boolean = true;
+  inActive: boolean = false;
   colorScheme: any = COLOR_SCHEME;
-  colorVarients: any;
-  @Input() size: 'sm' | 'md' | 'lg' = 'lg';
+  cssClass: any;
 
   constructor(
     private fb: FormBuilder
@@ -30,9 +30,8 @@ export class AddEditBranchPage implements OnInit {
   }
 
   setCurrentClass() {
-    const colorScheme = localStorage.getItem('color-scheme');
-    this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
-    this.colorVarients = buttonThemeVariables[this.colorScheme][this.size];
+    this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
+    this.cssClass = themeVariables[this.colorScheme];
   }
 
   initFormGroup() {
@@ -74,6 +73,7 @@ export class AddEditBranchPage implements OnInit {
 
   toggleActive() {
     this.isActive = !this.isActive;
+    this.inActive = !this.inActive;
   }
 
   getCountryList() {
