@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
 import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-buttons.component';
+import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { GridActions } from 'src/app/enums/grid-actions';
 import { IBranch } from 'src/app/interfaces/IBranch';
@@ -30,7 +31,13 @@ export class BranchPage implements OnInit {
     { field: "cityName" },
     { field: "countryName" },
     { field: "stateName" },
-    { field: "branchImagePath" },
+    {
+      field: "branchImagePath",
+      cellRenderer: 'agGroupCellRenderer',
+      cellRendererParams: {
+        innerRenderer: GridCellImageComponent,
+      } as IGroupCellRendererParams
+    },
     {
       field: "isActive",
       cellRenderer: 'agGroupCellRenderer',
@@ -73,7 +80,7 @@ export class BranchPage implements OnInit {
     this.branchService.getBranchList().subscribe({
       next: (data: IBranch[]) => {
         // let datum = data.map(e=>)
-        console.log(data)
+        // console.log(data)
         this.rowData = data;
 
       },

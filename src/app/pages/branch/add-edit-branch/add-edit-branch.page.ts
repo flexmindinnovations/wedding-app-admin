@@ -1,5 +1,7 @@
+import { state } from '@angular/animations';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
+import { BranchService } from 'src/app/services/branch/branch.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/util';
 @Component({
@@ -9,14 +11,15 @@ import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/uti
 })
 export class AddEditBranchPage implements OnInit {
   sharedService = inject(SharedService)
+  branchService = inject(BranchService)
   formGroup: any;
   countryList: any;
   stateList: any;
   cityList: any;
   isActive: boolean = true;
-  inActive: boolean = false;
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
+  selectedImage: any;
 
   constructor(
     private fb: FormBuilder
@@ -36,11 +39,11 @@ export class AddEditBranchPage implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      isActive: [false, Validators.required],
-      name: ['', [Validators.required]],
-      country: ['', [Validators.required]],
-      city: ['', [Validators.required]],
-      state: ['', [Validators.required]],
+      isActive: !['', Validators.required],
+      branchName: ['', [Validators.required]],
+      countryId: ['', [Validators.required]],
+      cityId: ['', [Validators.required]],
+      stateId: ['', [Validators.required]],
       // order: ['', [Validators.required]],
     })
 
@@ -54,10 +57,10 @@ export class AddEditBranchPage implements OnInit {
   onSelectionChange(event: any, src: string) {
     console.log('event onSelectionChange: ', event);
     switch (src) {
-      case 'country':
+      case 'countryId':
         this.getStateByCountry(event?.id);
         break;
-      case 'state':
+      case 'stateId':
         this.getCityByState(event?.id);
         break;
     }
@@ -67,13 +70,31 @@ export class AddEditBranchPage implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
-  handleClickOnNext(src: string) {
-    throw new Error('Method not implemented.');
+  handleSelectedImage(event: any) {
+    this.selectedImage = event?.file;
+  }
+
+  handleSubmitClick() {
+    let formVal = this.formGroup.value;
+    formVal = { ...formVal, isActive: this.isActive, branchImagePath: '' }
+    console.log('formVal: ', JSON.stringify(formVal));
+    const formData = new FormData();
+    formData.append('branchModel', JSON.stringify(formVal));
+    formData.append('file', this.selectedImage, this.selectedImage.name);
+    console.log(this.selectedImage);
+    this.branchService.addBranch(formData).subscribe({
+      next: (data: any) => {
+        console.log('branch added success', data)
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
   }
 
   toggleActive() {
     this.isActive = !this.isActive;
-    this.inActive = !this.inActive;
   }
 
   getCountryList() {
@@ -96,41 +117,47 @@ export class AddEditBranchPage implements OnInit {
     })
   }
   getStateByCountry(countryId: number) {
-    this.sharedService.getStatByCountry(countryId).subscribe({
-      next: (data: any[]) => {
-        this.stateList = data.map((item: any) => {
-          const obj = {
-            id: item?.stateId,
-            title: item?.stateName
-          }
-          return obj;
-        });
-        console.log(data)
+    if (countryId) {
+      this.sharedService.getStatByCountry(countryId).subscribe({
+        next: (data: any[]) => {
+          this.stateList = data.map((item: any) => {
+            const obj = {
+              id: item?.stateId,
+              title: item?.stateName
+            }
+            return obj;
+          });
+          console.log(data)
 
-      },
-      error: (error) => {
-        console.log('error: ', error);
+        },
+        error: (error) => {
+          console.log('error: ', error);
 
-      }
-    })
+        }
+      })
+    }
+
   }
   getCityByState(stateId: number) {
-    this.sharedService.getCityByState(stateId).subscribe({
-      next: (data: any[]) => {
-        this.cityList = data.map((item: any) => {
-          const obj = {
-            id: item?.cityId,
-            title: item?.cityName
-          }
-          return obj;
-        });
+    if (stateId) {
+      this.sharedService.getCityByState(stateId).subscribe({
+        next: (data: any[]) => {
+          this.cityList = data.map((item: any) => {
+            const obj = {
+              id: item?.cityId,
+              title: item?.cityName
+            }
+            return obj;
+          });
 
-      },
-      error: (error) => {
-        console.log('error: ', error);
+        },
+        error: (error) => {
+          console.log('error: ', error);
 
-      }
-    })
+        }
+      })
+    }
   }
+
 
 }

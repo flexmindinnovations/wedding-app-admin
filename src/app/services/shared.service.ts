@@ -23,4 +23,5 @@ export class SharedService {
     return this.http.get(`${this.endpoint}/City/getCityListStateIdWise?stateId=${stateId}`)
   }
 
+
 }
