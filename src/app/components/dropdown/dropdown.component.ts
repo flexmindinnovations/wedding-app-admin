@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, Optional, Self, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, dropdownThemeVariables } from 'src/util/util';
 import { Dropdown } from 'flowbite';
@@ -19,6 +19,8 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   @Input() cssClasses: any;
   @Input() options: any[] = [];
   @Input() isMultiSelect: boolean = false;
+
+  @Output() onSelectionChange: EventEmitter<any> = new EventEmitter();
   value: any;
   buttonId = 'dropdownSearchButton';
   menuId: any = 'dropdownMenuEl';
@@ -44,7 +46,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
       this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
     },
     onShow: () => {
-      console.log('dropdown has been shown');
+      // console.log('dropdown has been shown');
     },
     onToggle: () => {
       this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
@@ -87,6 +89,8 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
 
   writeValue(obj: any): void {
     this.value = obj;
+    this.onSelectionChange.emit(obj);
+    this.onChange(obj?.id);
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;

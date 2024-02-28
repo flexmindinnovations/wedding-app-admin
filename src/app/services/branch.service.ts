@@ -8,7 +8,7 @@ import { IBranch } from '../interfaces/IBranch';
   providedIn: 'root'
 })
 export class BranchService {
-  endpoint = environment.endpoint + 'api/Branch';
+  endpoint = environment.endpoint + '/api/Branch';
   http = inject(HttpConfigService);
 
   getBranchList(): Observable<IBranch[]> {

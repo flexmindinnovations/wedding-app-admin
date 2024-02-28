@@ -73,7 +73,7 @@ export class BranchPage implements OnInit {
     this.branchService.getBranchList().subscribe({
       next: (data: IBranch[]) => {
         // let datum = data.map(e=>)
-        console.log(data[0])
+        console.log(data)
         this.rowData = data;
 
       },
