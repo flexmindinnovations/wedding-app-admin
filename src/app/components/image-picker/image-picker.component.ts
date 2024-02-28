@@ -10,7 +10,7 @@ export class ImagePickerComponent implements OnInit {
   @Input() label: string = '';
   @Input() id: string = '';
   @Input() showPreview: boolean = true;
-
+  @Input() src: string = '';
   imagePath: string = '';
   imgSrc: any;
 
@@ -30,6 +30,7 @@ export class ImagePickerComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imgSrc = reader.result;
+        this.src = this.src ? this.src : this.imgSrc;
         const params = { id: this.id, file }
         this.selectedImage.emit(params);
       }
