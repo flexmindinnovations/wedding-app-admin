@@ -22,7 +22,7 @@ export class SidebarComponent implements OnInit {
   // colorScheme = 'red';
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
-  nestedRoutes = ['users', 'branch', 'events', 'blog', '/users/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
+  nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', 'customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
 
   ngOnInit() {
     this.getSidebarItems();

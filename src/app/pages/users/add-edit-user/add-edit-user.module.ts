@@ -15,11 +15,11 @@ import { PhotosComponent } from 'src/app/components/registerartion-process/photo
 @NgModule({
   declarations: [
     AddEditUserPage,
-    PersonalInfoComponent,
-    FamilyInfoComponent,
-    ContactInfoComponent,
-    OtherInfoComponent,
-    PhotosComponent
+    // PersonalInfoComponent,
+    // FamilyInfoComponent,
+    // ContactInfoComponent,
+    // OtherInfoComponent,
+    // PhotosComponent
   ],
   imports: [
     CommonModule,

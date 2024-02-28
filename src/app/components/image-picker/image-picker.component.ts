@@ -19,7 +19,7 @@ export class ImagePickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.imagePath = this.imagePath ? this.imagePath : 'No File choosen';
+    this.imagePath = this.imagePath ? this.imagePath : 'No File chosen';
     this.imgSrc = this.imgSrc ? this.imgSrc : '/assets/image/image-placeholder.png';
   }
 

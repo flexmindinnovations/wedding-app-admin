@@ -11,7 +11,7 @@ import { ThemeService } from 'src/app/services/theme.service';
 export class DataGridComponent implements OnInit {
   @Input() columnDefs: ColDef[] = [];
   @Input() rowDefs: any[] = [];
-  @Input('height') gridHeight = '300';
+  @Input('height') gridHeight: any;
   themeName: any = 'ag-theme-quartz ag-data-grid';
   themeService = inject(ThemeService);
 
@@ -26,13 +26,16 @@ export class DataGridComponent implements OnInit {
       const toggleTheme = theme === 'dark' ? `ag-theme-quartz-${theme} ag-data-grid` : 'ag-theme-quartz ag-data-grid';
       this.themeName = toggleTheme;
     })
+  }
+
+  ngAfterViewInit() {
+    this.gridHeight = this.gridHeight ? `full-height` : 'fixed-height';
 
   }
 
 
   onGridReady(event: GridReadyEvent<any, any>) {
     // console.log('Grid Ready: ', event);
-    this.gridHeight = this.gridHeight ? `h-[${this.gridHeight}px]` : 'h-[300px]';
   }
 
 }

@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "module": "Customers",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 2,
+        "module": "Branch",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 3,
+        "module": "Events",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 4,
+        "module": "Blogs",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 5,
+        "module": "Roles",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 6,
+        "module": "Height",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 7,
+        "module": "Education",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    },
+    {
+        "id": 8,
+        "module": "Specialization",
+        "actions": [
+            "Can Add",
+            "Can Edit",
+            "Can Delete"
+        ]
+    }
+]

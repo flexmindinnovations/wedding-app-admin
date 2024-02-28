@@ -14,8 +14,10 @@ export class ButtonComponent implements OnInit {
   @Input('iconSlot') iconSlot: 'start' | 'end' = 'start';
   @Input('disabled') isDisabled = false;
   @Input() size: 'sm' | 'md' | 'lg' = 'lg';
+  @Input() isCancel: boolean = false;
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
+  cancelButtonStyle: any;
 
   @Output() action = new EventEmitter();
   constructor() { }
@@ -28,10 +30,11 @@ export class ButtonComponent implements OnInit {
     const colorScheme = localStorage.getItem('color-scheme');
     this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
     this.colorVarients = buttonThemeVariables[this.colorScheme][this.size];
+    this.cancelButtonStyle = `px-5 py-2.5 text-gray-700 rounded-md shadow-none hover:bg-gray-100 hover:text-gray-700 border border-gray-500`;
   }
 
 
   handleButtonClick() {
-    this.action.emit();
+    this.action.emit({ isCancel: this.isCancel });
   }
 }

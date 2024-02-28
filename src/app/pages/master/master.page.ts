@@ -109,14 +109,19 @@ export class MasterPage implements OnInit {
     }
     const modal = await this.modalCtrl.create({
       component: AddEditRoleComponent,
-      cssClass: 'add-edit-master-modal'
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Role',
+          data: event
+        }
+      },
+      cssClass: 'add-edit-roles-modal'
     });
-    console.log('>>>>> modal : ', modal);
-    modal.present();
+    await modal.present();
 
     const { data, role } = await modal.onWillDismiss();
-    console.log('data: ', data);
-    console.log('role: ', role);
+    // console.log('data: ', data);
+    // console.log('role: ', role);
   }
 
   async openAddEditHeightModal(event?: any) {
@@ -127,6 +132,8 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    console.log('isEditMode: ', isEditMode);
+
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
       cssClass: 'search-modal'

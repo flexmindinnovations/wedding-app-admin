@@ -1,24 +1,11 @@
-<div class="main ion-padding">
-  <div class="header">
-    <!-- <form [formGroup]="formGroup">
-  <div class="header">
-    <h1>Branch</h1>
-  </div>
-  <div class="fields grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-3">
-
-    <app-input label="name" type="text" class="flex-grow-1" [control]="formGroupControl['name']" formControlName="name"
-      [required]="true" />
-  </div>
-</form> -->
-
-    <div class="users-content main ion-padding">
-      <div class="header flex items-center justify-between px-3 min-h-16">
-        <div class="static"></div>
-        <div class="action">
-          <mt-button [title]="'Add Branch'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
-        </div>
-      </div>
-      <div class="data-grid">
-        <app-data-grid [rowDefs]="rowData" [columnDefs]="colDefs" />
-      </div>
+<div class="branch-content main ion-padding">
+  <div class="header page-header">
+    <div class="static"></div>
+    <div class="action">
+      <mt-button [title]="'Add Branch'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
     </div>
+  </div>
+  <div class="data-grid">
+    <app-data-grid [rowDefs]="rowData" [columnDefs]="colDefs" />
+  </div>
+</div>

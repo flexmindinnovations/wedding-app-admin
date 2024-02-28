@@ -45,7 +45,7 @@ export class CustomersPage implements OnInit {
   }
 
   handleClick() {
-    this.sidebarItemService.setCurrentPage('Add Cc');
+    this.sidebarItemService.setCurrentPage('Add Customer');
     this.router.navigateByUrl('customers/add');
   }
 
