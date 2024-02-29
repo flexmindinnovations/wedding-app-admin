@@ -11,7 +11,7 @@
     <span class="text-xs opacity-60 font-thin italic">{{imagePath}}</span>
   </div>
   @if (showPreview) {
-  <div class="preview h-36 w-[50%] rounded-md flex items-start justify-center gap-4 bg-gray-200">
+  <div class="preview h-36 max-w-36 w-[50%] rounded-md flex items-start justify-center gap-4 bg-gray-200">
     <img [src]="imgSrc" class="h-full rounded-md shadow-md min-w-32 w-full object-center" [alt]="label" />
   </div>
   }

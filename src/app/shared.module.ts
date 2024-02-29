@@ -3,7 +3,6 @@ import { ButtonComponent } from "./components/button/button.component";
 import { DarkModeComponent } from "./components/dark-mode/dark-mode.component";
 import { DropdownComponent } from "./components/dropdown/dropdown.component";
 import { HeaderComponent } from "./components/header/header.component";
-import { LayoutComponent } from "./components/layout-deprecated/layout.component";
 import { SearchComponent } from "./components/search/search.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { UserMenuComponent } from "./components/user-menu/user-menu.component";
@@ -30,12 +29,12 @@ import { GridCellStatusComponent } from "./components/grid-cell-status/grid-cell
 import { MasterDataComponent } from "./components/master-data/master-data.component";
 import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.component";
 import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
+import { AlertComponent } from "./components/alert/alert.component";
 
 @NgModule({
     declarations: [
         AppComponent,
         SidebarComponent,
-        LayoutComponent,
         HeaderComponent,
         ThemeDropdownComponent,
         UserMenuComponent,
@@ -55,7 +54,8 @@ import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-
         GridCellStatusComponent,
         MasterDataComponent,
         AddEditRoleComponent,
-        AddEditEducationComponent
+        AddEditEducationComponent,
+        AlertComponent
     ],
     imports: [
         CommonModule,
@@ -101,7 +101,8 @@ import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-
         GridCellStatusComponent,
         MasterDataComponent,
         AddEditRoleComponent,
-        AddEditEducationComponent
+        AddEditEducationComponent,
+        AlertComponent
     ],
     providers: []
 })

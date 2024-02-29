@@ -1,0 +1,18 @@
+.alert-container {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    right: -100%;
+    animation: sliderAnimation 0.5s forwards;
+    animation-delay: 0.5s;
+    
+}
+
+@keyframes sliderAnimation {
+    0% {
+        right: -100%;
+    }
+    100% {
+        right: 2%;
+    }
+}

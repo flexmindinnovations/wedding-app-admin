@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { AlertService } from './alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,12 +9,19 @@ import { Observable, catchError, throwError } from 'rxjs';
 export class HttpConfigService {
 
   http = inject(HttpClient);
+  alert = inject(AlertService);
 
   constructor() { }
 
   get(url: string, modelType?: any): Observable<any> {
-    return this.http.get(url, { headers: this.getHeaders({ isImage: false }) })
+    return this.http.get(url, { observe: 'events', reportProgress: true, })
       .pipe(
+        tap((data: any) => { }),
+        map((response) => {
+          if (response.type === 4) {
+            return response.body;
+          }
+        }),
         catchError((error) => {
           return throwError(() => error)
         })
@@ -21,8 +29,14 @@ export class HttpConfigService {
   }
 
   post(url: string, payload: any): Observable<any> {
-    return this.http.post(url, payload, { headers: this.getHeaders({ isImage: false }) })
+    return this.http.post(url, payload, { observe: 'events', reportProgress: true })
       .pipe(
+        tap((data: any) => { }),
+        map((response) => {
+          if (response.type === 4) {
+            return response.body;
+          }
+        }),
         catchError((error) => {
           return throwError(() => error)
         })
@@ -30,8 +44,14 @@ export class HttpConfigService {
   }
 
   put(url: string, payload: any): Observable<any> {
-    return this.http.put(url, payload, { headers: this.getHeaders({ isImage: false }) })
+    return this.http.put(url, payload, { observe: 'events', reportProgress: true })
       .pipe(
+        tap((data: any) => { }),
+        map((response) => {
+          if (response.type === 4) {
+            return response.body;
+          }
+        }),
         catchError((error) => {
           return throwError(() => error)
         })
@@ -39,8 +59,14 @@ export class HttpConfigService {
   }
 
   delete(url: string): Observable<any> {
-    return this.http.delete(url, { headers: this.getHeaders({ isImage: false }) })
+    return this.http.delete(url, { observe: 'events', reportProgress: true })
       .pipe(
+        tap((data: any) => { }),
+        map((response) => {
+          if (response.type === 4) {
+            return response.body;
+          }
+        }),
         catchError((error) => {
           return throwError(() => error)
         })
@@ -48,8 +74,14 @@ export class HttpConfigService {
   }
 
   postImage(url: string, payload: any): Observable<any> {
-    return this.http.post(url, payload, { headers: this.getHeaders({ isImage: true }) })
+    return this.http.post(url, payload, { observe: 'events', reportProgress: true })
       .pipe(
+        tap((data: any) => { }),
+        map((response) => {
+          if (response.type === 4) {
+            return response.body;
+          }
+        }),
         catchError((error) => {
           return throwError(() => error)
         })

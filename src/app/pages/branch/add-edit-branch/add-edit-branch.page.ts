@@ -1,6 +1,8 @@
 import { state } from '@angular/animations';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
+import { AlertType } from 'src/app/enums/alert-types';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { BranchService } from 'src/app/services/branch/branch.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/util';
@@ -10,8 +12,9 @@ import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/uti
   styleUrls: ['./add-edit-branch.page.scss'],
 })
 export class AddEditBranchPage implements OnInit {
-  sharedService = inject(SharedService)
-  branchService = inject(BranchService)
+  sharedService = inject(SharedService);
+  branchService = inject(BranchService);
+  alert = inject(AlertService);
   formGroup: any;
   countryList: any;
   stateList: any;
@@ -20,6 +23,10 @@ export class AddEditBranchPage implements OnInit {
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
   selectedImage: any;
+
+  countryId = undefined;
+  stateId = undefined;
+  cityId = undefined;
 
   constructor(
     private fb: FormBuilder
@@ -30,6 +37,7 @@ export class AddEditBranchPage implements OnInit {
     this.initFormGroup();
     this.getCountryList();
     this.setCurrentClass();
+    // this.alert.setAlertMessage('Data Saved Successfully', AlertType.success);
   }
 
   setCurrentClass() {
@@ -49,13 +57,12 @@ export class AddEditBranchPage implements OnInit {
 
     this.formGroup.valueChanges.subscribe((event: any) => {
       const val = event
-      console.log('form val: ', val);
+      // console.log('form val: ', val);
 
     })
   }
 
   onSelectionChange(event: any, src: string) {
-    console.log('event onSelectionChange: ', event);
     switch (src) {
       case 'countryId':
         this.getStateByCountry(event?.id);
@@ -77,18 +84,18 @@ export class AddEditBranchPage implements OnInit {
   handleSubmitClick() {
     let formVal = this.formGroup.value;
     formVal = { ...formVal, isActive: this.isActive, branchImagePath: '' }
-    console.log('formVal: ', JSON.stringify(formVal));
-    const formData = new FormData();
+    const formData: FormData = new FormData();
     formData.append('branchModel', JSON.stringify(formVal));
     formData.append('file', this.selectedImage, this.selectedImage.name);
-    console.log(this.selectedImage);
     this.branchService.addBranch(formData).subscribe({
       next: (data: any) => {
-        console.log('branch added success', data)
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+        }
       },
       error: (error) => {
         console.log('error: ', error);
-
+        this.alert.setAlertMessage(error?.message, AlertType.error);
       }
     })
   }
@@ -99,10 +106,8 @@ export class AddEditBranchPage implements OnInit {
 
   getCountryList() {
     this.sharedService.getCountryList().subscribe({
-      next: (data: any[]) => {
-        // console.log('data : ', data);
-
-        this.countryList = data.map((item: any) => {
+      next: (data: any) => {
+        this.countryList = data?.map((item: any) => {
           const obj = {
             id: item?.countryId,
             title: item?.countryName
@@ -120,15 +125,13 @@ export class AddEditBranchPage implements OnInit {
     if (countryId) {
       this.sharedService.getStatByCountry(countryId).subscribe({
         next: (data: any[]) => {
-          this.stateList = data.map((item: any) => {
+          this.stateList = data?.map((item: any) => {
             const obj = {
               id: item?.stateId,
               title: item?.stateName
             }
             return obj;
           });
-          console.log(data)
-
         },
         error: (error) => {
           console.log('error: ', error);
@@ -142,7 +145,7 @@ export class AddEditBranchPage implements OnInit {
     if (stateId) {
       this.sharedService.getCityByState(stateId).subscribe({
         next: (data: any[]) => {
-          this.cityList = data.map((item: any) => {
+          this.cityList = data?.map((item: any) => {
             const obj = {
               id: item?.cityId,
               title: item?.cityName

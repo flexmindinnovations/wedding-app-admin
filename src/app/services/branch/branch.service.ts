@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BranchService {
-  endpoint = environment.endpoint + '/api';
+  endpoint = environment.endpoint + '/api/Branch';
   http = inject(HttpConfigService);
 
   addBranch(payload: any): Observable<any> {
-    return this.http.postImage(`${this.endpoint}/Branch/UploadImageWithBranchData`, payload)
+    return this.http.postImage(`${this.endpoint}/UploadImageWithBranchData`, payload)
   }
 }

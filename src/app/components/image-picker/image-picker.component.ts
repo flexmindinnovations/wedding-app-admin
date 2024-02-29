@@ -27,6 +27,7 @@ export class ImagePickerComponent implements OnInit {
     const files = event?.target?.files;
     if (files.length === 1) {
       const file = files[0];
+      this.imagePath = file.name;
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imgSrc = reader.result;
