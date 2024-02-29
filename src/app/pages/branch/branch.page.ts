@@ -55,22 +55,6 @@ export class BranchPage implements OnInit {
       } as IGroupCellRendererParams
     },
   ];
-  // colDefs: ColDef[] = [
-  //   { field: "branchId", width: 60 },
-  //   { field: "branchName" },
-  //   // { field: "date" },
-  //   { field: "" },
-  //   { field: "state" },
-  //   { field: "city" },
-  //   {
-  //     field: "action",
-  //     cellRenderer: 'agGroupCellRenderer',
-  //     cellRendererParams: {
-  //       innerRenderer: GridButtonsComponent,
-  //       onClick: this.handleGridActionButtonClick.bind(this)
-  //     } as IGroupCellRendererParams
-  //   },
-  // ];
 
   ngOnInit() {
     this.getBranchList();

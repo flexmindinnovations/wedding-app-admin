@@ -2,17 +2,49 @@
     position: absolute;
     z-index: 10;
     top: 0;
-    right: -100%;
-    animation: sliderAnimation 0.5s forwards;
-    animation-delay: 0.5s;
-    
+    right: 2%;
+    animation: slideOutAnimation 0.8s forwards;
+    animation-delay: 0.2s;
+
+    &.show {
+        right: -100%;
+        animation: slideInAnimation 0.8s forwards;
+        animation-delay: 0.2s;
+    }
 }
 
-@keyframes sliderAnimation {
+@keyframes slideInAnimation {
     0% {
         right: -100%;
     }
+    25% {
+        right: -75%;
+    }
+    50% {
+        right: -50%;
+    }
+    75% {
+        right: -25%;
+    }
     100% {
         right: 2%;
+    }
+}
+
+@keyframes slideOutAnimation {
+    0% {
+        right: 2%;
+    }
+    25% {
+        right: -25%;
+    }
+    50% {
+        right: -50%;
+    }
+    75% {
+        right: -75%;
+    }
+    100% {
+        right: -100%;
     }
 }

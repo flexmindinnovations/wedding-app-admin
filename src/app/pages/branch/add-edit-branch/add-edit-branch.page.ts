@@ -1,6 +1,7 @@
 import { state } from '@angular/animations';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
+import { Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { BranchService } from 'src/app/services/branch/branch.service';
@@ -14,6 +15,7 @@ import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/uti
 export class AddEditBranchPage implements OnInit {
   sharedService = inject(SharedService);
   branchService = inject(BranchService);
+  router = inject(Router);
   alert = inject(AlertService);
   formGroup: any;
   countryList: any;
@@ -91,6 +93,7 @@ export class AddEditBranchPage implements OnInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl('branch');
         }
       },
       error: (error) => {
