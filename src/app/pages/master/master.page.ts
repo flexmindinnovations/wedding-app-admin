@@ -36,7 +36,7 @@ export class MasterPage implements OnInit {
 
   ngOnInit() {
     this.setMasterData();
-    this.getBranchList();
+    this.getHeightList();
   }
 
   setMasterData() {
@@ -163,7 +163,7 @@ export class MasterPage implements OnInit {
       component: AddEditHeightComponent,
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.heightName : 'Add New Height',
+          title: isEditMode ? 'Edit: ' + event?.rowData.title : 'Add New Height',
           data: event
         }
       },
@@ -172,9 +172,9 @@ export class MasterPage implements OnInit {
     console.log('>>>>> modal : ', modal);
     await modal.present();
 
-    const { data, role } = await modal.onWillDismiss();
+    const data = await modal.onDidDismiss();
     console.log('data: ', data);
-    console.log('role: ', role);
+    this.getHeightList();
   }
 
   async openAddEditEducationModal(event?: any) {
@@ -205,7 +205,7 @@ export class MasterPage implements OnInit {
     console.log('role: ', role);
   }
 
-  getBranchList(): any {
+  getHeightList(): any {
     this.heightService.getHeightList().subscribe({
       next: (data: any[]) => {
         this.heightMasterRowData = data?.map((item: any) => {

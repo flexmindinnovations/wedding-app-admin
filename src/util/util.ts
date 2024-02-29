@@ -108,5 +108,7 @@ export const stepperThemeVariables: any = {
 
 
 export const convertObjectToJson = (obj: any) => {
-    
+
 }
+
+export const AUTO_DISMISS_TIMER: number = 4500;

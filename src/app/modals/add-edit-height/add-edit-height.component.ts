@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
 import { ModalController } from '@ionic/angular';
+import { AlertType } from 'src/app/enums/alert-types';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { HeightService } from 'src/app/services/height/height.service';
 
 @Component({
@@ -13,7 +15,7 @@ export class AddEditHeightComponent implements OnInit {
   formGroup: any;
   modalControllerService = inject(ModalController);
   accessHeightDataService = inject(HeightService);
-
+  alert = inject(AlertService);
   constructor(
     private fb: FormBuilder
   ) {
@@ -44,14 +46,16 @@ export class AddEditHeightComponent implements OnInit {
     } else {
       let formVal = this.formGroup.value;
       formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
-      console.log(formVal);
       this.accessHeightDataService.saveHeight(formVal).subscribe({
         next: (data: any) => {
-          console.log(data)
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss();
+          }
         },
         error: (error) => {
           console.log('error: ', error);
-
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
       })
 
