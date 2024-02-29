@@ -8,6 +8,7 @@ import { ModalController } from '@ionic/angular';
 import { AddEditHeightComponent } from 'src/app/modals/add-edit-height/add-edit-height.component';
 import { AddEditRoleComponent } from 'src/app/modals/add-edit-role/add-edit-role.component';
 import { AddEditEducationComponent } from 'src/app/modals/add-edit-education/add-edit-education.component';
+import { HeightService } from 'src/app/services/height/height.service';
 
 @Component({
   selector: 'app-master',
@@ -19,6 +20,7 @@ export class MasterPage implements OnInit {
   sidebarItemService = inject(SidebarItemsService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
+  heightService = inject(HeightService);
 
   heightMasterRowData: any = [];
   heightMasterColumnDefs: ColDef[] = [];
@@ -34,6 +36,7 @@ export class MasterPage implements OnInit {
 
   ngOnInit() {
     this.setMasterData();
+    this.getBranchList();
   }
 
   setMasterData() {
@@ -43,9 +46,7 @@ export class MasterPage implements OnInit {
 
   setHeightMasterGridData() {
 
-    this.heightMasterRowData = [
-      { id: 1, title: "Height" }
-    ];
+    this.heightMasterRowData = [];
 
     this.heightMasterColumnDefs = [
       { field: "id", width: 60 },
@@ -160,6 +161,12 @@ export class MasterPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: ' + event?.rowData.heightName : 'Add New Height',
+          data: event
+        }
+      },
       cssClass: 'height-modal'
     });
     console.log('>>>>> modal : ', modal);
@@ -198,4 +205,23 @@ export class MasterPage implements OnInit {
     console.log('role: ', role);
   }
 
+  getBranchList(): any {
+    this.heightService.getHeightList().subscribe({
+      next: (data: any[]) => {
+        this.heightMasterRowData = data?.map((item: any) => {
+          const obj = {
+            id: item?.heightId,
+            title: item?.heightName
+          }
+          return obj;
+        });
+
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
+
+  }
 }
