@@ -28,7 +28,7 @@
           @for (item of specilaizationList; track $index) {
           <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3">
             <app-input [label]="item?.name" class="flex-grow-1 w-full" type="text"
-              [control]="formGroupControl['specializationName']" formControlName="specializationName" />
+              [control]="formGroupControl['specializationList']" (inputValue)="handleInputValue($event, item)" formControlName="specializationList" />
 
             <div class="remove-specialization flex items-center justify-center h-11">
               @if (specilaizationList.length > 1) {

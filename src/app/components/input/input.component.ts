@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Optional, Self, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Optional, Output, Self, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormsModule, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { ControlValueAccessorConnector } from './control-value-accessor';
 import { IonicModule } from '@ionic/angular';
@@ -20,6 +20,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
   @Input() placeholder: string = '';
+  @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';
 
@@ -63,6 +64,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
 
   handleOnChange(event: any) {
     const value = event.target.value;
+    this.inputValue.emit(value);
     this.onChange(value);
   }
 

@@ -10,8 +10,6 @@ export class AlertService {
   alertSubject = new Subject<any>();
 
   setAlertMessage(message: string, type: AlertType): void {
-    console.log('setAlertMessage: ', {message, type});
-    
     this.alertSubject.next({ message, type });
   }
 
