@@ -37,7 +37,6 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initFormGroup();
-    console.log('data: ', this.data);
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     if (this.isEditMode) this.patchFormData();
@@ -45,7 +44,6 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
-    console.log('modalData: ', modalData);
     this.educationId = modalData?.educationId;
     this.hasSpecializationToggle = modalData?.hasSpecialization;
     this.educationService.getSpecializationListByEducationId(modalData?.educationId).subscribe({
@@ -53,6 +51,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
         if (data) {
           this.specilaizationList = data.map((item: any) => {
             item['name'] = 'Specialization Name';
+            item['educationId'] = this.educationId;
             return item;
           });
           const props = {
@@ -87,11 +86,8 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   }
 
   handleButtonClick(event: any) {
-    console.log('event: ', event);
-    console.log('educationId: ', this.educationId);
-
     if (event?.isCancel) {
-      this.modalControllerService.dismiss();
+      this.modalControllerService.dismiss({event: 'cancel'});
       return;
     }
 
@@ -114,7 +110,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss();
+          this.modalControllerService.dismiss({event: 'add'});
         }
       },
       error: (error) => {
@@ -126,18 +122,17 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   updateCourseDetails() {
     let formVal: any = { ...this.formGroup.value, educationId: this.educationId };
     formVal['specializationList'] = this.specilaizationList.map((item: any) => {
-      const obj = {
-        specializationId: 0,
-        educationId: 0,
+      return {
+        specializationId: item.specializationId ? item.specializationId : 0,
+        educationId: this.educationId ? this.educationId : 0,
         specializationName: item?.specializationName
       }
-      return obj;
     });
     this.educationService.updateCourse(formVal).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss();
+          this.modalControllerService.dismiss({event: 'update'});
         }
       },
       error: (error) => {

@@ -45,6 +45,7 @@ export class MasterPage implements OnInit {
     this.setHeightMasterGridData();
     this.setRoleMasterGridData();
     this.setEducationMasterGridData();
+    this.setSpecializationMasterGridData();
   }
 
   setHeightMasterGridData() {
@@ -96,6 +97,7 @@ export class MasterPage implements OnInit {
       { field: 'id', width: 60 },
       { field: 'educationName', width: 300 },
       { field: 'hasSpecialization', width: 155 },
+      { field: 'specializationCount', width: 80 },
       {
         field: "action",
         colId: 'education',
@@ -116,14 +118,14 @@ export class MasterPage implements OnInit {
       next: (data: any) => {
         // let datum = data.map(e=>)
         if (data) {
+          console.log('data: ', data);
+
           this.educationMasterRowData = data.map((item: any) => {
             item['id'] = item?.educationId;
-
+            // item['specializationCount'] = this.
             return item;
           });
         }
-
-        this.setSpecializationMasterGridData();
       },
       error: (error) => {
         console.log('error: ', error);
@@ -188,19 +190,27 @@ export class MasterPage implements OnInit {
   }
 
   async handleGridActionButtonClick(event: any) {
-    console.log('event: ', event);
     const modelType = event?.gridId?.toLowerCase();
-    switch (modelType) {
-      case 'role':
-        this.openAddEditRoleModal(event);
-        break;
-      case 'height':
-        this.openAddEditHeightModal(event);
-        break;
-      case 'education':
-        this.openAddEditEducationModal(event);
-        break;
+    if (event.src === GridActions.edit) {
+      switch (modelType) {
+        case 'role':
+          this.openAddEditRoleModal(event);
+          break;
+        case 'height':
+          this.openAddEditHeightModal(event);
+          break;
+        case 'education':
+          this.openAddEditEducationModal(event);
+          break;
+      }
+    } else {
+     this.openDeleteConfirmationModal(event); 
     }
+  }
+
+  openDeleteConfirmationModal(data: any) {
+    console.log('data: ', data);
+    
   }
 
   ngOnDestroy(): void { }
@@ -255,29 +265,29 @@ export class MasterPage implements OnInit {
   }
 
   async openAddEditEducationModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
-
     let isEditMode = false;
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    console.log('isEditMode: ', isEditMode);
-
     const modal = await this.modalCtrl.create({
       component: AddEditEducationComponent,
       cssClass: 'education-modal',
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
-          data: {...event, isEditMode}
+          data: { ...event, isEditMode }
         }
       }
     });
     await modal.present();
-
     const data = await modal.onWillDismiss();
-    console.log('data: ', data);
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getEducationTableData();
+      this.getSpecializationTableData();
+    }
   }
 
 }

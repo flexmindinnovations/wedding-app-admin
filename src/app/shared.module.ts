@@ -30,6 +30,7 @@ import { MasterDataComponent } from "./components/master-data/master-data.compon
 import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.component";
 import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
 import { AlertComponent } from "./components/alert/alert.component";
+import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.component";
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { AlertComponent } from "./components/alert/alert.component";
         MasterDataComponent,
         AddEditRoleComponent,
         AddEditEducationComponent,
-        AlertComponent
+        AlertComponent,
+        DeleteConfirmComponent
     ],
     imports: [
         CommonModule,
@@ -102,7 +104,8 @@ import { AlertComponent } from "./components/alert/alert.component";
         MasterDataComponent,
         AddEditRoleComponent,
         AddEditEducationComponent,
-        AlertComponent
+        AlertComponent,
+        DeleteConfirmComponent
     ],
     providers: []
 })
