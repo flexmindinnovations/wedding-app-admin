@@ -21,7 +21,6 @@ export class AlertComponent implements OnInit {
 
   ngOnInit() {
     this.alertService.getAlertMessage().subscribe((alert: any) => {
-      console.log('alert: ', alert);
       this.alertType = alert?.type;
       this.alertMessage = alert?.message;
       this.alertId = `alert-${this.alertType}`;
@@ -45,10 +44,7 @@ export class AlertComponent implements OnInit {
       duration: 1000,
       timing: 'ease-out',
 
-      onHide: (context, targetEl) => {
-        console.log('element has been dismissed')
-        console.log(targetEl)
-      }
+      onHide: (context, targetEl) => { }
     };
     const instanceOptions: InstanceOptions = {
       id: 'targetElement',

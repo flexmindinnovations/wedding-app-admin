@@ -9,6 +9,9 @@ import { AddEditHeightComponent } from 'src/app/modals/add-edit-height/add-edit-
 import { AddEditRoleComponent } from 'src/app/modals/add-edit-role/add-edit-role.component';
 import { AddEditEducationComponent } from 'src/app/modals/add-edit-education/add-edit-education.component';
 import { HeightService } from 'src/app/services/height/height.service';
+import { EducationService } from 'src/app/services/education/education.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { AlertType } from 'src/app/enums/alert-types';
 
 @Component({
   selector: 'app-master',
@@ -18,9 +21,11 @@ import { HeightService } from 'src/app/services/height/height.service';
 export class MasterPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
+  educationService = inject(EducationService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
+  alert = inject(AlertService);
 
   heightMasterRowData: any = [];
   heightMasterColumnDefs: ColDef[] = [];
@@ -42,6 +47,7 @@ export class MasterPage implements OnInit {
   setMasterData() {
     this.setHeightMasterGridData();
     this.setRoleMasterGridData();
+    this.setEducationMasterGridData();
   }
 
   setHeightMasterGridData() {
@@ -50,7 +56,7 @@ export class MasterPage implements OnInit {
 
     this.heightMasterColumnDefs = [
       { field: "id", width: 60 },
-      { field: "title", minWidth: 435 },
+      { field: "height", minWidth: 435 },
       {
         field: "action",
         colId: 'height',
@@ -86,10 +92,89 @@ export class MasterPage implements OnInit {
     ];
   }
 
-  setEducationMasterGridData() { }
-  setSpecializationMasterGridData() { }
+  setEducationMasterGridData() {
+    this.educationMasterColumnDefs = [
+      { field: 'id', width: 60 },
+      { field: 'educationName', width: 300 },
+      { field: 'hasSpecialization', width: 155 },
+      {
+        field: "action",
+        colId: 'education',
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+
+    this.getEducationTableData();
+  }
+
+  getEducationTableData() {
+    this.educationService.getEducationList().subscribe({
+      next: (data: any) => {
+        // let datum = data.map(e=>)
+        if (data) {
+          this.educationMasterRowData = data.map((item: any) => {
+            item['id'] = item?.educationId;
+
+            return item;
+          });
+        }
+
+        this.setSpecializationMasterGridData();
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Education List: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
+  setSpecializationMasterGridData() {
+
+    this.specializationMasterColumnDefs = [
+      { field: 'id', width: 60 },
+      { field: 'course', width: 235 },
+      { field: 'specializationName', width: 200 },
+      {
+        field: "action",
+        colId: 'specialization',
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+
+    this.getSpecializationTableData();
+  }
+
+  getSpecializationTableData() {
+    this.educationService.getEducationSpecializationList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.specializationMasterRowData = data.map((item: any) => {
+            const filteredItem = this.educationMasterRowData.filter((ed: any) => ed?.educationId === item?.educationId);
+            item['id'] = item?.specializationId;
+            item['course'] = filteredItem.length ? filteredItem[0]?.educationName : '';
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Education List: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 
   handleGridAddAction(event: any) {
+    console.log('event', event?.type);
     const modelType = event?.type?.toLowerCase();
     switch (modelType) {
       case 'role':
@@ -163,7 +248,7 @@ export class MasterPage implements OnInit {
       component: AddEditHeightComponent,
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.title : 'Add New Height',
+          title: isEditMode ? 'Edit: ' + event?.rowData.height : 'Add New Height',
           data: event
         }
       },
@@ -197,12 +282,10 @@ export class MasterPage implements OnInit {
         }
       }
     });
-    console.log('>>>>> modal : ', modal);
     await modal.present();
 
-    const { data, role } = await modal.onWillDismiss();
+    const data = await modal.dismiss();
     console.log('data: ', data);
-    console.log('role: ', role);
   }
 
   getHeightList(): any {
@@ -211,7 +294,7 @@ export class MasterPage implements OnInit {
         this.heightMasterRowData = data?.map((item: any) => {
           const obj = {
             id: item?.heightId,
-            title: item?.heightName
+            height: item?.heightName,
           }
           return obj;
         });
