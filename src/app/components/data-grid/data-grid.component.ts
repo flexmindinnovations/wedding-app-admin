@@ -19,8 +19,6 @@ export class DataGridComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log('rowDefs: ', this.rowDefs);
-    
     const currentTheme = localStorage.getItem('color-theme') || 'light';
     const themeApplied = this.themeName.replace('{{theme}}', currentTheme === 'dark' ? `quartz-${currentTheme}` : 'quartz');
     this.themeName = themeApplied;

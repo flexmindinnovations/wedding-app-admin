@@ -10,6 +10,7 @@ export class MasterDataComponent implements OnInit {
   @Input() rowData: any = [];
   @Input() columnDefs: any = [];
   @Input('title') gridTitle: string = '';
+  @Input() canAddItem: boolean = true;
   @Output() gridAction: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
