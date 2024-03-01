@@ -1,6 +1,7 @@
 <div class="dropdown-container flex flex-col gap-2">
   <label>{{label}}</label>
-  <button #triggerButton [id]="buttonId" data-dropdown-placement="bottom"
+  <button #triggerButton [id]="buttonId" [attr.data-toggle]="menuId" [attr.data-dropdown-toggle]="menuId"
+    data-dropdown-placement="bottom"
     class="dropdown-button flex items-center justify-between w-full gap-3 border-gray-300"
     (click)="handleDropdownToggle()" [ngClass]="colorVarients" type="button">
     <p>{{value ? value?.title : '-- Select --'}}</p>
@@ -9,7 +10,7 @@
 
   <!-- Dropdown menu  -->
   <div #menuEl [id]="menuId" [ngStyle]="{'width': menuWidth}"
-    class="z-20 shadow-lg hidden bg-white rounded-lg borser border-gray-300 shadowdark:bg-gray-700">
+    class="shadow-lg hidden z-[1000] bg-white rounded-lg borser border-gray-300 shadowdark:bg-gray-700">
     <div class="p-3 bg-gray-100 rounded-t-lg rounded-t-r-lg">
       <label for="input-group-search" class="sr-only">Search</label>
       <div class="relative">

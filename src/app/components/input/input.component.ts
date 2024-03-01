@@ -1,7 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Optional, Output, Self, forwardRef } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormsModule, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
-import { ControlValueAccessorConnector } from './control-value-accessor';
-import { IonicModule } from '@ionic/angular';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 
 @Component({
@@ -43,6 +41,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     this.placeholder = this.placeholder ? this.placeholder : this.label ? 'Enter ' + this.label : '';
   }
+
 
   setCurrentClass() {
     const colorScheme = localStorage.getItem('color-scheme');

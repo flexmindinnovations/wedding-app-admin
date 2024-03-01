@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   titleCasePipe = inject(TitleCasePipe);
   sidebarItemService = inject(SidebarItemsService);
   public spinkit = Spinkit; 
-  loaderTheme = COLOR_SCHEME === 'br' ? '#1e9aff' : COLOR_SCHEME === 'bo' ? '#ff7f0a' : '#3d51e6';
+  loaderTheme = (COLOR_SCHEME as 'br') ? '#1e9aff' : (COLOR_SCHEME as 'bo') ? '#ff7f0a' : '#3d51e6';
 
   menuClassess = {
     collapsed: `delay-150 duration-300 ease-out md:!w-[8%] lg:!w-[5%] md:max-w-[25%] lg:max-w-[25%]`,
