@@ -206,13 +206,13 @@ export class MasterPage implements OnInit {
           break;
       }
     } else {
-     this.openDeleteConfirmationModal(event); 
+      this.openDeleteConfirmationModal(event);
     }
   }
 
   openDeleteConfirmationModal(data: any) {
     console.log('data: ', data);
-    
+
   }
 
   ngOnDestroy(): void { }
@@ -266,10 +266,13 @@ export class MasterPage implements OnInit {
     });
     console.log('>>>>> modal : ', modal);
     await modal.present();
-
     const data = await modal.onWillDismiss();
-    console.log('data: ', data);
-    this.getHeightList();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    console.log(eventType);
+    if (actionEvents.includes(eventType)) {
+      this.getHeightList();
+    }
   }
 
   async openAddEditEducationModal(event?: any) {

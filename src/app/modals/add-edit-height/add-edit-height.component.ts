@@ -35,7 +35,6 @@ export class AddEditHeightComponent implements OnInit {
     const modalData = this.data?.data?.rowData;
     this.heightId = modalData?.id;
     const heightData = modalData?.heightName.split(' ');
-    console.log(heightData);
     const props = {
       feet: heightData[0],
       inch: heightData[2]
@@ -61,7 +60,7 @@ export class AddEditHeightComponent implements OnInit {
 
   handleButtonClick(event: any) {
     if (event?.isCancel) {
-      this.modalControllerService.dismiss();
+      this.modalControllerService.dismiss({ event: 'cancel' });
       return;
     }
 
@@ -77,7 +76,7 @@ export class AddEditHeightComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss();
+          this.modalControllerService.dismiss({ event: 'add' });
         }
       },
       error: (error) => {
@@ -89,12 +88,12 @@ export class AddEditHeightComponent implements OnInit {
 
   updateHeight() {
     let formVal = this.formGroup.value;
-    formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
+    formVal = { heightId: this.heightId, heightName: `${formVal.feet} feet ${formVal.inch} inch` };
     this.accessHeightDataService.updateHeight(formVal).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss();
+          this.modalControllerService.dismiss({ event: 'update' });
         }
       },
       error: (error) => {

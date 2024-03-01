@@ -20,7 +20,7 @@ export class HeightService {
   }
 
   updateHeight(payload: any): Observable<any> {
-    return this.http.put(`${this.endpoint}/updateHeightMaster`, payload)
+    return this.http.post(`${this.endpoint}/updateHeightMaster`, payload)
   }
 
   deleteHight(id: any): Observable<any> {
