@@ -12,10 +12,12 @@ import { HeightService } from 'src/app/services/height/height.service';
 })
 export class AddEditHeightComponent implements OnInit {
   @Input() data: any;
+  isEditMode: boolean = false;
   formGroup: any;
   modalControllerService = inject(ModalController);
   accessHeightDataService = inject(HeightService);
   alert = inject(AlertService);
+  heightId = 0;
   constructor(
     private fb: FormBuilder
   ) {
@@ -23,6 +25,23 @@ export class AddEditHeightComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    const data = this.data?.data;
+    this.isEditMode = data?.isEditMode;
+    console.log(this.isEditMode);
+    if (this.isEditMode) this.patchFormData();
+  }
+
+  patchFormData() {
+    const modalData = this.data?.data?.rowData;
+    this.heightId = modalData?.id;
+    const heightData = modalData?.heightName.split(' ');
+    console.log(heightData);
+    const props = {
+      feet: heightData[0],
+      inch: heightData[2]
+    }
+    this.formGroup.patchValue(props);
+    console.log(this.formGroup.value)
   }
 
   initFormGroup() {
@@ -43,24 +62,46 @@ export class AddEditHeightComponent implements OnInit {
   handleButtonClick(event: any) {
     if (event?.isCancel) {
       this.modalControllerService.dismiss();
-    } else {
-      let formVal = this.formGroup.value;
-      formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
-      this.accessHeightDataService.saveHeight(formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            this.modalControllerService.dismiss();
-          }
-        },
-        error: (error) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage(error?.message, AlertType.error);
-        }
-      })
-
+      return;
     }
 
+    if (this.heightId > 0) this.updateHeight();
+    else this.addNewHeight();
+
+  }
+
+  addNewHeight() {
+    let formVal = this.formGroup.value;
+    formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
+    this.accessHeightDataService.saveHeight(formVal).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalControllerService.dismiss();
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
+  }
+
+  updateHeight() {
+    let formVal = this.formGroup.value;
+    formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
+    this.accessHeightDataService.updateHeight(formVal).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalControllerService.dismiss();
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   handleClickOnNext(src: string) {

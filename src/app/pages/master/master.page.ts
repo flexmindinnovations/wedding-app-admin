@@ -56,7 +56,7 @@ export class MasterPage implements OnInit {
 
     this.heightMasterColumnDefs = [
       { field: "id", width: 60 },
-      { field: "height", minWidth: 435 },
+      { field: "heightName", minWidth: 435 },
       {
         field: "action",
         colId: 'height',
@@ -174,8 +174,8 @@ export class MasterPage implements OnInit {
   }
 
   handleGridAddAction(event: any) {
-    console.log('event', event?.type);
     const modelType = event?.type?.toLowerCase();
+    console.log(modelType)
     switch (modelType) {
       case 'role':
         this.openAddEditRoleModal();
@@ -248,8 +248,8 @@ export class MasterPage implements OnInit {
       component: AddEditHeightComponent,
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.height : 'Add New Height',
-          data: event
+          title: isEditMode ? 'Edit Height' : 'Add New Height',
+          data: { ...event, isEditMode }
         }
       },
       cssClass: 'height-modal'
@@ -257,7 +257,7 @@ export class MasterPage implements OnInit {
     console.log('>>>>> modal : ', modal);
     await modal.present();
 
-    const data = await modal.onDidDismiss();
+    const data = await modal.onWillDismiss();
     console.log('data: ', data);
     this.getHeightList();
   }
@@ -278,7 +278,7 @@ export class MasterPage implements OnInit {
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
-          data: {...event, isEditMode}
+          data: { ...event, isEditMode }
         }
       }
     });
@@ -294,7 +294,7 @@ export class MasterPage implements OnInit {
         this.heightMasterRowData = data?.map((item: any) => {
           const obj = {
             id: item?.heightId,
-            height: item?.heightName,
+            heightName: item?.heightName,
           }
           return obj;
         });
