@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
@@ -10,6 +10,8 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 export class PersonalInfoComponent implements OnInit {
 
   formGroup!: FormGroup;
+  genderOptions: any = [];
+  maritalStatusOptions: any = [];
   @ViewChild('dropdownInput') dropdownInput: any;
 
   @Output() personalInfoData = new EventEmitter();
@@ -21,6 +23,15 @@ export class PersonalInfoComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.genderOptions = [
+      { id: 'male', title: 'Male' },
+      { id: 'female', title: 'female' },
+    ];
+
+    this.maritalStatusOptions = [
+      { id: 'married', title: 'Married' },
+      { id: 'unmarried', title: 'Unmarried' }
+    ]
   }
 
   initFormGroup() {
