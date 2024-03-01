@@ -137,8 +137,8 @@ export class MasterPage implements OnInit {
 
     this.specializationMasterColumnDefs = [
       { field: 'id', width: 60 },
-      { field: 'course', width: 235 },
       { field: 'specializationName', width: 200 },
+      { field: 'course', width: 235 },
       {
         field: "action",
         colId: 'specialization',
@@ -155,7 +155,7 @@ export class MasterPage implements OnInit {
   }
 
   getSpecializationTableData() {
-    this.educationService.getEducationSpecializationList().subscribe({
+    this.educationService.getSpecializationList().subscribe({
       next: (data: any) => {
         if (data) {
           this.specializationMasterRowData = data.map((item: any) => {
@@ -277,14 +277,14 @@ export class MasterPage implements OnInit {
       cssClass: 'education-modal',
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Course',
-          data: event
+          title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
+          data: {...event, isEditMode}
         }
       }
     });
     await modal.present();
 
-    const data = await modal.dismiss();
+    const data = await modal.onWillDismiss();
     console.log('data: ', data);
   }
 

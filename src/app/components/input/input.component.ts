@@ -20,6 +20,7 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
   @Input() placeholder: string = '';
+  @Input() controlValue: string = '';
   @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';

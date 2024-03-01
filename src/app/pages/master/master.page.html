@@ -9,7 +9,7 @@
   <master-data [title]="'Education'" (gridAction)="handleGridAddAction($event)" [rowData]="educationMasterRowData"
     [columnDefs]="educationMasterColumnDefs" />
 
-  <master-data [title]="'Specialization'" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
+  <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
     [columnDefs]="specializationMasterColumnDefs" />
 
 </div>

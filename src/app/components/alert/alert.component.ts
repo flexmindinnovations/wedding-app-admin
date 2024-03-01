@@ -37,21 +37,8 @@ export class AlertComponent implements OnInit {
   }
 
   handleHideAlert() {
-    const targetEl: HTMLElement | any = document.getElementById(this.alertId);
-    const triggerEl: HTMLElement | any = document.getElementById(`hide-${this.alertId}`);
-    const options: DismissOptions = {
-      transition: 'transition-opacity',
-      duration: 1000,
-      timing: 'ease-out',
-
-      onHide: (context, targetEl) => { }
-    };
-    const instanceOptions: InstanceOptions = {
-      id: 'targetElement',
-      override: true
-    };
-    const dismiss: DismissInterface = new Dismiss(targetEl, triggerEl, options, instanceOptions);
-    dismiss.hide();
+    const alertEl = document.getElementById('alertContainer');
+    alertEl?.classList.toggle('show');
   }
 
 }

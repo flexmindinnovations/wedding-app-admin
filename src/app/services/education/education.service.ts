@@ -17,15 +17,19 @@ export class EducationService {
     return this.http.get(`${this.endpoint}/Education/GetEducationList`);
   }
 
-  getEducationSpecializationList(): Observable<IEducation[]> {
+  getSpecializationList(): Observable<IEducation[]> {
     return this.http.get(`${this.endpoint}/Specialization/GetSpecializationList`);
   }
 
-  getEducationSpecializationListByEducationId(educationId?: number): Observable<IEducation[]> {
-    return this.http.get(`${this.endpoint}/GetEducationList`);
+  getSpecializationListByEducationId(educationId?: number): Observable<IEducation[]> {
+    return this.http.get(`${this.endpoint}/Education/GetSpecializationListByEducationId?educationId=${educationId}`);
   }
 
   addNewCourse(payload: IEducation): Observable<IEducation> {
-    return this.http.post(`${this.endpoint}/SaveEducation`, payload);
+    return this.http.post(`${this.endpoint}/Education/SaveEducation`, payload);
+  }
+
+  updateCourse(payload: IEducation): Observable<IEducation> {
+    return this.http.post(`${this.endpoint}/Education/UpdateEducation`, payload);
   }
 }
