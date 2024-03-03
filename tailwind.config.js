@@ -8,7 +8,7 @@ module.exports = {
     "./node_modules/flowbite/**/*.js"
   ],
   darkMode: 'class',
-  important: true,
+  // important: true,
   theme: {
     colors: {
       cb: {

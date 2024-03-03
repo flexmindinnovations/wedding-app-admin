@@ -2,18 +2,18 @@
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
       <app-input label="First Name" type="text" class="flex-grow-1" [control]="formGroupControl['firstName']"
-        formControlName="firstName" [required]="true" />
+        formControlName="firstName" [controlValue]="formGroup.get('firstName')?.value" [required]="true" />
 
       <app-input label="Last Name" class="flex-grow-1" type="text" [control]="formGroupControl['lastName']"
-        formControlName="lastName" />
+        formControlName="lastName" [controlValue]="formGroup.get('lastName')?.value" />
       <app-input label="Surname" class="flex-grow-1" type="text" [control]="formGroupControl['surName']"
-        formControlName="surName" />
+        formControlName="surName" [controlValue]="formGroup.get('surName')?.value" />
 
       <app-input label="Date Of Birth" class="flex-grow-1" type="date" [control]="formGroupControl['dateOfBirth']"
-        formControlName="dateOfBirth" />
+        formControlName="dateOfBirth" [controlValue]="formGroup.get('dateOfBirth')?.value" />
 
       <app-input label="Occupation" class="flex-grow-1" type="text" [control]="formGroupControl['occupation']"
-        formControlName="occupation" />
+        formControlName="occupation" [controlValue]="formGroup.get('occupation')?.value" />
 
 
       <app-dropdown label="Gender" class="" [control]="formGroupControl['gender']" formControlName="gender"
@@ -37,7 +37,7 @@
 
 
       <app-input label="Hobbies" class="flex-grow-1 col-span-3" type="text" [control]="formGroupControl['hobbies']"
-        formControlName="hobbies" [isMultiline]=true />
+        formControlName="hobbies" [controlValue]="formGroup.get('hobbies')?.value" [isMultiline]=true />
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end">

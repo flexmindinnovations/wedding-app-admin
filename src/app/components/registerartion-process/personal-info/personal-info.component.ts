@@ -59,13 +59,27 @@ export class PersonalInfoComponent implements OnInit {
       physicalStatus: ['', [Validators.required]],
       maritalStatus: ['', [Validators.required]],
       hobbies: ['', ![Validators.required]]
-    })
+    });
+    this.patchValue();
+  }
 
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
-
-    })
+  patchValue() {
+    this.formGroup.patchValue(
+      {
+        firstName: 'Mohammed',
+        lastName: 'Ali',
+        surName: 'Mohammed',
+        gender: '',
+        height: '',
+        education: '',
+        specialization: '',
+        dateOfBirth: '',
+        occupation: 'Self Employed',
+        physicalStatus: '',
+        maritalStatus: '',
+        hobbies: 'Test'
+      }
+    )
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -74,15 +88,17 @@ export class PersonalInfoComponent implements OnInit {
 
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
+    console.log('formVal: ', formVal);
+
     // if (this.formGroup.valid) {
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 1,
-      action: ActionValue.next,
-      isCompleted: true
-    }
-    this.personalInfoData.emit(props);
+    // const props: FormStep = {
+    //   source: src,
+    //   data: formVal,
+    //   formId: 1,
+    //   action: ActionValue.next,
+    //   isCompleted: true
+    // }
+    // this.personalInfoData.emit(props);
     // }
   }
 
@@ -125,7 +141,7 @@ export class PersonalInfoComponent implements OnInit {
         if (data) {
           this.specializationListOptions = data.map((item: any) => {
             console.log('item: ', item);
-            
+
             return {
               id: item?.educationId,
               title: item?.specializationName,
@@ -134,7 +150,7 @@ export class PersonalInfoComponent implements OnInit {
             }
           });
           console.log('specializationListOptions: ', this.specializationListOptions);
-          
+
         }
       },
       error: (error) => {

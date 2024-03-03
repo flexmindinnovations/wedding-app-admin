@@ -1,14 +1,16 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { log } from 'console';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 
+declare var Datepicker: any;
 @Component({
   selector: 'app-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
 })
 
-export class InputComponent implements OnInit, ControlValueAccessor {
+export class InputComponent implements OnInit, AfterViewInit, ControlValueAccessor {
 
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
@@ -42,6 +44,40 @@ export class InputComponent implements OnInit, ControlValueAccessor {
     this.placeholder = this.placeholder ? this.placeholder : this.label ? 'Enter ' + this.label : '';
   }
 
+  ngAfterViewInit(): void {
+    const dtEl: any = document.getElementById('datepicker01');
+    if (this.type === 'date') this.initDatePicker(dtEl);
+  }
+
+  initDatePicker(element: Element) {
+    new Datepicker(element, {
+      theme: 'dark',
+      autohide: true,
+      todayHighlight: true,
+      maxDate: new Date(),
+      autoselectToday: true,
+      datepickerButtons: true
+    });
+    const datePickerParentEl: any = document.getElementsByClassName('datepicker-dropdown')[0];
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation: any) => {
+        if (mutation.attributeName === 'class') {
+          const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
+          document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px`);
+          document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
+          document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
+          document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);
+        }
+      })
+    })
+
+    observer.observe(datePickerParentEl, {
+      attributes: true,
+      attributeFilter: ['class'],
+      childList: false,
+      characterData: false
+    })
+  }
 
   setCurrentClass() {
     const colorScheme = localStorage.getItem('color-scheme');

@@ -31,7 +31,6 @@ import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.compo
 import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
 import { AlertComponent } from "./components/alert/alert.component";
 import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.component";
-import { DatePickerComponent } from "./components/date-picker/date-picker.component";
 
 @NgModule({
     declarations: [
@@ -59,7 +58,6 @@ import { DatePickerComponent } from "./components/date-picker/date-picker.compon
         AddEditEducationComponent,
         AlertComponent,
         DeleteConfirmComponent,
-        DatePickerComponent
     ],
     imports: [
         CommonModule,
@@ -107,8 +105,7 @@ import { DatePickerComponent } from "./components/date-picker/date-picker.compon
         AddEditRoleComponent,
         AddEditEducationComponent,
         AlertComponent,
-        DeleteConfirmComponent,
-        DatePickerComponent
+        DeleteConfirmComponent
     ],
     providers: []
 })

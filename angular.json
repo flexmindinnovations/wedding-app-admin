@@ -36,7 +36,7 @@
               "src/global.scss"
             ],
             "scripts": [
-              "node_modules/flowbite/dist/datepicker.js"
+              "node_modules/flowbite-datepicker/dist/js/datepicker-full.min.js"
             ]
           },
           "configurations": {
