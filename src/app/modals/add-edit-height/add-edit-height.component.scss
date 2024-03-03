@@ -1,12 +1,15 @@
-:host(app-search-modal) {
-    @apply p-3 dark:bg-gray-400
+::ng-deep .height-modal::part(content) {
+    min-width: 40%;
+    // min-height: 90%;
+    position: relative;
+
+    --height: auto;
+    border-radius: 6px;
 }
 
-.add-edit-master-modal {}
-
-::ng-deep ion-modal.add-edit-master-modal::part(content) {
-    height: 300px;
-    width: 300px;
-
-    @apply rounded-md
+::ng-deep ion-modal>.ion-page {
+    position: relative;
+    contain: layout style;
+    height: 100%;
+    transition: height 0.3s ease-in-out;
 }

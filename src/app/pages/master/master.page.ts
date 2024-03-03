@@ -8,6 +8,7 @@ import { ModalController } from '@ionic/angular';
 import { AddEditHeightComponent } from 'src/app/modals/add-edit-height/add-edit-height.component';
 import { AddEditRoleComponent } from 'src/app/modals/add-edit-role/add-edit-role.component';
 import { AddEditEducationComponent } from 'src/app/modals/add-edit-education/add-edit-education.component';
+import { HeightService } from 'src/app/services/height/height.service';
 import { EducationService } from 'src/app/services/education/education.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
@@ -23,6 +24,7 @@ export class MasterPage implements OnInit {
   educationService = inject(EducationService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
+  heightService = inject(HeightService);
   alert = inject(AlertService);
 
   heightMasterRowData: any = [];
@@ -39,6 +41,7 @@ export class MasterPage implements OnInit {
 
   ngOnInit() {
     this.setMasterData();
+    this.getHeightList();
   }
 
   setMasterData() {
@@ -50,13 +53,11 @@ export class MasterPage implements OnInit {
 
   setHeightMasterGridData() {
 
-    this.heightMasterRowData = [
-      { id: 1, title: "Height" }
-    ];
+    this.heightMasterRowData = [];
 
     this.heightMasterColumnDefs = [
       { field: "id", width: 60 },
-      { field: "title", minWidth: 435 },
+      { field: "heightName", minWidth: 435 },
       {
         field: "action",
         colId: 'height',
@@ -176,6 +177,7 @@ export class MasterPage implements OnInit {
 
   handleGridAddAction(event: any) {
     const modelType = event?.type?.toLowerCase();
+    console.log(modelType)
     switch (modelType) {
       case 'role':
         this.openAddEditRoleModal();
@@ -204,13 +206,13 @@ export class MasterPage implements OnInit {
           break;
       }
     } else {
-     this.openDeleteConfirmationModal(event); 
+      this.openDeleteConfirmationModal(event);
     }
   }
 
   openDeleteConfirmationModal(data: any) {
     console.log('data: ', data);
-    
+
   }
 
   ngOnDestroy(): void { }
@@ -254,14 +256,23 @@ export class MasterPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit Height' : 'Add New Height',
+          data: { ...event, isEditMode }
+        }
+      },
       cssClass: 'height-modal'
     });
     console.log('>>>>> modal : ', modal);
     await modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-    console.log('data: ', data);
-    console.log('role: ', role);
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    console.log(eventType);
+    if (actionEvents.includes(eventType)) {
+      this.getHeightList();
+    }
   }
 
   async openAddEditEducationModal(event?: any) {
@@ -290,4 +301,23 @@ export class MasterPage implements OnInit {
     }
   }
 
+  getHeightList(): any {
+    this.heightService.getHeightList().subscribe({
+      next: (data: any[]) => {
+        this.heightMasterRowData = data?.map((item: any) => {
+          const obj = {
+            id: item?.heightId,
+            heightName: item?.heightName,
+          }
+          return obj;
+        });
+
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
+
+  }
 }

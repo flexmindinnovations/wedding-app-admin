@@ -4,6 +4,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { Dismiss } from "flowbite";
 import type { DismissOptions, DismissInterface } from "flowbite";
 import type { InstanceOptions } from 'flowbite';
+import { AUTO_DISMISS_TIMER } from 'src/util/util';
 
 @Component({
   selector: 'app-alert',
@@ -17,6 +18,7 @@ export class AlertComponent implements OnInit {
   alertMessage: string = '';
   alertId: string = '';
 
+
   ngOnInit() {
     this.alertService.getAlertMessage().subscribe((alert: any) => {
       this.alertType = alert?.type;
@@ -25,7 +27,7 @@ export class AlertComponent implements OnInit {
 
       setTimeout(() => {
         this.autoHideAlert();
-      }, 3500);
+      }, AUTO_DISMISS_TIMER);
     })
   }
 

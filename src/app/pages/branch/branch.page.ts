@@ -6,7 +6,7 @@ import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { GridActions } from 'src/app/enums/grid-actions';
 import { IBranch } from 'src/app/interfaces/IBranch';
-import { BranchService } from 'src/app/services/branch.service';
+import { BranchService } from 'src/app/services/branch/branch.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 @Component({
   selector: 'app-branch',
@@ -85,7 +85,7 @@ export class BranchPage implements OnInit {
     const action = event?.src;
     const data = event?.rowData;
     console.log('data: ', data);
-    
+
     if (action === GridActions.edit) {
       this.sidebarItemService.setCurrentPage('Edit Branch');
       this.router.navigateByUrl(`branch/edit/${data?.branchId}`)
