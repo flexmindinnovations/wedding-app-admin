@@ -1,15 +1,19 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, dropdownThemeVariables } from 'src/util/util';
 import { Dropdown } from 'flowbite';
-import { Subscription } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
 })
-export class DropdownComponent implements OnInit, ControlValueAccessor {
+export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+
+  cdr = inject(ChangeDetectorRef);
+
+
   toggleIcon: any = 'down';
   isOpen: boolean = false;
   @Input() label: string = '';
@@ -19,14 +23,19 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   @Input() cssClasses: any;
   @Input() options: any[] = [];
   @Input() isMultiSelect: boolean = false;
+  @Input() controlValue: any;
 
   @Output() onSelectionChange: any = new EventEmitter();
   value: any;
-  buttonId = 'dropdownSearchButton';
-  menuId: any = 'dropdownMenuEl';
+  @Input() buttonId = uuidv4();
+  @Input() menuId: any = uuidv4();
+
+  searchQuery: string = '';
+  filteredOptions: any = [];
 
   onChange(value: any) { }
   onTouched() { }
+
 
   isVisible = false;
 
@@ -74,8 +83,31 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit() {
-    this.buttonId = `${this.label}-${this.buttonId}`;
-    this.menuId = `${this.label}-${this.menuId}`;
+    this.filteredOptions = JSON.parse(JSON.stringify(this.options));
+    setTimeout(() => {
+      if (this.controlValue) {
+        const selectedValue = this.options.find((item: any) => item[this.getId()] === this.controlValue);
+        if (selectedValue) {
+          this.onSelectionChange.emit(selectedValue);
+          this.value = selectedValue;
+        }
+      }
+    })
+  }
+
+  getId() {
+    let idKey = 'id';
+    switch (this.label) {
+      case 'Specialization':
+        idKey = 'specializationId';
+        break;
+    }
+
+    return idKey;
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   handleToggle() {
@@ -124,5 +156,17 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
     this.dropdown.hide();
     this.isVisible = false;
     this.dropdownIcon = this.isVisible ? 'chevron-up-outline' : 'chevron-down-outline';
+  }
+
+  handleSearchQuery(event: any) {
+    let searchText = event?.target?.value;
+    if (searchText) {
+      const filteredData = this.options.filter((item: any) => {
+        return item.title.toLowerCase().includes(searchText.toLowerCase());
+      })
+      this.filteredOptions = [...filteredData];
+    } else {
+      this.filteredOptions = [...this.options];
+    }
   }
 }

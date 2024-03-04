@@ -1,25 +1,38 @@
-<div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
+<div class="conact-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
-      <app-dropdown label="Contact Of" class="" [control]="formGroupControl['contactOf']" formControlName="contactOf"
-        [options]="[]" />
+      <!-- <app-dropdown label="Contact Of" class="" [control]="formGroupControl['contactOf']" formControlName="contactOf"
+        [options]="[]" /> -->
 
-      <app-input label="Contact Number" class="flex-grow-1" type="number" [control]="formGroupControl['contactNumber']"
-        formControlName="contactNumber" />
+      <app-input label="Contact Number" [controlValue]="formGroup.get('contactNumber')?.value" class="flex-grow"
+        type="number" [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
 
-      <app-input label="WhatsApp Number" class="flex-grow-1" type="number"
-        [control]="formGroupControl['whatsAppNumber']" formControlName="whatsAppNumber" />
+      <app-input label="WhatsApp Number" class="flex-grow" type="number"
+        [controlValue]="formGroup.get('whatsAppNumber')?.value" [control]="formGroupControl['whatsAppNumber']"
+        formControlName="whatsAppNumber" />
 
-      <app-dropdown label="Country" class="" [control]="formGroupControl['country']" formControlName="country"
-        [options]="[]" />
+      @if (countryList.length) {
+      <app-dropdown label="Country" class="" [control]="formGroupControl['countryId']"
+        [controlValue]="formGroup.get('countryId')?.value"
+        (onSelectionChange)="onSelectionChange($event, 'countryId')" formControlName="countryId"
+        [options]="countryList" />
+      }
 
-      <app-dropdown label="State" class="" [control]="formGroupControl['state']" formControlName="state"
-        [options]="[]" />
+      @if (stateList.length) {
+      <app-dropdown label="State" class="" [control]="formGroupControl['stateId']" formControlName="stateId"
+        [controlValue]="formGroup.get('stateId')?.value"
+        (onSelectionChange)="onSelectionChange($event, 'stateId')" [options]="stateList" />
+      }
 
-      <app-dropdown label="City" class="" [control]="formGroupControl['city']" formControlName="city" [options]="[]" />
+      @if (cityList.length) {
+      <app-dropdown label="City" class="" [control]="formGroupControl['cityId']" formControlName="cityId"
+        [controlValue]="formGroup.get('cityId')?.value" (onSelectionChange)="onSelectionChange($event, 'cityId')"
+        [options]="cityList" />
+      }
 
-      <app-input label="Home Address" class="flex-grow-1 col-span-3" type="text"
-        [control]="formGroupControl['homeAddress']" formControlName="homeAddress" [isMultiline]=true />
+      <app-input label="Home Address" class="flex-grow col-span-3" type="text"
+        [control]="formGroupControl['homeAddress']" [controlValue]="formGroup.get('homeAddress')?.value"
+        formControlName="homeAddress" [isMultiline]=true />
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">

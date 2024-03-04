@@ -1,6 +1,6 @@
 export interface FormStep {
     source: string;
-    data: {};
+    data: {} | any;
     formId: number;
     action: ActionValue;
     isCompleted: boolean;

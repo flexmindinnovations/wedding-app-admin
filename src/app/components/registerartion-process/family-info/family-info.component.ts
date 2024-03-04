@@ -1,17 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
   selector: 'family-info',
   templateUrl: './family-info.component.html',
   styleUrls: ['./family-info.component.scss'],
 })
-export class FamilyInfoComponent  implements OnInit {
+export class FamilyInfoComponent implements OnInit {
 
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
+
+  alert = inject(AlertService);
+  customerRegistrationService = inject(CustomerRegistrationService);
 
   @Output() familyInfoData = new EventEmitter();
 
@@ -35,11 +42,19 @@ export class FamilyInfoComponent  implements OnInit {
       noOfSisters: ['', [Validators.required]],
       noOfMarriedSisters: ['', [Validators.required]]
     })
+    this.patchFormData();
+  }
 
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
-
+  patchFormData() {
+    this.formGroup.patchValue({
+      fatherName: 'Abdul Karim',
+      fatherOccupation: 'Self Employeed',
+      motherName: 'Jahan',
+      motherOccupation: 'House Wife',
+      noOfBrothers: 2,
+      noOfMarriedBrothers: 1,
+      noOfSisters: 1,
+      noOfMarriedSisters: 1
     })
   }
 
@@ -49,6 +64,11 @@ export class FamilyInfoComponent  implements OnInit {
 
   handleClickOnPrevious(src: string) {
     const formVal = this.formGroup.value;
+    // if (this.formGroup.valid) {
+    //   this.customerRegistrationService.saveFamilyInformation(formVal).subscribe({
+    //     next: (data: any) => {
+    //       if (data) {
+    //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
     const props: FormStep = {
       source: src,
       data: formVal,
@@ -57,20 +77,50 @@ export class FamilyInfoComponent  implements OnInit {
       isCompleted: this.formGroup.valid
     }
     this.familyInfoData.emit(props);
+    //       }
+    //     },
+    //     error: (error: any) => {
+    //       console.log('error: ', error);
+    //       this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+    //     }
+    //   })
+    // } else {
+    //   const invalidFields = findInvalidControlsRecursive(this.formGroup);
+    //   console.log('invalidFields: ', invalidFields);
+    //   invalidFields.forEach((item: any) => {
+    //     this.alert.setAlertMessage(item, AlertType.error);
+    //   })
+    // }
   }
 
   handleClickOnNext(src: string) {
-    const formVal = this.formGroup.value;
-    // if (this.formGroup.valid) {
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 2,
-      action: ActionValue.next,
-      isCompleted: true
+    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, familyInfoId: 0 };
+    if (this.formGroup.valid) {
+      this.customerRegistrationService.saveFamilyInformation(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            const props: FormStep = {
+              source: src,
+              data: {...formVal, familyInfoId: data?.id},
+              formId: 2,
+              action: ActionValue.next,
+              isCompleted: true
+            }
+            this.familyInfoData.emit(props);
+          }
+        },
+        error: (error: any) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
+        }
+      })
+    } else {
+      const invalidFields = findInvalidControlsRecursive(this.formGroup);
+      invalidFields.forEach((item: any) => {
+        this.alert.setAlertMessage(item, AlertType.error);
+      })
     }
-    this.familyInfoData.emit(props);
-    // }
   }
 
 

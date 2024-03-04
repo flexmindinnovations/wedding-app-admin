@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
-import { log } from 'console';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 
 declare var Datepicker: any;
@@ -15,7 +14,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
   @Input() formControlName: string = '';
-  @Input() control!: FormControl;
+  @Input() control!: FormControl | any;
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
@@ -24,6 +23,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';
+
+  cdr = inject(ChangeDetectorRef);
 
   onChange(value: any) { }
   onTouched() { }
@@ -47,6 +48,17 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   ngAfterViewInit(): void {
     const dtEl: any = document.getElementById('datepicker01');
     if (this.type === 'date') this.initDatePicker(dtEl);
+    const controlName = (Object.keys(this.control.parent.controls).find(key => this.control.parent.controls[key] === this.control));
+    this.formatInputData(controlName);
+    this.cdr.detectChanges();
+  }
+
+  formatInputData(controlName: any) {
+    switch (controlName) {
+      case 'dateOfBirth':
+        this.value = new Date(this.value).toLocaleDateString('en-GB');
+        break;
+    }
   }
 
   initDatePicker(element: Element) {
@@ -65,6 +77,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
           const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
           document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px`);
           document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
+          document.getElementsByClassName('months')[0]?.setAttribute('style', `width: 100%`);
+          document.getElementsByClassName('years')[0]?.setAttribute('style', `width: 100%`);
           document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
           document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);
         }
@@ -98,9 +112,10 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     // this.disabled = isDisabled;
   }
 
-  handleOnChange(event: any) {
+  handleOnChange(event: any, src?: string) {
     const value = event.target.value;
-    this.inputValue.emit(value);
+    const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
+    this.inputValue.emit(formattedValue);
     this.onChange(value);
   }
 

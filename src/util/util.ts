@@ -1,3 +1,5 @@
+import { FormArray, FormGroup } from "@angular/forms";
+
 export const COLOR_SCHEME = 'br';
 
 const redButton = `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:dark:bg-gray-800 disabled:dark:opacity-70 disabled:dark:shadow-none disabled:bg-gray-300 disabled:opacity-70 disabled:shadow-none disabled:hover:bg-gray-300 dark:focus:ring-gray-400`;
@@ -38,20 +40,20 @@ export const buttonThemeVariables: any = {
 }
 
 export const inputThemeVariables: any = {
-    red: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-600 focus:border-red-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500`,
-    bo: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-bo-600 focus:border-bo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-bo-500 dark:focus:border-bo-500`,
-    br: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-br-600 focus:border-br-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-br-500 dark:focus:border-br-500`
+    red: `bg-gray-50 border border-gray-300 text-gray-900 border-solid text-sm rounded-lg focus:ring-red-600 focus:border-red-600 block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500`,
+    bo: `bg-gray-50 border border-gray-300 text-gray-900 border-solid text-sm rounded-lg focus:ring-bo-600 focus:border-bo-600 block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-bo-500 dark:focus:border-bo-500`,
+    br: `bg-gray-50 border border-gray-300 text-gray-900 border-solid text-sm rounded-lg focus:ring-br-600 focus:border-br-600 block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-br-500 dark:focus:border-br-500`
 }
 
 export const dropdownThemeVariables: any = {
     red: `
-    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
     `,
     bo: `
-    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-bo-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-bo-600 dark:hover:bg-bo-500 dark:focus:ring-bo-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-bo-300 focus:border-red-600 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
     `,
     br: `
-    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-br-300 focus:border-red-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-br-600 dark:hover:bg-br-500 dark:focus:ring-br-800
+    text-gray-900 bg-gray-50 border !border-gray-300 focus:ring-br-300 focus:border-red-600 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
     `
 }
 
@@ -112,3 +114,26 @@ export const convertObjectToJson = (obj: any) => {
 }
 
 export const AUTO_DISMISS_TIMER: number = 4500;
+
+export const getRandomNumber = (src: string): string => {
+    const max = 100;
+    const min = 1;
+    return `${src}-${Math.floor(Math.random() * (max - min + 1)) + min}`;
+}
+
+export const findInvalidControlsRecursive = (formToInvestigate: FormGroup | FormArray): string[] => {
+    var invalidControls: string[] = [];
+    let recursiveFunc = (form: FormGroup | FormArray) => {
+        Object.keys(form.controls).forEach(field => {
+            const control: any = form.get(field);
+            if (control.invalid) invalidControls.push(field);
+            if (control instanceof FormGroup) {
+                recursiveFunc(control);
+            } else if (control instanceof FormArray) {
+                recursiveFunc(control);
+            }
+        });
+    }
+    recursiveFunc(formToInvestigate);
+    return invalidControls;
+}
