@@ -1,0 +1,33 @@
+<div class="cast-modal flex flex-col h-full">
+  <div class="header px-3 py-2 border-b border-b-gray-200 min-h-14 flex items-center justify-start">
+    <div class="modal-title">
+      <h1 class="m-0 text-base">{{data?.title}}</h1>
+    </div>
+  </div>
+  <div class="body ion-padding border-b border-b-gray-200">
+    <form [formGroup]="formGroup">
+      <div class="flex flex-col gap-3 p-2">
+        <!-- <div class="flex items-center gap-3">
+          <label for="castName">Cast</label>
+          <app-input type="text" id="castName" [control]="formGroupControl['castName']" formControlName="castName"
+            [controlValue]="formGroup.get('castName')?.value" class="" />
+        </div>
+        <div class="flex items-center gap-3">
+          <label for="castName">Sub Cast</label>
+          <app-input type="text" id="subcastName" [control]="formGroupControl['subcastName']"
+            formControlName="subcastName" [controlValue]="formGroup.get('castName')?.value" class="" />
+        </div> -->
+        <div></div>
+        <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('CastName')?.value"
+          [control]="formGroupControl['castName']" formControlName="castName" />
+        <app-input label="Sub Cast" class="flex-grow-1 w-full" type="text"
+          [controlValue]="formGroup.get('subCastName')?.value" [control]="formGroupControl['subcastName']"
+          formControlName="subcastName" />
+      </div>
+    </form>
+  </div>
+  <div class="actions flex items-center h-16 justify-end p-3 gap-4">
+    <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
+  </div>
+</div>

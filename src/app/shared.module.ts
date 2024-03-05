@@ -31,6 +31,7 @@ import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.compo
 import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
 import { AlertComponent } from "./components/alert/alert.component";
 import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.component";
+import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.component";
 
 @NgModule({
     declarations: [
@@ -56,6 +57,7 @@ import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.c
         MasterDataComponent,
         AddEditRoleComponent,
         AddEditEducationComponent,
+        AddEditCastComponent,
         AlertComponent,
         DeleteConfirmComponent,
     ],
@@ -104,6 +106,7 @@ import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.c
         MasterDataComponent,
         AddEditRoleComponent,
         AddEditEducationComponent,
+        AddEditCastComponent,
         AlertComponent,
         DeleteConfirmComponent
     ],

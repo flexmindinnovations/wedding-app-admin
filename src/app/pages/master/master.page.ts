@@ -12,6 +12,7 @@ import { HeightService } from 'src/app/services/height/height.service';
 import { EducationService } from 'src/app/services/education/education.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
+import { AddEditCastComponent } from 'src/app/modals/add-edit-cast/add-edit-cast.component';
 
 @Component({
   selector: 'app-master',
@@ -33,6 +34,9 @@ export class MasterPage implements OnInit {
   roleMasterRowData: any = [];
   roleMasterColumnDefs: ColDef[] = [];
 
+  castMasterRowData: any = [];
+  castMasterColumnDefs: ColDef[] = [];
+
   educationMasterRowData: any = [];
   educationMasterColumnDefs: ColDef[] = [];
 
@@ -48,6 +52,7 @@ export class MasterPage implements OnInit {
     this.setHeightMasterGridData();
     this.setRoleMasterGridData();
     this.setEducationMasterGridData();
+    this.setCastMasterGridData();
     this.setSpecializationMasterGridData();
   }
 
@@ -61,6 +66,27 @@ export class MasterPage implements OnInit {
       {
         field: "action",
         colId: 'height',
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+  }
+
+  setCastMasterGridData() {
+
+    this.castMasterRowData = [];
+
+    this.castMasterColumnDefs = [
+      { field: "id", width: 60 },
+      { field: "castName", minWidth: 235 },
+      { field: "subCastName", minWidth: 235 },
+      {
+        field: "action",
+        colId: 'cast',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -188,6 +214,9 @@ export class MasterPage implements OnInit {
       case 'education':
         this.openAddEditEducationModal();
         break;
+      case 'cast':
+        this.openAddEditCastModal();
+        break;
     }
   }
 
@@ -203,6 +232,9 @@ export class MasterPage implements OnInit {
           break;
         case 'education':
           this.openAddEditEducationModal(event);
+          break;
+        case 'cast':
+          this.openAddEditCastModal(event);
           break;
       }
     } else {
@@ -286,7 +318,7 @@ export class MasterPage implements OnInit {
       cssClass: 'education-modal',
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
+          title: isEditMode ? 'Edit Cast' : 'Add New Cast',
           data: { ...event, isEditMode }
         }
       }
@@ -299,6 +331,32 @@ export class MasterPage implements OnInit {
       this.getEducationTableData();
       this.getSpecializationTableData();
     }
+  }
+
+  async openAddEditCastModal(event?: any) {
+    this.canShowModal = true;
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    const modal = await this.modalCtrl.create({
+      component: AddEditCastComponent,
+      cssClass: 'cast-modal',
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: ' + event?.rowData?.cast : 'Add New Cast',
+          data: { ...event, isEditMode }
+        }
+      }
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    // if (actionEvents.includes(eventType)) {
+    //   this.getEducationTableData();
+    //   this.getSpecializationTableData();
+    // }
   }
 
   getHeightList(): any {
