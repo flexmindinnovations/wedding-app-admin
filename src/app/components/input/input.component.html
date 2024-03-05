@@ -1,5 +1,5 @@
-<div class="input flex flex-col items-start justify-start gap-2">
-  <label for="username">{{label}}
+<div class="input flex flex-col items-start justify-start gap-0">
+  <label class="mb-2" for="username">{{label}}
   </label>
   @if(isMultiline){
   <textarea [title]="label" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" rows="3"
@@ -24,6 +24,16 @@
   </div>
   } @else {
   <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (change)="handleOnChange($event)" class="p-2.5"
-    [ngClass]="colorVarients" [value]="value" [placeholder]="placeholder" [required]="isRequired">
+    [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
+    [value]="value" [placeholder]="placeholder" [required]="isRequired">
+  @if (control.touched && control.invalid) {
+  <div class="validation-errors px-2">
+    @if (control.hasError('required')) { <span class="text-xs font-light text-red-700">{{label}} is required</span> }
+    @if (control.hasError('min') || control.hasError('max')) { <span class="text-xs font-light text-red-700">Please
+      provide valid input</span> }
+    @if (type === 'email' && control.hasError('email')) { <span class="text-xs font-light text-red-700">Invalid
+      email</span> }
+  </div>
+  }
   }
 </div>

@@ -7,7 +7,7 @@
           <div class="flex" role="group">
             <button type="button" (click)="toggleActive()"
               class="p-1 text-sm font-medium rounded-s-lg bg-gray-100 focus:z-10">
-              <p class="p-1 min-w-16 rounded-md"[ngClass]="[isActive ? cssClass + ' shadow-lg' : '']">Active</p>
+              <p class="p-1 min-w-16 rounded-md" [ngClass]="[isActive ? cssClass + ' shadow-lg' : '']">Active</p>
             </button>
             <button type="button" (click)="toggleActive()"
               class="p-1 text-sm font-medium  rounded-e-lg bg-gray-100 focus:z-10">
@@ -43,6 +43,7 @@
   </form>
 
   <div class="action-buttons flex items-center px-3 py-2 justify-end">
-    <mt-button title="Submit" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleSubmitClick()" />
+    <mt-button [disabled]="formGroup.invalid" title=" Submit" [icon]="'arrow-forward'" [iconSlot]="'end'"
+      (action)="handleSubmitClick()" />
   </div>
 </div>

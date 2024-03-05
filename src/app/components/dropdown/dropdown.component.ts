@@ -35,6 +35,10 @@ export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAcc
   searchQuery: string = '';
   filteredOptions: any = [];
 
+  invalidControl = ' border-red-700 bg-red-200';
+  validControl = ' border-gray-300 bg-gray-50';
+
+
   onChange(value: any) { }
   onTouched() { }
 

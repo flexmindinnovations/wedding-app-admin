@@ -14,7 +14,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
   @Input() formControlName: string = '';
-  @Input() control!: FormControl | any;
+  @Input() control!: FormControl;
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;
@@ -32,6 +32,9 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
 
+  invalidControl = ' border-red-700 bg-red-200';
+  validControl = ' border-gray-300 bg-gray-50';
+
   constructor(
     @Self()
     @Optional()
@@ -48,7 +51,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   ngAfterViewInit(): void {
     const dtEl: any = document.getElementById('datepicker01');
     if (this.type === 'date') this.initDatePicker(dtEl);
-    const controlName = (Object.keys(this.control.parent.controls).find(key => this.control.parent.controls[key] === this.control));
+    const control: any = this.control;
+    const controlName = (Object.keys(control.parent.controls).find(key => control.parent.controls[key] === control));
     this.formatInputData(controlName);
     this.cdr.detectChanges();
   }
