@@ -13,6 +13,7 @@ import { EducationService } from 'src/app/services/education/education.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AddEditCastComponent } from 'src/app/modals/add-edit-cast/add-edit-cast.component';
+import { CastService } from 'src/app/services/cast/cast.service';
 
 @Component({
   selector: 'app-master',
@@ -23,6 +24,7 @@ export class MasterPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   educationService = inject(EducationService);
+  castService = inject(CastService)
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
@@ -46,6 +48,7 @@ export class MasterPage implements OnInit {
   ngOnInit() {
     this.setMasterData();
     this.getHeightList();
+    this.getCastList();
   }
 
   setMasterData() {
@@ -369,6 +372,27 @@ export class MasterPage implements OnInit {
           }
           return obj;
         });
+
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
+
+  }
+  getCastList(): any {
+    this.castService.getCastList().subscribe({
+      next: (data: any[]) => {
+        console.log(data);
+        // this.castMasterRowData = data?.map((item: any) => {
+        //   const obj = {
+        //     id: item?.castId,
+        //     castName: item?.castName,
+        //     subCastName:item?.SubCastName,
+        //   }
+        //   return obj;
+        // });
 
       },
       error: (error) => {

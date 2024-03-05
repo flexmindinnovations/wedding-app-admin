@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class HeightService {
+export class CastService {
 
   endpoint = environment.endpoint + '/api/Cast';
   http = inject(HttpConfigService);
@@ -14,8 +14,11 @@ export class HeightService {
   getCastList(): Observable<any> {
     return this.http.get(`${this.endpoint}/GetCastList`);
   }
-
-
-
+  getCastListById(payload: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetCastListById`, payload)
+  }
+  getSubCastListByCast(payload: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetSubCastListByCastId`, payload)
+  }
 }
 

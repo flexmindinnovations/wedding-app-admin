@@ -29,7 +29,7 @@ export class AddEditCastComponent implements OnInit {
   initFormGroup() {
     this.formGroup = this.fb.group({
       castName: ['', [Validators.required]],
-      subCastname: ['', [Validators.required]],
+      subCastName: ['', [Validators.required]],
     })
 
     this.formGroup.valueChanges.subscribe((event: any) => {
