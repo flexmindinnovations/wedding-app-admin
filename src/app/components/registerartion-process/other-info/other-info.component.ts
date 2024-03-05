@@ -12,7 +12,7 @@ import { findInvalidControlsRecursive } from 'src/util/util';
   styleUrls: ['./other-info.component.scss'],
 })
 export class OtherInfoComponent implements OnInit {
-  
+
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
@@ -72,10 +72,24 @@ export class OtherInfoComponent implements OnInit {
             this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
             const props: FormStep = {
               source: src,
-              data: {...formVal, otherInfoId: data?.id},
+              data: { ...formVal, otherInfoId: data?.id },
               formId: 4,
               action: ActionValue.next,
-              isCompleted: data?.status
+              isCompleted: data?.status,
+              previous: {
+                source: 'contact',
+                data: {},
+                formId: 3,
+                action: ActionValue.previous,
+                isCompleted: true
+              },
+              next: {
+                source: 'photos',
+                data: {},
+                formId: 5,
+                action: ActionValue.next,
+                isCompleted: false
+              }
             }
             this.otherInfoData.emit(props);
           }

@@ -3,12 +3,14 @@ import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, dropdownThemeVariables } from 'src/util/util';
 import { Dropdown } from 'flowbite';
 import { v4 as uuidv4 } from 'uuid';
+import { Flowbite } from '../flowbiteconfig';
 
 @Component({
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
 })
+@Flowbite()
 export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAccessor {
 
   cdr = inject(ChangeDetectorRef);

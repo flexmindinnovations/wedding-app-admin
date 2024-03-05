@@ -102,10 +102,24 @@ export class FamilyInfoComponent implements OnInit {
             this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
             const props: FormStep = {
               source: src,
-              data: {...formVal, familyInfoId: data?.id},
+              data: { ...formVal, familyInfoId: data?.id },
               formId: 2,
               action: ActionValue.next,
-              isCompleted: true
+              isCompleted: true,
+              previous: {
+                source: 'personal',
+                data: {},
+                formId: 1,
+                action: ActionValue.previous,
+                isCompleted: true
+              },
+              next: {
+                source: 'contact',
+                data: {},
+                formId: 3,
+                action: ActionValue.next,
+                isCompleted: false
+              }
             }
             this.familyInfoData.emit(props);
           }

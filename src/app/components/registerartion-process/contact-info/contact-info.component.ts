@@ -101,7 +101,21 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
               data: { ...formVal, contactInfoId: data?.id },
               formId: 3,
               action: ActionValue.next,
-              isCompleted: data?.status
+              isCompleted: data?.status,
+              previous: {
+                source: 'family',
+                data: {},
+                formId: 2,
+                action: ActionValue.previous,
+                isCompleted: true
+              },
+              next: {
+                source: 'other',
+                data: {},
+                formId: 4,
+                action: ActionValue.next,
+                isCompleted: false
+              }
             }
             this.contactInfoData.emit(props);
           }

@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { NavigationStart, Router, RouterEvent } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SidebarItemsService } from './services/sidebar-items.service';
@@ -10,7 +10,7 @@ import { Spinkit } from 'ng-http-loader';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   isCollapsed: boolean = false;
   selectedTheme = 'dark';
   router = inject(Router);
@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    initFlowbite();
     localStorage.setItem('color-scheme', COLOR_SCHEME);
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
@@ -38,6 +37,10 @@ export class AppComponent implements OnInit {
         }
       }
     })
+  }
+
+  ngAfterViewInit(): void {
+    initFlowbite();
   }
 
   handleIsCollapsed(isCollapsed: boolean) {

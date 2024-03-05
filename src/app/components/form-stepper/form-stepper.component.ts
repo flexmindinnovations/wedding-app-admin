@@ -72,7 +72,12 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
     this.colorVarients = stepperThemeVariables[this.colorScheme];
   }
 
+  handleOnStepperClick(step: StepperFormItem) {
+    console.log('step: ', step);
+    
+  }
+
   ngOnDestroy(): void {
-      this.registrationSteps = [];
+    this.registrationSteps = [];
   }
 }

@@ -122,10 +122,18 @@ export class PersonalInfoComponent implements OnInit {
           if (data) {
             const props: FormStep = {
               source: src,
-              data: {...formVal, customerId: data?.id},
+              data: { ...formVal, customerId: data?.id },
               formId: 1,
               action: ActionValue.next,
-              isCompleted: data?.status 
+              isCompleted: data?.status,
+              previous: null,
+              next: {
+                source: 'family',
+                data: { },
+                formId: 2,
+                action: ActionValue.next,
+                isCompleted: false
+              }
             }
             this.personalInfoData.emit(props);
             this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);

@@ -29,31 +29,9 @@
     }
 }
 
-::ng-deep [type='text'],
-[type='date'],
-[type='email'],
-[type='url'],
-[type='password'],
-[type='number'],
-[type='datetime-local'],
-[type='month'],
-[type='search'],
-[type='tel'],
-[type='time'],
-[type='week'],
-[multiple],
-input,
-textarea,
-select {
-    // -webkit-appearance: none;
-    // -moz-appearance: none;
-    // appearance: none;
-    // background-color: transparent;
-    // padding: 0;
 
-    // :hover {
-    //     --border-color: var(--ion-color-step-750, #404040);
-    // }
+textarea {
+    resize: none;
 }
 
 ::ng-deep [type='date'] {

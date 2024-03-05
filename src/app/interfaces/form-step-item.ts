@@ -4,6 +4,8 @@ export interface FormStep {
     formId: number;
     action: ActionValue;
     isCompleted: boolean;
+    previous?: FormStep | null;
+    next?: FormStep | null;
 }
 
 
