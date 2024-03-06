@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 
 declare var Datepicker: any;
@@ -14,7 +14,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
   @Input() formControlName: string = '';
-  @Input() control!: FormControl;
+  @Input() control!: FormControl | any;
   @Input() fill: 'solid' | 'outline' = 'outline';
   @Input() isMultiline: boolean = false;
   @Input('required') isRequired: true | false = false;

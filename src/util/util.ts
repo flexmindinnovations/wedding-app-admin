@@ -54,6 +54,12 @@ export const buttonThemeVariables: any = {
     }
 }
 
+export const iconSize = {
+    sm:'text-sm',
+    md:'text-xl',
+    lg:'text-2xl'
+}
+
 export const inputThemeVariables: any = {
     red: `bg-gray-50 border border-gray-300 text-gray-900 border-solid text-sm rounded-lg focus:ring-red-600 focus:border-red-600 block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500`,
     bo: `bg-gray-50 border border-gray-300 text-gray-900 border-solid text-sm rounded-lg focus:ring-bo-600 focus:border-bo-600 block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-bo-500 dark:focus:border-bo-500`,

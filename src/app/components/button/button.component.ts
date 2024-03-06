@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/util';
+import { COLOR_SCHEME, buttonThemeVariables, iconSize, themeVariables } from 'src/util/util';
 
 @Component({
   selector: 'mt-button',
@@ -19,6 +19,7 @@ export class ButtonComponent implements OnInit {
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
   cancelButtonStyle: any;
+  iconSize: string = '';
 
   @Output() action = new EventEmitter();
   constructor() { }
@@ -32,6 +33,7 @@ export class ButtonComponent implements OnInit {
     this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
     this.colorVarients = buttonThemeVariables[this.colorScheme][this.size];
     this.cancelButtonStyle = `px-5 py-2.5 text-gray-700 rounded-md shadow-none hover:bg-gray-100 hover:text-gray-700 border border-gray-500 disabled:bg-transparent disabled:hover:bg-transparent disabled:cursor-not-allowed`;
+    this.iconSize = iconSize[this.size];
   }
 
 

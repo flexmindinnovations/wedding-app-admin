@@ -20,20 +20,20 @@
 
       @if (hasSpecializationToggle) {
       <div class="specialization-list w-full flex flex-col items-start justify-start">
-        <div class="add-specialization w-full px-3 py-2 flex items-center justify-between">
+        <div class="add-specialization w-[97%] px-3 py-2 flex items-center justify-between">
           <p>Add Specializations: <span class="text-xs opacity-70">(Maximum 15 items can be added)</span></p>
-          <mt-button [title]="'Add Row'" [disabled]="specilaizationList.length === 15" [iconOnly]="true"
+          <mt-button [title]="'Add Row'" [disabled]="specializationList.length === 15" [iconOnly]="true"
             [isCancel]="true" [icon]="'add-outline'" [size]="'lg'" (action)="handleAddRowClick($event)" />
         </div>
-        <div class="list-container w-full max-h-72 overflow-auto ion-padding">
-          @for (item of specilaizationList; track $index) {
-          <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3">
-            <app-input [label]="item?.name" [controlValue]="item?.specializationName" class="flex-grow-1 w-full"
-              type="text" [control]="formGroupControl['specializationList']"
-              (inputValue)="handleInputValue($event, item)" formControlName="specializationList" />
+        <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="specializationList">
+          @for (item of specializationFormGroup.controls; track $index) {
+          <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3" [formGroupName]="$index">
+            <app-input [label]="'Specialization Name'" [controlValue]="item?.get('specializationName')?.value"
+              class="flex-grow-1 w-full" type="text" [control]="item?.get('specializationName')"
+              (inputValue)="handleInputValue($event, item, $index)" formControlName="specializationName" />
 
             <div class="remove-specialization flex items-center justify-center h-11">
-              @if (specilaizationList.length > 1) {
+              @if (specializationList.length > 1) {
               <mt-button [iconOnly]="true" [isCancel]="true" [size]="'lg'" [icon]="'close-outline'"
                 (action)="handleRemoveRowClick($index)" />
               }
