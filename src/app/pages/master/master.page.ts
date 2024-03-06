@@ -91,6 +91,7 @@ export class MasterPage implements OnInit {
         field: "action",
         colId: 'cast',
         width: 100,
+        pinned: 'right',
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
           innerRenderer: GridButtonsComponent,

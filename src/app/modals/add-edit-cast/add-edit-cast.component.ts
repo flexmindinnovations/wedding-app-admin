@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -20,24 +20,10 @@ export class AddEditCastComponent implements OnInit {
   castService = inject(CastService)
   castId = 0;
   castName: string = '';
-
-
-  // subCastList: any[] = [
-  //   {
-  //     subCastId: 3,
-  //     subCastName: "Agarwal",
-  //     castId: 3
-  //   },
-  //   {
-  //     subCastId: 5,
-  //     subCastName: "Agarwal2",
-  //     castId: 3
-  //   }
-  // ];
-
+  subCastFormGroup!: FormArray;
 
   subCastList: any[] = [
-    { id: 1, name: "Sub Cast", subCastName: '' }
+    { id: 1, name: "Sub Cast", subCastName: '' },
   ];
 
   constructor(
@@ -57,38 +43,33 @@ export class AddEditCastComponent implements OnInit {
   patchFormData() {
     const modalData = this.data?.data?.rowData;
     this.castId = modalData?.castId;
+    const subCastList = this.formGroup.get('subCastList') as FormArray;
+    subCastList.clear();
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
-          data.map((datum: any) => {
-            this.castName = datum.castName;
-            this.hasSubCastToggle = datum?.hasSubcast;
-            this.subCastList = datum?.subCastList;
-            // this.subCastList = datum?.subCastList.map((item: any) => {
-            //   item['name'] = 'Sub Cast';
-            //   item['castId'] = item?.castId;
-            //   item['subCastName'] = item?.subCastName;
-            //   return item;
-
-            // })
-            // const newList = datum.subCastList.map((item: any) => {
-            //   return { subCastId: item.subCastId, subCastName: item.subCastName, castId: item.subCastId }
-            // })
-            // this.subCastList = [...newList]
-            // this.subCastList = datum.subCastList;
-            console.log(this.subCastList)
-          }
-
-          );
-
+          this.hasSubCastToggle = data[0]?.hasSubcast;
+          this.castName = data[0]?.castName;
+          this.subCastList = data[0].subCastList.map((item: any) => {
+            item['name'] = 'Sub Cast';
+            item['castId'] = this.castId;
+            return item;
+          });
 
           const props = {
-            castName: this.castName,
             hasSubCast: this.hasSubCastToggle,
-            subCastList: this.subCastList
+            castName: this.castName,
           }
-          console.log(props);
           this.formGroup.patchValue(props);
+          this.subCastList.forEach((subCast: any) => {
+            console.log('subCast: ', subCast);
+
+            subCastList.push(
+              this.fb.group({
+                subCastName: subCast?.subCastName ? subCast.subCastName : ''
+              })
+            )
+          })
         }
       },
       error: (error) => {
@@ -97,19 +78,19 @@ export class AddEditCastComponent implements OnInit {
     })
   }
 
-
   initFormGroup() {
     this.formGroup = this.fb.group({
       castName: ['', [Validators.required]],
       hasSubCast: !['', [Validators.required]],
-      subCastList: ['', [Validators.required]],
-      subCastName: ['', [Validators.required]],
+      subCastList: this.fb.array([]),
     })
 
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
-    })
+    const subCastArray = this.formGroup.get('subCastList') as FormArray;
+    const newSubCastGroup = this.fb.group({
+      subCastName: ['']
+    });
+    subCastArray.push(newSubCastGroup);
+    this.subCastFormGroup = subCastArray;
 
   }
 
@@ -117,40 +98,10 @@ export class AddEditCastComponent implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  get subCastListGroup(): FormArray {
+    return this.formGroup.get('subCastList') as FormArray;
+  }
 
-  // addNewCast() {
-  //   let formVal = this.formGroup.value;
-  //   formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
-  //   this.accessHeightDataService.saveHeight(formVal).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         this.modalControllerService.dismiss({ event: 'add' });
-  //       }
-  //     },
-  //     error: (error) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage(error?.message, AlertType.error);
-  //     }
-  //   })
-  // }
-
-  // updateCast() {
-  //   let formVal = this.formGroup.value;
-  //   formVal = { heightId: this.heightId, heightName: `${formVal.feet} feet ${formVal.inch} inch` };
-  //   this.accessHeightDataService.updateHeight(formVal).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         this.modalControllerService.dismiss({ event: 'update' });
-  //       }
-  //     },
-  //     error: (error) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage(error?.message, AlertType.error);
-  //     }
-  //   })
-  // }
 
   handleButtonClick(event: any) {
     if (event?.isCancel) {
@@ -222,17 +173,27 @@ export class AddEditCastComponent implements OnInit {
 
   handleAddRowClick(event: any) {
     const maxId = this.subCastList.reduce((max, obj) => obj.id > max ? obj.id : max, this.subCastList[0].id);
-    const newItem = { id: maxId + 1, name: 'SubCast Name', subCastName: '' }
+    const newItem = { id: maxId + 1, name: 'Sub Cast', subCastName: '' }
     this.subCastList.push(newItem);
+    const subCastListGroup = this.formGroup.get('subCastList') as FormArray;
+    const subCastGroup = this.fb.group({
+      subCastName: [''],
+    });
+    subCastListGroup.push(subCastGroup);
+    this.subCastFormGroup = subCastListGroup;
   }
 
   handleRemoveRowClick(event: any) {
     this.subCastList.splice(event, 1);
+    this.subCastFormGroup.controls.splice(event, 1);
   }
 
 
-  handleInputValue(event: string, item: any) {
+  handleInputValue(event: string, item: any, index: number) {
     item.subCastName = event;
+    const control = item?.get('subCastName');
+    if (control) control.setValue(event);
+    this.subCastList[index].subCastName = event;
   }
 
 

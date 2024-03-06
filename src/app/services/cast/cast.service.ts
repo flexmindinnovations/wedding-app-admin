@@ -14,8 +14,8 @@ export class CastService {
   getCastList(): Observable<any> {
     return this.http.get(`${this.endpoint}/GetCastList`);
   }
-  getCastListById(payload: any): Observable<any> {
-    return this.http.get(`${this.endpoint}/GetCastListById?castId=${payload}`)
+  getCastListById(castId: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetCastListById?castId=${castId}`)
   }
   getSubCastListByCast(payload: any): Observable<any> {
     return this.http.get(`${this.endpoint}/GetSubCastListByCastId`, payload)

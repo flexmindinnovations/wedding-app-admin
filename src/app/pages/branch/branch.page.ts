@@ -35,7 +35,7 @@ export class BranchPage implements OnInit {
         innerRenderer: GridCellImageComponent,
       } as IGroupCellRendererParams
     },
-    { field: "branchName", width: 315},
+    { field: "branchName", width: 315 },
     { field: "countryName", headerName: 'Country' },
     { field: "stateName", headerName: 'State', width: 200 },
     { field: "cityName", headerName: 'City', width: 150 },
@@ -62,6 +62,9 @@ export class BranchPage implements OnInit {
 
   ngOnInit() {
     this.getBranchList();
+    this.branchService.getUpdate().subscribe(() => {
+      this.getBranchList();
+    });
   }
 
   getBranchList(): void {

@@ -37,12 +37,12 @@
             <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 5" [iconOnly]="true" [isCancel]="true"
               [icon]="'add-outline'" [size]="'lg'" (action)="handleAddRowClick($event)" />
           </div>
-          <div class="list-container w-full max-h-72 overflow-auto ion-padding">
-            @for (item of subCastList; track $index) {
-            <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3">
-              <app-input [label]="item?.name" [controlValue]="item?.subCastName" class="flex-grow-1 w-full" type="text"
-                [control]="formGroupControl['subCastList']" (inputValue)="handleInputValue($event, item)"
-                formControlName="subCastList" />
+          <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="subCastList">
+            @for (item of subCastFormGroup.controls; track $index) {
+            <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3" [formGroupName]="$index">
+              <app-input [label]="'Sub Cast'" [controlValue]="item?.get('subCastName')?.value"
+                class="flex-grow-1 w-full" type="text" [control]="item?.get('subCastName')"
+                (inputValue)="handleInputValue($event, item, $index)" formControlName="subCastName" />
 
               <div class="remove-specialization flex items-center justify-center h-11">
                 @if (subCastList.length > 1) {
