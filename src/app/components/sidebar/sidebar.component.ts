@@ -1,15 +1,15 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
-import { COLOR_SCHEME, themeVariables } from 'src/util/util';
+import { COLOR_SCHEME, nestedRoutes, themeVariables } from 'src/util/util';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   sidebarItems: SideBarItem[] = [];
@@ -22,12 +22,19 @@ export class SidebarComponent implements OnInit {
   // colorScheme = 'red';
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
-  nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', 'customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
 
   ngOnInit() {
     this.getSidebarItems();
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
+  }
+
+  ngAfterViewInit(): void {
+    this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+      this.sidebarItems.forEach(each => each.isActive = false);
+      if(route) this.setActiveItem(route);
+      else this.sidebarItems[0].isActive = true;
+    })
   }
 
 
@@ -38,7 +45,7 @@ export class SidebarComponent implements OnInit {
         const route = window.location.pathname;
         const routeSplitted = route.split('/');
         this.showTitles = this.isSidebarExpanded ? true : false;
-        const isNestedRoute = this.nestedRoutes.includes(routeSplitted[1]);
+        const isNestedRoute = nestedRoutes.includes(routeSplitted[1]);
         if (isNestedRoute) {
           const activeRoute = route.split('/');
           if (activeRoute.length) this.setActiveItem(activeRoute[1]);

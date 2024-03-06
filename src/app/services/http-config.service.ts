@@ -18,7 +18,7 @@ export class HttpConfigService {
       .pipe(
         tap((data: any) => { }),
         map((response) => {
-          if (response.type === 4) {
+          if (response.type === 4 && response.body) {
             return response.body;
           }
         }),

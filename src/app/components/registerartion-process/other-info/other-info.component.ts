@@ -16,7 +16,8 @@ export class OtherInfoComponent implements OnInit {
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
-
+  @Input() isEditMode: boolean = false;
+  @Input() customerData: any = null;
   @Output() otherInfoData = new EventEmitter();
 
   alert = inject(AlertService);

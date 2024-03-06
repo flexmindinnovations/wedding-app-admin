@@ -16,7 +16,8 @@ export class FamilyInfoComponent implements OnInit {
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
-
+  @Input() customerData: any = null;
+  @Input() isEditMode: boolean = false;
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
 

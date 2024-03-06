@@ -4,6 +4,9 @@ import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-butto
 import { GridActions } from 'src/app/enums/grid-actions';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
+import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { AlertType } from 'src/app/enums/alert-types';
 
 
 @Component({
@@ -15,24 +18,23 @@ export class CustomersPage implements OnInit {
 
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
+  customerService = inject(CustomerRegistrationService);
+  alertService = inject(AlertService);
 
-  rowData = [
-    { id: 1, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 2, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 3, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 4, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" }
-  ];
+  rowData: any = [];
 
   // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "id", width: 60 },
-    { field: "title" },
-    { field: "date" },
-    { field: "country" },
-    { field: "state" },
-    { field: "city" },
+    { field: "customerId", headerName: '#id', width: 60 },
+    { field: "fullName", width: 400 },
+    { field: "mobileNo", width: 150 },
+    // { field: "country" },
+    // { field: "state" },
+    // { field: "city" },
     {
       field: "action",
+      pinned: 'right',
+      width: 100,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridButtonsComponent,
@@ -42,6 +44,19 @@ export class CustomersPage implements OnInit {
   ];
 
   ngOnInit() {
+    this.getCustomerList();
+  }
+
+  getCustomerList(): void {
+    this.customerService.getCustomerList().subscribe({
+      next: (data: any) => {
+        this.rowData = data;
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage('Error: ' + error, AlertType.error);
+      }
+    })
   }
 
   handleClick() {
@@ -53,7 +68,7 @@ export class CustomersPage implements OnInit {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.id}`)
+      this.router.navigateByUrl(`customers/edit/${data?.customerId}`);
     } else {
       console.log('>>>>> event delete: ', event);
     }

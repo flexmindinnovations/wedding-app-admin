@@ -17,7 +17,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
-
+  @Input() customerData: any = null;
+  @Input() isEditMode: boolean = false;
   @Output() contactInfoData = new EventEmitter();
 
   isCountryListAvailable = false;
