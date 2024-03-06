@@ -132,6 +132,7 @@ export class MasterPage implements OnInit {
       {
         field: "action",
         colId: 'education',
+        pinned: 'right',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -149,8 +150,6 @@ export class MasterPage implements OnInit {
       next: (data: any) => {
         // let datum = data.map(e=>)
         if (data) {
-          console.log('data: ', data);
-
           this.educationMasterRowData = data.map((item: any) => {
             item['id'] = item?.educationId;
             // item['specializationCount'] = this.
@@ -207,7 +206,6 @@ export class MasterPage implements OnInit {
 
   handleGridAddAction(event: any) {
     const modelType = event?.type?.toLowerCase();
-    console.log(modelType)
     switch (modelType) {
       case 'role':
         this.openAddEditRoleModal();

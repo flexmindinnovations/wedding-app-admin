@@ -1,25 +1,42 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 
 @Component({
   selector: 'app-add-edit-customer',
   templateUrl: './add-edit-customer.page.html',
   styleUrls: ['./add-edit-customer.page.scss'],
 })
-export class AddEditCustomerPage implements OnInit, OnDestroy {
+export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   personalDetailsFormGroup!: FormGroup;
   contactDetailsFormGroup !: FormGroup;
   completedStep!: FormStep;
   currentForm: number = 1;
+  isEditMode: boolean = false;
+  customerId = 0;
+  customerDetails: any = null;
+  isDataLoaded = false;
 
-  constructor(
-    private fb: FormBuilder
-  ) {
-  }
+  router = inject(Router);
+  customerService = inject(CustomerRegistrationService);
+  fb = inject(FormBuilder);
+  activeRouter = inject(ActivatedRoute);
+  alertService = inject(AlertService);
 
   ngOnInit() {
     this.initFormGroup();
+  }
+
+  ngAfterViewInit(): void {
+    this.activeRouter.params.subscribe((params: any) => {
+      this.customerId = params && params['id'] ? params['id'] : 0;
+      this.isEditMode = this.customerId > 0 ? true : false;
+      this.getCustomerDetails();
+    })
   }
 
   initFormGroup() {
@@ -36,16 +53,25 @@ export class AddEditCustomerPage implements OnInit, OnDestroy {
       maritalStatus: ['', [Validators.required]],
       hobbies: ['', ![Validators.required]]
     })
-
-    this.personalDetailsFormGroup.valueChanges.subscribe((event) => {
-      const val = event
-      console.log('val: ', val);
-
-    })
   }
 
   get personalFormControl(): { [key: string]: FormControl } {
     return this.personalDetailsFormGroup.controls as { [key: string]: FormControl };
+  }
+
+  getCustomerDetails(): void {
+    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.customerDetails = data;
+          this.isDataLoaded = true;
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage('Error: ' + error, AlertType.error);
+      }
+    })
   }
 
   handleClickOnNext(data: FormStep) {

@@ -8,6 +8,21 @@ const boButton = `flex item-center justify-start disabled:bg-gray-200 disabled:c
 
 const brButton = `flex item-center justify-start disabled:bg-gray-200 disabled:cursor-not-allowed disabled:border-gray-300 text-white bg-br-500 hover:bg-br-600 focus:ring-4 focus:outline-none focus:ring-br-300 font-medium rounded-lg text-sm text-center items-center justify-start gap-2 me-2 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:dark:bg-gray-800 disabled:dark:opacity-70 disabled:dark:shadow-none disabled:bg-gray-300 disabled:opacity-70 disabled:shadow-none disabled:hover:bg-gray-300 dark:focus:ring-gray-400`;
 
+export const dashboardCards: any = {
+    red: `
+    bg-red-500 hover:bg-red-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none
+    
+    `,
+    bo: `
+    bg-bo-500 hover:bg-bo-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none
+    
+    `,
+    br: `
+    bg-br-500 hover:bg-br-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none
+    
+    `
+}
+
 
 export const themeVariables: any = {
     red: `
@@ -37,6 +52,12 @@ export const buttonThemeVariables: any = {
         md: brButton + ' px-3 py-2',
         lg: brButton + ' px-5 py-2.5'
     }
+}
+
+export const iconSize = {
+    sm:'text-sm',
+    md:'text-xl',
+    lg:'text-2xl'
 }
 
 export const inputThemeVariables: any = {
@@ -137,3 +158,5 @@ export const findInvalidControlsRecursive = (formToInvestigate: FormGroup | Form
     recursiveFunc(formToInvestigate);
     return invalidControls;
 }
+
+export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', 'customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];

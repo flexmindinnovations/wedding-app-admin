@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ISpecialization } from 'src/app/interfaces/IEducation';
@@ -25,8 +25,9 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   accessRoleData: any[] = [];
   hasSpecializationToggle = false;
   educationId = 0;
+  specializationFormGroup!: FormArray;
 
-  specilaizationList: any[] = [
+  specializationList: any[] = [
     { id: 1, name: 'Specialization Name', specializationName: '' }
   ];
 
@@ -46,20 +47,28 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
     const modalData = this.data?.data?.rowData;
     this.educationId = modalData?.educationId;
     this.hasSpecializationToggle = modalData?.hasSpecialization;
+    const specializationList = this.formGroup.get('specializationList') as FormArray;
+    specializationList.clear();
     this.educationService.getSpecializationListByEducationId(modalData?.educationId).subscribe({
       next: (data: any) => {
         if (data) {
-          this.specilaizationList = data.map((item: any) => {
+          this.specializationList = data.map((item: any) => {
             item['name'] = 'Specialization Name';
             item['educationId'] = this.educationId;
             return item;
           });
           const props = {
             hasSpecialization: this.hasSpecializationToggle,
-            educationName: modalData?.educationName,
-            specializationList: this.specilaizationList
+            educationName: modalData?.educationName
           }
           this.formGroup.patchValue(props);
+          this.specializationList.forEach((specialization: any) => {
+            specializationList.push(
+              this.fb.group({
+                specializationName: specialization?.specializationName ? specialization?.specializationName : ''
+              })
+            )
+          })
         }
       },
       error: (error) => {
@@ -72,17 +81,29 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
     this.formGroup = this.fb.group({
       hasSpecialization: !['', [Validators.required]],
       educationName: ['', [Validators.required]],
-      specializationList: ['', [Validators.required]],
+      specializationList: this.fb.array([])
     })
+    const specializationArray = this.formGroup.get('specializationList') as FormArray;
+    const newSpecializationGroup = this.fb.group({
+      specializationName: ['']
+    });
+    specializationArray.push(newSpecializationGroup);
+    this.specializationFormGroup = specializationArray;
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  get specializationListGroup(): FormArray {
+    return this.formGroup.get('specializationList') as FormArray;
+  }
 
-  handleInputValue(event: string, item: any) {
-    item.specializationName = event;
+
+  handleInputValue(event: string, item: any, index: number) {
+    const control = item?.get('specializationName');
+    if (control) control.setValue(event);
+    this.specializationList[index].specializationName = event;
   }
 
   handleButtonClick(event: any) {
@@ -90,14 +111,13 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
       this.modalControllerService.dismiss({ event: 'cancel' });
       return;
     }
-
     if (this.educationId > 0) this.updateCourseDetails();
     else this.addNewCourse();
   }
 
   addNewCourse() {
     let formVal: any = { ...this.formGroup.value, educationId: 0 };
-    formVal['specializationList'] = this.specilaizationList.map((item: any) => {
+    formVal['specializationList'] = this.specializationList.map((item: any) => {
       const obj = {
         specializationId: 0,
         educationId: 0,
@@ -121,7 +141,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
 
   updateCourseDetails() {
     let formVal: any = { ...this.formGroup.value, educationId: this.educationId };
-    formVal['specializationList'] = this.specilaizationList.map((item: any) => {
+    formVal['specializationList'] = this.specializationList.map((item: any) => {
       return {
         specializationId: item.specializationId ? item.specializationId : 0,
         educationId: this.educationId ? this.educationId : 0,
@@ -147,17 +167,23 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   }
 
   handleAddRowClick(event: any) {
-    const maxId = this.specilaizationList.reduce((max, obj) => obj.id > max ? obj.id : max, this.specilaizationList[0].id);
+    const maxId = this.specializationList.reduce((max, obj) => obj.id > max ? obj.id : max, this.specializationList[0].id);
     const newItem = { id: maxId + 1, name: 'Specialization Name', specializationName: '' }
-    this.specilaizationList.push(newItem);
+    this.specializationList.push(newItem);
+    const specializationListGroup = this.formGroup.get('specializationList') as FormArray;
+    const specializationGroup = this.fb.group({
+      specializationName: [''],
+    });
+    specializationListGroup.push(specializationGroup);
+    this.specializationFormGroup = specializationListGroup;
   }
 
   handleRemoveRowClick(event: any) {
-    this.specilaizationList.splice(event, 1);
+    this.specializationList.splice(event, 1);
   }
 
   ngOnDestroy() {
-    this.specilaizationList = [];
+    this.specializationList = [];
   }
 
 }

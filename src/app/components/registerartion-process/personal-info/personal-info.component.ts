@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, map } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
@@ -7,6 +7,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { EducationService } from 'src/app/services/education/education.service';
 import { HeightService } from 'src/app/services/height/height.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { findInvalidControlsRecursive, getRandomNumber } from 'src/util/util';
 
 @Component({
@@ -14,7 +15,7 @@ import { findInvalidControlsRecursive, getRandomNumber } from 'src/util/util';
   templateUrl: './personal-info.component.html',
   styleUrls: ['./personal-info.component.scss'],
 })
-export class PersonalInfoComponent implements OnInit {
+export class PersonalInfoComponent implements OnInit, AfterViewInit {
 
   formGroup!: FormGroup;
   genderOptions: any = [];
@@ -24,11 +25,15 @@ export class PersonalInfoComponent implements OnInit {
   physicalStatusListOptions: any = [];
   specializationListOptions: any = [];
   @ViewChild('dropdownInput') dropdownInput: any;
+  @Input() customerData: any = null;
+  @Input() isEditMode: boolean = false;
+
 
   @Output() personalInfoData = new EventEmitter();
   educationService = inject(EducationService);
   heightService = inject(HeightService);
   alert = inject(AlertService);
+  sharedService = inject(SharedService);
   customerRegistrationService = inject(CustomerRegistrationService);
 
   hasSpecialization: boolean = false;
@@ -58,6 +63,10 @@ export class PersonalInfoComponent implements OnInit {
     ]
   }
 
+  ngAfterViewInit(): void {
+    if (this.isEditMode) this.patchValue();
+  }
+
   initFormGroup() {
     this.formGroup = this.fb.group({
       firstName: ['', [Validators.required]],
@@ -75,37 +84,14 @@ export class PersonalInfoComponent implements OnInit {
       maritalStatus: ['', [Validators.required]],
       hobbies: ['', ![Validators.required]]
     });
-    this.patchValue();
   }
 
   patchValue() {
-    this.physicalStatusListOptions = [
-      { id: 1, title: 'Handicapped' },
-      { id: 2, title: 'Blind' },
-      { id: 3, title: 'Deaf-mute/dumb' },
-      { id: 4, title: 'Mentally retarded /Retard' },
-      { id: 5, title: 'Psycho' },
-      { id: 6, title: 'Wheelchair bound' },
-      { id: 7, title: 'Other' },
-    ];
-
-    this.formGroup.patchValue(
-      {
-        firstName: 'Mohammed',
-        lastName: 'Ali',
-        middleName: 'Mohammed',
-        gender: 'male',
-        heightId: 5,
-        eduationId: 5,
-        specializationId: 8,
-        dateOfBirth: new Date(),
-        occupation: 'Self Employed',
-        physicalStatus: 7,
-        otherPhysicalCondition: 'Test',
-        maritalStatus: 'married',
-        hobbies: 'Test'
-      }
-    )
+    const personalInfo = this.customerData['personalInfoModel'];
+    this.formGroup.patchValue({
+      ...personalInfo,
+      dateOfBirth: new Date(personalInfo['dateOfBirth'])
+    });
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -117,33 +103,8 @@ export class PersonalInfoComponent implements OnInit {
     formVal['specializationId'] = this.specializationId ? this.specializationId : '';
     formVal['dateOfBirth'] = new Date(formVal['dateOfBirth']);
     if (this.formGroup.valid) {
-      this.customerRegistrationService.savePersonalInformation(formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            const props: FormStep = {
-              source: src,
-              data: { ...formVal, customerId: data?.id },
-              formId: 1,
-              action: ActionValue.next,
-              isCompleted: data?.status,
-              previous: null,
-              next: {
-                source: 'family',
-                data: { },
-                formId: 2,
-                action: ActionValue.next,
-                isCompleted: false
-              }
-            }
-            this.personalInfoData.emit(props);
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          }
-        },
-        error: (error: any) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
-        }
-      })
+      if(this.isEditMode) this.updateCustomerInfo(formVal, src)
+      else this.saveNewCustomerInfo(formVal, src)
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -152,14 +113,78 @@ export class PersonalInfoComponent implements OnInit {
     }
   }
 
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    this.customerRegistrationService.savePersonalInformation(formVal).subscribe({
+      next: (data: any) => {
+        if (data) {
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, customerId: data?.id },
+            formId: 1,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: null,
+            next: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.personalInfoData.emit(props);
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
+  updateCustomerInfo(formVal: any, src: string): void {
+    const personalInfo = this.customerData['personalInfoModel'];
+    console.log('customerData: ', this.customerData);
+    
+    this.customerRegistrationService.updatePersonalInformation(formVal, this.customerData?.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, customerId: data?.id },
+            formId: 1,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: null,
+            next: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.personalInfoData.emit(props);
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
   getMasterData() {
     const education = this.educationService.getEducationList();
     const height = this.heightService.getHeightList();
-    forkJoin({ education, height })
+    const handycap = this.sharedService.getHandyCapItemList();
+    forkJoin({ education, height, handycap })
       .subscribe({
         next: async (result) => {
           this.isDataAvailable = true;
-          const { education, height } = result;
+          const { education, height, handycap } = result;
           this.heightListOptions = height.map((item: any) => {
             return { id: item?.heightId, title: item?.heightName }
           });
@@ -168,6 +193,12 @@ export class PersonalInfoComponent implements OnInit {
               id: item?.educationId,
               title: item?.educationName,
               hasSpecialization: item?.hasSpecialization
+            }
+          });
+          this.physicalStatusListOptions = handycap.map((item: any) => {
+            return {
+              id: item?.handycapId,
+              title: item?.handycapName,
             }
           });
         },

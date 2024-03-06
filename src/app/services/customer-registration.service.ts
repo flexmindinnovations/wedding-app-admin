@@ -12,8 +12,20 @@ export class CustomerRegistrationService {
   http = inject(HttpConfigService);
 
 
+  getCustomerList(): Observable<any> {
+    return this.http.get(this.endpoint + '/Customer/GetCustomerList');
+  }
+
+  getCustomerDetailsById(customerId: number): Observable<any> {
+    return this.http.get(this.endpoint + `/Customer/GetCustomerById/${customerId}`);
+  }
+
   savePersonalInformation(payload: any): Observable<any> {
     return this.http.post(this.endpoint + '/CustomerPersonalInfo/saveCustomerPersonalInfo', payload);
+  }
+
+  updatePersonalInformation(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `/CustomerPersonalInfo/updateCustomerPersonalInfo/${customerId}`, payload);
   }
 
   saveFamilyInformation(payload: any): Observable<any> {
