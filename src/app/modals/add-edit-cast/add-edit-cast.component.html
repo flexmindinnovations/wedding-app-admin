@@ -18,11 +18,43 @@
             formControlName="subcastName" [controlValue]="formGroup.get('castName')?.value" class="" />
         </div> -->
         <div></div>
-        <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('CastName')?.value"
+        <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
           [control]="formGroupControl['castName']" formControlName="castName" />
-        <app-input label="Sub Cast" class="flex-grow-1 w-full" type="text"
-          [controlValue]="formGroup.get('subCastName')?.value" [control]="formGroupControl['subcastName']"
-          formControlName="subcastName" />
+        <!-- <app-input label="Sub Cast" class="flex-grow-1 w-full" type="text"
+          [controlValue]="formGroup.get('subCastName')?.value" [control]="formGroupControl['subCastName']"
+          formControlName="subCastName" /> -->
+        <p class="flex items-center justify-start gap-3">
+          <input #hasSpecializationSelector type="checkbox" id="react-option" formControlName="hasSubCast"
+            (change)="handleSubCastStateChange($event)"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
+          <span class="text-sm">Has SubCast</span>
+        </p>
+
+        @if (hasSubCastToggle) {
+        <div class="specialization-list w-full flex flex-col items-start justify-start">
+          <div class="add-specialization w-full px-3 py-2 flex items-center justify-between">
+            <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 5 items can be added)</span></p>
+            <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 5" [iconOnly]="true" [isCancel]="true"
+              [icon]="'add-outline'" [size]="'lg'" (action)="handleAddRowClick($event)" />
+          </div>
+          <div class="list-container w-full max-h-72 overflow-auto ion-padding">
+            @for (item of subCastList; track $index) {
+            <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3">
+              <app-input [label]="item?.name" [controlValue]="item?.subCastName" class="flex-grow-1 w-full" type="text"
+                [control]="formGroupControl['subCastList']" (inputValue)="handleInputValue($event, item)"
+                formControlName="subCastList" />
+
+              <div class="remove-specialization flex items-center justify-center h-11">
+                @if (subCastList.length > 1) {
+                <mt-button [iconOnly]="true" [isCancel]="true" [size]="'lg'" [icon]="'close-outline'"
+                  (action)="handleRemoveRowClick($index)" />
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
       </div>
     </form>
   </div>

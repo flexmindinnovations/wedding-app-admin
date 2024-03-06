@@ -1,6 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
   selector: 'other-info',
@@ -8,12 +12,15 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
   styleUrls: ['./other-info.component.scss'],
 })
 export class OtherInfoComponent implements OnInit {
-  
+
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
 
   @Output() otherInfoData = new EventEmitter();
+
+  alert = inject(AlertService);
+  customerRegistrationService = inject(CustomerRegistrationService);
 
   constructor(
     private fb: FormBuilder
@@ -30,10 +37,13 @@ export class OtherInfoComponent implements OnInit {
       extraInformation: ['', [Validators.required]]
     })
 
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
+    this.patchFormData();
+  }
 
+  patchFormData() {
+    this.formGroup.patchValue({
+      expectations: 'Test',
+      extraInformation: 'Test',
     })
   }
 
@@ -54,18 +64,47 @@ export class OtherInfoComponent implements OnInit {
   }
 
   handleClickOnNext(src: string) {
-    const formVal = this.formGroup.value;
-    // if (this.formGroup.valid) {
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 4,
-      action: ActionValue.next,
-      // isCompleted: this.formGroup.valid
-      isCompleted: true
+    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
+    if (this.formGroup.valid) {
+      this.customerRegistrationService.saveOtherInformation(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            const props: FormStep = {
+              source: src,
+              data: { ...formVal, otherInfoId: data?.id },
+              formId: 4,
+              action: ActionValue.next,
+              isCompleted: data?.status,
+              previous: {
+                source: 'contact',
+                data: {},
+                formId: 3,
+                action: ActionValue.previous,
+                isCompleted: true
+              },
+              next: {
+                source: 'photos',
+                data: {},
+                formId: 5,
+                action: ActionValue.next,
+                isCompleted: false
+              }
+            }
+            this.otherInfoData.emit(props);
+          }
+        },
+        error: (error: any) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
+        }
+      })
+    } else {
+      const invalidFields = findInvalidControlsRecursive(this.formGroup);
+      invalidFields.forEach((item: any) => {
+        this.alert.setAlertMessage(item, AlertType.error);
+      })
     }
-    this.otherInfoData.emit(props);
-    // }
   }
 
 

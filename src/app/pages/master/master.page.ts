@@ -47,8 +47,6 @@ export class MasterPage implements OnInit {
 
   ngOnInit() {
     this.setMasterData();
-    this.getHeightList();
-    this.getCastList();
   }
 
   setMasterData() {
@@ -77,6 +75,7 @@ export class MasterPage implements OnInit {
         } as IGroupCellRendererParams
       },
     ];
+    this.getHeightList();
   }
 
   setCastMasterGridData() {
@@ -84,9 +83,10 @@ export class MasterPage implements OnInit {
     this.castMasterRowData = [];
 
     this.castMasterColumnDefs = [
-      { field: "id", width: 60 },
+      { field: "castId", headerName: 'id', width: 60 },
       { field: "castName", minWidth: 235 },
-      { field: "subCastName", minWidth: 235 },
+      { field: "isSubCast", minWidth: 235 },
+      { field: 'subCastCount', width: 235 },
       {
         field: "action",
         colId: 'cast',
@@ -98,6 +98,7 @@ export class MasterPage implements OnInit {
         } as IGroupCellRendererParams
       },
     ];
+    this.getCastList();
   }
 
   setRoleMasterGridData() {
@@ -321,7 +322,7 @@ export class MasterPage implements OnInit {
       cssClass: 'education-modal',
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit Cast' : 'Add New Cast',
+          title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
           data: { ...event, isEditMode }
         }
       }
@@ -347,7 +348,7 @@ export class MasterPage implements OnInit {
       cssClass: 'cast-modal',
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData?.cast : 'Add New Cast',
+          title: isEditMode ? 'Edit: Cast ' : 'Add New Cast',
           data: { ...event, isEditMode }
         }
       }
@@ -356,10 +357,9 @@ export class MasterPage implements OnInit {
     const data = await modal.onWillDismiss();
     const actionEvents = ['add', 'update'];
     const eventType = data?.data?.event;
-    // if (actionEvents.includes(eventType)) {
-    //   this.getEducationTableData();
-    //   this.getSpecializationTableData();
-    // }
+    if (actionEvents.includes(eventType)) {
+      this.getCastList();
+    }
   }
 
   getHeightList(): any {
@@ -383,21 +383,20 @@ export class MasterPage implements OnInit {
   }
   getCastList(): any {
     this.castService.getCastList().subscribe({
-      next: (data: any[]) => {
-        console.log(data);
-        // this.castMasterRowData = data?.map((item: any) => {
-        //   const obj = {
-        //     id: item?.castId,
-        //     castName: item?.castName,
-        //     subCastName:item?.SubCastName,
-        //   }
-        //   return obj;
-        // });
-
+      next: (data: any) => {
+        // let datum = data.map(e=>)
+        if (data) {
+          console.log('data: ', data);
+          // this.castMasterRowData = data;
+          this.castMasterRowData = data.map((item: any) => {
+            item['id'] = item?.castId;
+            return item;
+          });
+        }
       },
       error: (error) => {
         console.log('error: ', error);
-
+        this.alert.setAlertMessage('Cast List: ' + error?.statusText, AlertType.error);
       }
     })
 

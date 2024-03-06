@@ -1,17 +1,24 @@
 <div class="dropdown-container flex flex-col gap-2">
   <label>{{label}}</label>
-  <button #triggerButton [id]="buttonId" [attr.data-toggle]="menuId" [attr.data-dropdown-toggle]="menuId"
+  <button #triggerButton [id]="buttonId" [attr.data-dropdown-toggle]="menuId"
     data-dropdown-placement="bottom"
     class="dropdown-button flex items-center justify-between w-full gap-3 border-gray-300"
-    (click)="handleDropdownToggle()" [ngClass]="colorVarients" type="button">
+    (click)="handleDropdownToggle()"
+    [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
+    type="button">
     <p>{{value ? value?.title : '-- Select --'}}</p>
     <ion-icon class="transition delay-150 ease-in-out" [name]="dropdownIcon"></ion-icon>
   </button>
+  @if (control.touched && control.invalid) {
+  <div class="validation-errors px-2">
+    @if (control.hasError('required')) { <span class="text-xs font-light text-red-700">{{label}} is required</span> }
+  </div>
+  }
 
   <!-- Dropdown menu  -->
   <div #menuEl [id]="menuId" [ngStyle]="{'width': menuWidth}"
-    class="shadow-lg hidden z-[1000] bg-white rounded-lg borser border-gray-300 shadowdark:bg-gray-700">
-    <div class="p-3 bg-gray-100 rounded-t-lg rounded-t-r-lg">
+    class="shadow-lg hidden z-[1000] bg-gray-50 rounded-lg borser border-gray-300 dark:bg-gray-700 shadowdark:bg-gray-700">
+    <div class="p-3 dark:bg-gray-700 rounded-t-lg rounded-t-r-lg">
       <label for="input-group-search" class="sr-only">Search</label>
       <div class="relative">
         <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -21,21 +28,23 @@
               d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
           </svg>
         </div>
-        <input type="text" id="input-group-search"
-          class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Search user">
+        <input autofocus type="text" [(ngModel)]="searchQuery" (keyup)="handleSearchQuery($event)"
+          id="input-group-search" class="w-full" [ngClass]="colorVarients" placeholder="Search list">
       </div>
     </div>
-    <ul class="h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton">
-      @for(item of options; track item.id) {
-      <li class="px-3 pb-3 hover:bg-gray-100 dark:hover:bg-gray-600" (click)="onItemChange(item)">
-        <div class="flex items-center ps-2 rounded">
+    <ul class="py-2 max-h-48 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+      aria-labelledby="dropdownSearchButton">
+      @for(item of filteredOptions; track item.id) {
+      <li class="px-2 py-1 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600" (click)="onItemChange(item)">
+        <div class="flex items-center rounded w-full ">
           @if(isMultiSelect) {
           <input id="checkbox-item-11" type="checkbox" value=""
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-          }
           <label for="checkbox-item-11"
             class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{item?.title}}</label>
+          }
+          <p class="w-full select-none py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+            {{item?.title}}</p>
         </div>
       </li>
       }

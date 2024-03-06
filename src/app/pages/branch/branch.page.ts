@@ -23,23 +23,25 @@ export class BranchPage implements OnInit {
   // Column Definitions: Defines & controls grid columns.
 
   colDefs: ColDef[] = [
-    { field: "branchId" },
-    { field: "branchName" },
-    { field: "countryId" },
-    { field: "stateId" },
-    { field: "cityId" },
-    { field: "cityName" },
-    { field: "countryName" },
-    { field: "stateName" },
+    { field: "branchId", headerName: '#Id', width: 60 },
     {
       field: "branchImagePath",
+      headerName: 'Image',
+      wrapText: true,
+      autoHeaderHeight: true,
+      width: 100,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridCellImageComponent,
       } as IGroupCellRendererParams
     },
+    { field: "branchName", width: 315},
+    { field: "countryName", headerName: 'Country' },
+    { field: "stateName", headerName: 'State', width: 200 },
+    { field: "cityName", headerName: 'City', width: 150 },
     {
       field: "isActive",
+      width: 100,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridCellStatusComponent,
@@ -48,6 +50,8 @@ export class BranchPage implements OnInit {
 
     {
       field: "action",
+      width: 90,
+      pinned: 'right',
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridButtonsComponent,

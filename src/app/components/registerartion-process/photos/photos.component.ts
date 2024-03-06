@@ -69,7 +69,15 @@ export class PhotosComponent implements OnInit {
       data: formVal,
       formId: 5,
       action: ActionValue.next,
-      isCompleted: true
+      isCompleted: true,
+      previous: {
+        source: 'other',
+        data: {},
+        formId: 4,
+        action: ActionValue.previous,
+        isCompleted: true
+      },
+      next: null
     }
     this.photosData.emit(props);
     // }

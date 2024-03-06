@@ -55,7 +55,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'logo': 'url(/assets/icon/logo.jpg)'
-      }
+      },
     },
   },
   plugins: [require('@tailwindcss/aspect-ratio')

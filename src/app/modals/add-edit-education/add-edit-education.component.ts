@@ -87,7 +87,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
 
   handleButtonClick(event: any) {
     if (event?.isCancel) {
-      this.modalControllerService.dismiss({event: 'cancel'});
+      this.modalControllerService.dismiss({ event: 'cancel' });
       return;
     }
 
@@ -110,7 +110,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({event: 'add'});
+          this.modalControllerService.dismiss({ event: 'add' });
         }
       },
       error: (error) => {
@@ -132,7 +132,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({event: 'update'});
+          this.modalControllerService.dismiss({ event: 'update' });
         }
       },
       error: (error) => {

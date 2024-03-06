@@ -1,9 +1,11 @@
 export interface FormStep {
     source: string;
-    data: {};
+    data: {} | any;
     formId: number;
     action: ActionValue;
     isCompleted: boolean;
+    previous?: FormStep | null;
+    next?: FormStep | null;
 }
 
 

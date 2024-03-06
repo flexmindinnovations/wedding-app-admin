@@ -1,13 +1,18 @@
+@if (isDataAvailable) {
 <div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
       <app-input label="First Name" type="text" class="flex-grow-1" [control]="formGroupControl['firstName']"
         formControlName="firstName" [controlValue]="formGroup.get('firstName')?.value" [required]="true" />
 
+      <app-input label="Middle Name" class="flex-grow-1" type="text" [control]="formGroupControl['middleName']"
+        formControlName="middleName" [controlValue]="formGroup.get('middleName')?.value" />
+
       <app-input label="Last Name" class="flex-grow-1" type="text" [control]="formGroupControl['lastName']"
         formControlName="lastName" [controlValue]="formGroup.get('lastName')?.value" />
-      <app-input label="Surname" class="flex-grow-1" type="text" [control]="formGroupControl['surName']"
-        formControlName="surName" [controlValue]="formGroup.get('surName')?.value" />
+
+      <!-- <app-input label="Mobile Number" class="flex-grow-1" type="text" [control]="formGroupControl['mobileNo']"
+        formControlName="mobileNo" [controlValue]="formGroup.get('mobileNo')?.value" /> -->
 
       <app-input label="Date Of Birth" class="flex-grow-1" type="date" [control]="formGroupControl['dateOfBirth']"
         formControlName="dateOfBirth" [controlValue]="formGroup.get('dateOfBirth')?.value" />
@@ -17,22 +22,35 @@
 
 
       <app-dropdown label="Gender" class="" [control]="formGroupControl['gender']" formControlName="gender"
-        (onSelectionChange)="onSelectionChange($event, 'gender')" [options]="genderOptions" />
+        (onSelectionChange)="onSelectionChange($event, 'gender')" [controlValue]="formGroup.get('gender')?.value"
+        [options]="genderOptions" />
 
       <app-dropdown label="Marital Status" class="" [control]="formGroupControl['maritalStatus']"
         formControlName="maritalStatus" [options]="maritalStatusOptions"
+        [controlValue]="formGroup.get('maritalStatus')?.value"
         (onSelectionChange)="onSelectionChange($event, 'maritalStatus')" />
 
-      <app-dropdown label="Height" class="" [control]="formGroupControl['height']" formControlName="height"
-        (onSelectionChange)="onSelectionChange($event, 'height')" [options]="[]" />
+      <app-dropdown label="Height" class="" [control]="formGroupControl['heightId']" formControlName="heightId"
+        [controlValue]="formGroup.get('heightId')?.value" (onSelectionChange)="onSelectionChange($event, 'heightId')"
+        [options]="heightListOptions" />
 
-      <app-dropdown label="Education" class="" [control]="formGroupControl['education']" formControlName="education"
-        (onSelectionChange)="onSelectionChange($event, 'education')" [options]="educationListOptions" />
+      <app-dropdown label="Physical Status" class="" [control]="formGroupControl['physicalStatus']"
+        [controlValue]="formGroup.get('physicalStatus')?.value" formControlName="physicalStatus"
+        (onSelectionChange)="onSelectionChange($event, 'physicalStatus')" [options]="physicalStatusListOptions" />
+      @if (isOtherPhyicalCondition) {
+      <app-input label="Physical Condition" class="flex-grow-1" type="text"
+        [control]="formGroupControl['otherPhysicalCondition']" formControlName="otherPhysicalCondition"
+        [controlValue]="formGroup.get('otherPhysicalCondition')?.value" />
+      }
 
-      @if (hasSpecialization) {
-      <app-dropdown label="Specialization" class="" [control]="formGroupControl['specialization']"
-        formControlName="specialization" (onSelectionChange)="onSelectionChange($event, 'specialization')"
-        [options]="specializationListOptions" />
+      <app-dropdown label="Education" class="" [control]="formGroupControl['eduationId']" formControlName="eduationId"
+        [controlValue]="formGroup.get('eduationId')?.value"
+        (onSelectionChange)="onSelectionChange($event, 'educationId')" [options]="educationListOptions" />
+
+      @if (hasSpecialization && isSpecializationDataAvailable) {
+      <app-dropdown label="Specialization" class="" [control]="formGroupControl['specializationId']"
+        [controlValue]="formGroup.get('specializationId')?.value" formControlName="specializationId"
+        (onSelectionChange)="onSelectionChange($event, 'specializationId')" [options]="specializationListOptions" />
       }
 
 
@@ -44,3 +62,4 @@
     <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>
+}
