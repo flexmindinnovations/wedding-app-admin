@@ -7,27 +7,13 @@
   <div class="body ion-padding border-b border-b-gray-200">
     <form [formGroup]="formGroup">
       <div class="flex flex-col gap-3 p-2">
-        <!-- <div class="flex items-center gap-3">
-          <label for="castName">Cast</label>
-          <app-input type="text" id="castName" [control]="formGroupControl['castName']" formControlName="castName"
-            [controlValue]="formGroup.get('castName')?.value" class="" />
-        </div>
-        <div class="flex items-center gap-3">
-          <label for="castName">Sub Cast</label>
-          <app-input type="text" id="subcastName" [control]="formGroupControl['subcastName']"
-            formControlName="subcastName" [controlValue]="formGroup.get('castName')?.value" class="" />
-        </div> -->
-        <div></div>
         <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
           [control]="formGroupControl['castName']" formControlName="castName" />
-        <!-- <app-input label="Sub Cast" class="flex-grow-1 w-full" type="text"
-          [controlValue]="formGroup.get('subCastName')?.value" [control]="formGroupControl['subCastName']"
-          formControlName="subCastName" /> -->
         <p class="flex items-center justify-start gap-3">
-          <input #hasSpecializationSelector type="checkbox" id="react-option" formControlName="hasSubCast"
+          <input #hasSubCastSelector type="checkbox" id="react-option" formControlName="hasSubCast"
             (change)="handleSubCastStateChange($event)"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
-          <span class="text-sm">Has SubCast</span>
+          <span (click)="hasSubCastSelector.click()" class="text-sm">Has SubCast</span>
         </p>
 
         @if (hasSubCastToggle) {

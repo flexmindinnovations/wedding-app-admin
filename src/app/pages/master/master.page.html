@@ -15,6 +15,9 @@
   <master-data [title]="'Handycap'" (gridAction)="handleGridAddAction($event)" [rowData]="handycapMasterRowData"
     [columnDefs]="handycapMasterColumnDefs" />
 
+  <master-data [title]="'User'" (gridAction)="handleGridAddAction($event)" [rowData]="userMasterRowData"
+    [columnDefs]="userMasterColumnDefs" />
+
   <!-- 
   <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
     [columnDefs]="specializationMasterColumnDefs" /> -->

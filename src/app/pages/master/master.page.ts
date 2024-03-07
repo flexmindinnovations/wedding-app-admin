@@ -16,6 +16,7 @@ import { AddEditCastComponent } from 'src/app/modals/add-edit-cast/add-edit-cast
 import { CastService } from 'src/app/services/cast/cast.service';
 import { HandycapService } from 'src/app/services/handycap/handycap.service';
 import { AddEditHandycapComponent } from 'src/app/modals/add-edit-handycap/add-edit-handycap.component';
+import { AddEditUserComponent } from 'src/app/modals/add-edit-user/add-edit-user.component';
 
 @Component({
   selector: 'app-master',
@@ -45,6 +46,9 @@ export class MasterPage implements OnInit {
   castMasterRowData: any = [];
   castMasterColumnDefs: ColDef[] = [];
 
+  userMasterRowData: any = [];
+  userMasterColumnDefs: ColDef[] = [];
+
   educationMasterRowData: any = [];
   educationMasterColumnDefs: ColDef[] = [];
 
@@ -62,6 +66,7 @@ export class MasterPage implements OnInit {
     this.setCastMasterGridData();
     this.setHandycapMasterGridData();
     this.setSpecializationMasterGridData();
+    this.setUserMasterGridData();
   }
 
   setHeightMasterGridData() {
@@ -128,6 +133,31 @@ export class MasterPage implements OnInit {
       },
     ];
     this.getCastList();
+  }
+
+  setUserMasterGridData() {
+
+    this.userMasterRowData = [];
+
+    this.userMasterColumnDefs = [
+      { field: "id", width: 60 },
+      { field: "fullName", minWidth: 235 },
+      { field: "email", minWidth: 235 },
+      { field: 'mobile', width: 235 },
+      { field: 'role', width: 235 },
+      {
+        field: "action",
+        colId: 'user',
+        width: 100,
+        pinned: 'right',
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+    this.getUserList();
   }
 
   setRoleMasterGridData() {
@@ -251,6 +281,9 @@ export class MasterPage implements OnInit {
       case 'handycap':
         this.openAddEditHandycapModal();
         break;
+      case 'user':
+        this.openAddEditUserModal();
+        break;
     }
   }
 
@@ -272,6 +305,9 @@ export class MasterPage implements OnInit {
           break;
         case 'handycap':
           this.openAddEditHandycapModal(event);
+          break;
+        case 'user':
+          this.openAddEditUserModal(event);
           break;
       }
     } else {
@@ -401,6 +437,31 @@ export class MasterPage implements OnInit {
     }
   }
 
+  async openAddEditUserModal(event?: any) {
+    this.canShowModal = true;
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    const modal = await this.modalCtrl.create({
+      component: AddEditUserComponent,
+      cssClass: 'user-modal',
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: User ' : 'Add New User',
+          data: { ...event, isEditMode }
+        }
+      }
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getUserList();
+    }
+  }
+
   async openAddEditCastModal(event?: any) {
     this.canShowModal = true;
     let isEditMode = false;
@@ -483,5 +544,10 @@ export class MasterPage implements OnInit {
       }
     })
 
+  }
+  getUserList(): any {
+    this.userMasterRowData = [
+      { id: 0, fullName: 'shafiquddin', mobile: '1234567890', email: 'shafiquddin2k@gmail.com', role: 'admin' }
+    ];
   }
 }
