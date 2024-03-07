@@ -32,6 +32,7 @@ import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-
 import { AlertComponent } from "./components/alert/alert.component";
 import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.component";
 import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.component";
+import { AddEditHandycapComponent } from "./modals/add-edit-handycap/add-edit-handycap.component";
 
 @NgModule({
     declarations: [
@@ -60,6 +61,7 @@ import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.compo
         AddEditCastComponent,
         AlertComponent,
         DeleteConfirmComponent,
+        AddEditHandycapComponent
     ],
     imports: [
         CommonModule,
@@ -108,7 +110,8 @@ import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.compo
         AddEditEducationComponent,
         AddEditCastComponent,
         AlertComponent,
-        DeleteConfirmComponent
+        DeleteConfirmComponent,
+        AddEditHandycapComponent
     ],
     providers: []
 })

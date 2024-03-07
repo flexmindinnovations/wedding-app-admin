@@ -9,13 +9,12 @@
   <master-data [title]="'Education'" (gridAction)="handleGridAddAction($event)" [rowData]="educationMasterRowData"
     [columnDefs]="educationMasterColumnDefs" />
 
-
   <master-data [title]="'Cast'" (gridAction)="handleGridAddAction($event)" [rowData]="castMasterRowData"
     [columnDefs]="castMasterColumnDefs" />
 
+  <master-data [title]="'Handycap'" (gridAction)="handleGridAddAction($event)" [rowData]="handycapMasterRowData"
+    [columnDefs]="handycapMasterColumnDefs" />
 
-  <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)"
-    [rowData]="specializationMasterRowData" [columnDefs]="specializationMasterColumnDefs" />
   <!-- 
   <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
     [columnDefs]="specializationMasterColumnDefs" /> -->

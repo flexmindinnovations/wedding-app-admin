@@ -14,6 +14,8 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AddEditCastComponent } from 'src/app/modals/add-edit-cast/add-edit-cast.component';
 import { CastService } from 'src/app/services/cast/cast.service';
+import { HandycapService } from 'src/app/services/handycap/handycap.service';
+import { AddEditHandycapComponent } from 'src/app/modals/add-edit-handycap/add-edit-handycap.component';
 
 @Component({
   selector: 'app-master',
@@ -24,7 +26,8 @@ export class MasterPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   educationService = inject(EducationService);
-  castService = inject(CastService)
+  castService = inject(CastService);
+  handycapService = inject(HandycapService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
@@ -32,6 +35,9 @@ export class MasterPage implements OnInit {
 
   heightMasterRowData: any = [];
   heightMasterColumnDefs: ColDef[] = [];
+
+  handycapMasterRowData: any = [];
+  handycapMasterColumnDefs: ColDef[] = [];
 
   roleMasterRowData: any = [];
   roleMasterColumnDefs: ColDef[] = [];
@@ -54,6 +60,7 @@ export class MasterPage implements OnInit {
     this.setRoleMasterGridData();
     this.setEducationMasterGridData();
     this.setCastMasterGridData();
+    this.setHandycapMasterGridData();
     this.setSpecializationMasterGridData();
   }
 
@@ -76,6 +83,27 @@ export class MasterPage implements OnInit {
       },
     ];
     this.getHeightList();
+  }
+
+  setHandycapMasterGridData() {
+
+    this.handycapMasterRowData = [];
+
+    this.handycapMasterColumnDefs = [
+      { field: "id", width: 60 },
+      { field: "handycapName", minWidth: 435 },
+      {
+        field: "action",
+        colId: 'handycap',
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+    this.getHandycapList();
   }
 
   setCastMasterGridData() {
@@ -220,6 +248,9 @@ export class MasterPage implements OnInit {
       case 'cast':
         this.openAddEditCastModal();
         break;
+      case 'handycap':
+        this.openAddEditHandycapModal();
+        break;
     }
   }
 
@@ -238,6 +269,9 @@ export class MasterPage implements OnInit {
           break;
         case 'cast':
           this.openAddEditCastModal(event);
+          break;
+        case 'handycap':
+          this.openAddEditHandycapModal(event);
           break;
       }
     } else {
@@ -307,6 +341,37 @@ export class MasterPage implements OnInit {
     console.log(eventType);
     if (actionEvents.includes(eventType)) {
       this.getHeightList();
+    }
+  }
+
+  async openAddEditHandycapModal(event?: any) {
+    console.log('data: ', event);
+    this.canShowModal = true;
+
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    console.log('isEditMode: ', isEditMode);
+    let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName)]
+    const modal = await this.modalCtrl.create({
+      component: AddEditHandycapComponent,
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit Handycap' : 'Add New handycap',
+          data: { ...event, alreadyHandicapList, isEditMode }
+        }
+      },
+      cssClass: 'handycap-modal'
+    });
+    console.log('>>>>> modal : ', modal);
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    console.log(eventType);
+    if (actionEvents.includes(eventType)) {
+      this.getHandycapList();
     }
   }
 
@@ -389,6 +454,25 @@ export class MasterPage implements OnInit {
           // this.castMasterRowData = data;
           this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Cast List: ' + error?.statusText, AlertType.error);
+      }
+    })
+
+  }
+
+  getHandycapList(): any {
+    this.handycapService.getHandycapList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log('data: ', data);
+          this.handycapMasterRowData = data?.map((item: any) => {
+            item['id'] = item?.handycapId;
             return item;
           });
         }

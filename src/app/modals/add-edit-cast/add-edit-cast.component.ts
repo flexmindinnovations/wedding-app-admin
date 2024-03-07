@@ -48,9 +48,9 @@ export class AddEditCastComponent implements OnInit {
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
-          this.hasSubCastToggle = data[0]?.hasSubcast;
-          this.castName = data[0]?.castName;
-          this.subCastList = data[0].subCastList.map((item: any) => {
+          this.hasSubCastToggle = data?.hasSubcast;
+          this.castName = data?.castName;
+          this.subCastList = data.subCastList.map((item: any) => {
             item['name'] = 'Sub Cast';
             item['castId'] = this.castId;
             return item;
