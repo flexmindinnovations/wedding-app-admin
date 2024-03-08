@@ -1,6 +1,7 @@
 :host(app-input) {
     border: 0;
     padding: 0;
+    @apply bg-white dark:bg-gray-700;
 }
 
 ::ng-deep ion-input {

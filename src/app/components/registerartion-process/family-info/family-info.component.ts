@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -17,11 +17,13 @@ export class FamilyInfoComponent implements OnInit {
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
-  @Input() isEditMode: boolean = false;
+  isEditMode: boolean = false;
+  familyData: any;
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
 
   @Output() familyInfoData = new EventEmitter();
+  cdref = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder
@@ -30,6 +32,17 @@ export class FamilyInfoComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+  }
+
+  ngOnChanges(changes: SimpleChanges | any): void {
+    if (changes?.customerData?.currentValue) this.familyData = this.customerData['familyInfoModel'];
+  }
+
+  ngAfterViewInit(): void {
+    if (this.familyData) {
+      this.isEditMode = this.familyData?.familyInfoId > 0 ? true : false;
+      if (this.isEditMode) this.patchFormData();
+    }
   }
 
   initFormGroup() {
@@ -43,20 +56,11 @@ export class FamilyInfoComponent implements OnInit {
       noOfSisters: ['', [Validators.required]],
       noOfMarriedSisters: ['', [Validators.required]]
     })
-    this.patchFormData();
   }
 
   patchFormData() {
-    this.formGroup.patchValue({
-      fatherName: 'Abdul Karim',
-      fatherOccupation: 'Self Employeed',
-      motherName: 'Jahan',
-      motherOccupation: 'House Wife',
-      noOfBrothers: 2,
-      noOfMarriedBrothers: 1,
-      noOfSisters: 1,
-      noOfMarriedSisters: 1
-    })
+    this.formGroup.patchValue(this.familyData);
+    this.cdref.detectChanges();
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -95,47 +99,91 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   handleClickOnNext(src: string) {
-    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, familyInfoId: 0 };
+    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId };
+    this.cdref.detectChanges();
     if (this.formGroup.valid) {
-      this.customerRegistrationService.saveFamilyInformation(formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            const props: FormStep = {
-              source: src,
-              data: { ...formVal, familyInfoId: data?.id },
-              formId: 2,
-              action: ActionValue.next,
-              isCompleted: true,
-              previous: {
-                source: 'personal',
-                data: {},
-                formId: 1,
-                action: ActionValue.previous,
-                isCompleted: true
-              },
-              next: {
-                source: 'contact',
-                data: {},
-                formId: 3,
-                action: ActionValue.next,
-                isCompleted: false
-              }
-            }
-            this.familyInfoData.emit(props);
-          }
-        },
-        error: (error: any) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
-        }
-      })
+      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
         this.alert.setAlertMessage(item, AlertType.error);
       })
     }
+  }
+
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, familyInfoId: 0 };
+    this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, familyInfoId: data?.id },
+            formId: 2,
+            action: ActionValue.next,
+            isCompleted: true,
+            previous: {
+              source: 'personal',
+              data: {},
+              formId: 1,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'contact',
+              data: {},
+              formId: 3,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.familyInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
+  updateCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, familyInfoId: this.familyData.familyInfoId };
+    this.customerRegistrationService.updateFamilyInformation(payload, this.customerData?.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, familyInfoId: data?.id },
+            formId: 2,
+            action: ActionValue.next,
+            isCompleted: true,
+            previous: {
+              source: 'personal',
+              data: {},
+              formId: 1,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'contact',
+              data: {},
+              formId: 3,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.familyInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
 

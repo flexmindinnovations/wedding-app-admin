@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 
@@ -7,12 +7,13 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.scss'],
 })
-export class PhotosComponent implements OnInit {
+export class PhotosComponent implements OnInit, AfterViewInit {
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
-  @Input() isEditMode: boolean = false;
+  isEditMode: boolean = false;
+  imagesData: any;
   @Output() photosData = new EventEmitter();
 
   constructor(
@@ -20,34 +21,10 @@ export class PhotosComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.initFormGroup();
-  }
+  ngOnInit() { }
 
-  initFormGroup() {
-    this.formGroup = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      surName: ['', [Validators.required]],
-      gender: ['', [Validators.required]],
-      height: ['', [Validators.required]],
-      education: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
-      occupation: ['', [Validators.required]],
-      physicalStatus: ['', [Validators.required]],
-      maritalStatus: ['', [Validators.required]],
-      hobbies: ['', ![Validators.required]]
-    })
-
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
-
-    })
-  }
-
-  get formGroupControl(): { [key: string]: FormControl } {
-    return this.formGroup.controls as { [key: string]: FormControl };
+  ngAfterViewInit(): void {
+    console.log('customerData: ', this.customerData);
   }
 
   handleClickOnPrevious(src: string) {

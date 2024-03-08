@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
+import { v4 as uuidv4 } from 'uuid';
 
 declare var Datepicker: any;
 @Component({
@@ -20,6 +21,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Input('required') isRequired: true | false = false;
   @Input() placeholder: string = '';
   @Input() controlValue: string = '';
+  @Input() presentaion: 'date' | 'time' | 'date-time' | undefined;
   @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';
@@ -34,6 +36,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
 
   invalidControl = ' border-red-700 bg-red-200';
   validControl = ' border-gray-300 bg-gray-50';
+  datePicker: any;
+  datePickerId = uuidv4();
 
   constructor(
     @Self()
@@ -49,7 +53,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
 
   ngAfterViewInit(): void {
-    const dtEl: any = document.getElementById('datepicker01');
+    const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
     const control: any = this.control;
     const controlName = (Object.keys(control.parent.controls).find(key => control.parent.controls[key] === control));
@@ -66,13 +70,13 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
 
   initDatePicker(element: Element) {
-    new Datepicker(element, {
+    this.datePicker = new Datepicker(element, {
       theme: 'dark',
       autohide: true,
       todayHighlight: true,
-      maxDate: new Date(),
+      // maxDate: new Date(),
       autoselectToday: true,
-      datepickerButtons: true
+      // datepickerButtons: true
     });
     const datePickerParentEl: any = document.getElementsByClassName('datepicker-dropdown')[0];
     const observer = new MutationObserver((mutations) => {
@@ -116,8 +120,13 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     // this.disabled = isDisabled;
   }
 
+  // handleOnChange(event: any) {
+  //   const value = event.target.value;
+  //   this.inputValue.emit(value);
+  //   this.onChange(value);
+  // }
   handleOnChange(event: any, src?: string) {
-    const value = event.target.value;
+    const value = src === 'time' ? event : event.target.value;
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);

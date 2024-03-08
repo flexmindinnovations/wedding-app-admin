@@ -1,5 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, map } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -8,14 +8,14 @@ import { CustomerRegistrationService } from 'src/app/services/customer-registrat
 import { EducationService } from 'src/app/services/education/education.service';
 import { HeightService } from 'src/app/services/height/height.service';
 import { SharedService } from 'src/app/services/shared.service';
-import { findInvalidControlsRecursive, getRandomNumber } from 'src/util/util';
+import { COLOR_SCHEME, TITHI_LIST, findInvalidControlsRecursive, getRandomNumber, inputThemeVariables } from 'src/util/util';
 
 @Component({
   selector: 'personal-info',
   templateUrl: './personal-info.component.html',
   styleUrls: ['./personal-info.component.scss'],
 })
-export class PersonalInfoComponent implements OnInit, AfterViewInit {
+export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   formGroup!: FormGroup;
   genderOptions: any = [];
@@ -24,10 +24,13 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
   heightListOptions: any = [];
   physicalStatusListOptions: any = [];
   specializationListOptions: any = [];
+  bloodGroupListOptions: any = [];
+  foodPreferencesListOptions: any = [];
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
-  @Input() isEditMode: boolean = false;
-
+  showPatrika: boolean = false;
+  isEditMode: boolean = false;
+  personalData: any;
 
   @Output() personalInfoData = new EventEmitter();
   educationService = inject(EducationService);
@@ -35,6 +38,7 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
   alert = inject(AlertService);
   sharedService = inject(SharedService);
   customerRegistrationService = inject(CustomerRegistrationService);
+  cdref = inject(ChangeDetectorRef);
 
   hasSpecialization: boolean = false;
   isOtherPhyicalCondition: boolean = false;
@@ -42,9 +46,21 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
   specializationId = '';
   isDataAvailable = false;
   isSpecializationDataAvailable = false;
+  tithiList: any[] = TITHI_LIST;
+
+  colorScheme: any = COLOR_SCHEME;
+  colorVarients: any;
+
   constructor(
     private fb: FormBuilder
   ) {
+    this.setCurrentClass();
+  }
+
+  setCurrentClass() {
+    const colorScheme = localStorage.getItem('color-scheme');
+    this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
+    this.colorVarients = inputThemeVariables[this.colorScheme];
   }
 
   ngOnInit() {
@@ -63,8 +79,16 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
     ]
   }
 
+  ngOnChanges(changes: SimpleChanges | any): void {
+    if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
+  }
+
   ngAfterViewInit(): void {
-    if (this.isEditMode) this.patchValue();
+    if (this.personalData) {
+      this.isEditMode = this.personalData?.personalInfoId > 0 ? true : false;
+      if (this.isEditMode) this.patchValue();
+    }
+    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -72,26 +96,29 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
       firstName: ['', [Validators.required]],
       middleName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      // mobileNo: ['', [Validators.required]],
+      locationOfBirth: ['', [Validators.required]],
+      shakeDate: ['', [Validators.required]],
       gender: ['', [Validators.required]],
       heightId: ['', [Validators.required]],
       eduationId: ['', [Validators.required]],
       specializationId: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
+      dateOfBirth: [new Date(), [Validators.required]],
       occupation: ['', [Validators.required]],
       physicalStatus: ['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
-      hobbies: ['', ![Validators.required]]
+      hobbies: ['', ![Validators.required]],
+      bloodGroup: ['', ![Validators.required]],
+      foodPreference: ['', ![Validators.required]]
     });
   }
 
   patchValue() {
-    const personalInfo = this.customerData['personalInfoModel'];
     this.formGroup.patchValue({
-      ...personalInfo,
-      dateOfBirth: new Date(personalInfo['dateOfBirth'])
+      ...this.personalData,
+      dateOfBirth: new Date(this.personalData['dateOfBirth'])
     });
+    this.cdref.detectChanges();
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -103,7 +130,7 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
     formVal['specializationId'] = this.specializationId ? this.specializationId : '';
     formVal['dateOfBirth'] = new Date(formVal['dateOfBirth']);
     if (this.formGroup.valid) {
-      if(this.isEditMode) this.updateCustomerInfo(formVal, src)
+      if (this.isEditMode) this.updateCustomerInfo(formVal, src)
       else this.saveNewCustomerInfo(formVal, src)
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
@@ -114,7 +141,8 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    this.customerRegistrationService.savePersonalInformation(formVal).subscribe({
+    const payload = { ...formVal, personalInfoId: 0 };
+    this.customerRegistrationService.savePersonalInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
           const props: FormStep = {
@@ -144,10 +172,8 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
   }
 
   updateCustomerInfo(formVal: any, src: string): void {
-    const personalInfo = this.customerData['personalInfoModel'];
-    console.log('customerData: ', this.customerData);
-    
-    this.customerRegistrationService.updatePersonalInformation(formVal, this.customerData?.customerId).subscribe({
+    const payload = { ...formVal, personalInfoId: this.personalData.personalInfoId };
+    this.customerRegistrationService.updatePersonalInformation(payload, this.customerData?.customerId).subscribe({
       next: (data: any) => {
         if (data) {
           const props: FormStep = {
@@ -180,11 +206,13 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
     const education = this.educationService.getEducationList();
     const height = this.heightService.getHeightList();
     const handycap = this.sharedService.getHandyCapItemList();
-    forkJoin({ education, height, handycap })
+    const bloodGroup = this.sharedService.getBloodGroupList();
+    const foodPreferences = this.sharedService.getFoodPreferencesList();
+    forkJoin({ education, height, handycap, bloodGroup, foodPreferences })
       .subscribe({
         next: async (result) => {
           this.isDataAvailable = true;
-          const { education, height, handycap } = result;
+          const { education, height, handycap, bloodGroup, foodPreferences } = result;          
           this.heightListOptions = height.map((item: any) => {
             return { id: item?.heightId, title: item?.heightName }
           });
@@ -199,6 +227,18 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
             return {
               id: item?.handycapId,
               title: item?.handycapName,
+            }
+          });
+          this.bloodGroupListOptions = bloodGroup.map((item: any) => {
+            return {
+              id: item?.bloodGroupId,
+              title: item?.bloodGroupName,
+            }
+          });
+          this.foodPreferencesListOptions = foodPreferences.map((item: any) => {
+            return {
+              id: item?.foodId,
+              title: item?.foodName,
             }
           });
         },
@@ -231,6 +271,22 @@ export class PersonalInfoComponent implements OnInit, AfterViewInit {
         break;
 
     }
+  }
+
+  handlePatrikaStateChange(event: any) {
+    this.tithiList.forEach((row: any) => row.tithi = false);
+    const value = event?.currentTarget.checked;
+    this.showPatrika = value;
+  }
+
+  handleTithiStateChange(event: any, item: any) {
+    const value = event?.currentTarget.checked;
+    item.tithi = value;
+  }
+
+  handleOnTithiChange(event: any, item: any) {
+    const value = event.target.value;
+    item.description = value;
   }
 
   getSpecialization(educationId: number) {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -18,7 +18,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
-  @Input() isEditMode: boolean = false;
+  isEditMode: boolean = false;
+  contactData: any;
   @Output() contactInfoData = new EventEmitter();
 
   isCountryListAvailable = false;
@@ -28,6 +29,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
   sharedService = inject(SharedService);
+  cdref = inject(ChangeDetectorRef);
 
   countryList: any = [];
   stateList: any = [];
@@ -41,8 +43,16 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.initFormGroup();
   }
-  
+
+  ngOnChanges(changes: SimpleChanges | any): void {
+    if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
+  }
+
   ngAfterViewInit(): void {
+    if (this.contactData) {
+      this.isEditMode = this.contactData?.contactInfoId > 0 ? true : false;
+      if (this.isEditMode) this.patchFormData();
+    }
   }
 
   initFormGroup() {
@@ -62,15 +72,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   patchFormData() {
-    this.formGroup.patchValue({
-      contactNumber: '8446999858',
-      whatsAppNumber: '8446999858',
-      email: 'sample@email.com',
-      homeAddress: 'Aurangabad',
-      countryId: 1,
-      stateId: 1,
-      cityId: 1
-    })
+    this.formGroup.patchValue(this.contactData)
+    this.cdref.detectChanges();
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -93,45 +96,90 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, contactInfoId: 0 };
     if (this.formGroup.valid) {
-      this.customerRegistrationService.saveContactInformation(formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            const props: FormStep = {
-              source: src,
-              data: { ...formVal, contactInfoId: data?.id },
-              formId: 3,
-              action: ActionValue.next,
-              isCompleted: data?.status,
-              previous: {
-                source: 'family',
-                data: {},
-                formId: 2,
-                action: ActionValue.previous,
-                isCompleted: true
-              },
-              next: {
-                source: 'other',
-                data: {},
-                formId: 4,
-                action: ActionValue.next,
-                isCompleted: false
-              }
-            }
-            this.contactInfoData.emit(props);
-          }
-        },
-        error: (error: any) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
-        }
-      })
+      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
-        this.alert.setAlertMessage(item, AlertType.error);
+        this.alert.setAlertMessage(item + ' is required', AlertType.error);
       })
     }
+  }
+
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, contactInfoId: 0 };
+    this.customerRegistrationService.saveContactInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, contactInfoId: data?.id },
+            formId: 3,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'other',
+              data: {},
+              formId: 4,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.contactInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
+  updateCustomerInfo(formVal: any, src: string): void {
+    const contactInfo = this.customerData['contactInfoModel'];
+    console.log('customerData: ', this.customerData);
+    const payload = { ...formVal, contactInfoId: contactInfo.contactInfoModel };
+    this.customerRegistrationService.updateContactInformation(payload, this.customerData?.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, contactInfoId: data?.id },
+            formId: 3,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'other',
+              data: {},
+              formId: 4,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.contactInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   onSelectionChange(event: any, src: string) {
@@ -156,7 +204,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
             }
             return obj;
           });
-          this.patchFormData();
           this.isCountryListAvailable = true;
         }
       },

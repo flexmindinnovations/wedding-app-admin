@@ -11,6 +11,10 @@
         [controlValue]="formGroup.get('whatsAppNumber')?.value" [control]="formGroupControl['whatsAppNumber']"
         formControlName="whatsAppNumber" />
 
+        <app-input label="Email" class="flex-grow" type="email"
+        [controlValue]="formGroup.get('email')?.value" [control]="formGroupControl['email']"
+        formControlName="email" />
+
       @if (countryList.length) {
       <app-dropdown label="Country" class="" [control]="formGroupControl['countryId']"
         [controlValue]="formGroup.get('countryId')?.value"
@@ -36,8 +40,8 @@
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
-    <mt-button [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
+    <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
       (action)="handleClickOnPrevious('contact')" />
-    <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
+    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>
