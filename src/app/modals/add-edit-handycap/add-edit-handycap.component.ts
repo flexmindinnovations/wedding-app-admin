@@ -94,18 +94,23 @@ export class AddEditHandycapComponent implements OnInit {
   updateHandycap() {
     let formVal = this.formGroup.value;
     formVal = { handycapId: this.handycapId, handycapName: formVal.disablity };
-    this.accessHandycapDataService.updateHandycap(this.handycapId, formVal).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'update' });
+    if (this.alreadyHandycapList.includes(formVal.handycapName)) {
+      this.alert.setAlertMessage(formVal.handycapName, AlertType.warning);
+    }
+    else {
+      this.accessHandycapDataService.updateHandycap(this.handycapId, formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'update' });
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
   }
 
   handleClickOnNext(src: string) {

@@ -34,7 +34,6 @@ export class AddEditCastComponent implements OnInit {
   ngOnInit() {
     this.initFormGroup();
     const data = this.data?.data;
-    console.log(data);
     this.isEditMode = data?.isEditMode;
     if (this.isEditMode) this.patchFormData();
   }

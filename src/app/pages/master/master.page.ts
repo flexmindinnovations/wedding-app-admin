@@ -509,12 +509,11 @@ export class MasterPage implements OnInit {
   getCastList(): any {
     this.castService.getCastList().subscribe({
       next: (data: any) => {
-        // let datum = data.map(e=>)
         if (data) {
           console.log('data: ', data);
-          // this.castMasterRowData = data;
           this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
+            item['isSubCast'] = item?.isSubcast;
             return item;
           });
         }

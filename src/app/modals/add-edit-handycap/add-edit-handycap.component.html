@@ -16,6 +16,7 @@
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
+    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'"
+      (action)="handleButtonClick($event)" />
   </div>
 </div>

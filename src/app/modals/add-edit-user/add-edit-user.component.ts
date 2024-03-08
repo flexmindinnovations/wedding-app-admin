@@ -42,10 +42,10 @@ export class AddEditUserComponent implements OnInit {
   initFormGroup() {
     this.formGroup = this.fb.group({
       fullName: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      mobile: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       roleId: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.pattern(/^\d{3,15}$/)]],
     })
 
     this.formGroup.valueChanges.subscribe((event: any) => {
