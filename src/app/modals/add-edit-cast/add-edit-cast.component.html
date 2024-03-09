@@ -31,7 +31,7 @@
                 (inputValue)="handleInputValue($event, item, $index)" formControlName="subCastName" />
 
               <div class="remove-specialization flex items-center justify-center h-11">
-                @if (subCastList.length > 1) {
+                @if (subCastList.length) {
                 <mt-button [iconOnly]="true" [isCancel]="true" [size]="'lg'" [icon]="'close-outline'"
                   (action)="handleRemoveRowClick($index)" />
                 }

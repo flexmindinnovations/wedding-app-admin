@@ -17,6 +17,9 @@ import { CastService } from 'src/app/services/cast/cast.service';
 import { HandycapService } from 'src/app/services/handycap/handycap.service';
 import { AddEditHandycapComponent } from 'src/app/modals/add-edit-handycap/add-edit-handycap.component';
 import { AddEditUserComponent } from 'src/app/modals/add-edit-user/add-edit-user.component';
+import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 
 @Component({
   selector: 'app-master',
@@ -29,6 +32,8 @@ export class MasterPage implements OnInit {
   educationService = inject(EducationService);
   castService = inject(CastService);
   handycapService = inject(HandycapService);
+  userService = inject(UserService);
+  roleService = inject(RolesService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
@@ -118,7 +123,7 @@ export class MasterPage implements OnInit {
     this.castMasterColumnDefs = [
       { field: "castId", headerName: 'id', width: 60 },
       { field: "castName", minWidth: 235 },
-      { field: "isSubCast", minWidth: 235 },
+      { field: "hasSubcast", minWidth: 235 },
       { field: 'subCastCount', width: 235 },
       {
         field: "action",
@@ -177,9 +182,25 @@ export class MasterPage implements OnInit {
       },
     ];
 
-    this.roleMasterRowData = [
-      { id: 1, roleName: "Super Admin", roleAccess: 'All Permissions' }
-    ];
+    this.getRolesTableData();
+  }
+
+  getRolesTableData() {
+    this.roleService.getRoleList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log(data);
+          this.roleMasterRowData = data.map((item: any) => {
+            item['id'] = item?.roleId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Role List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   setEducationMasterGridData() {
@@ -501,7 +522,7 @@ export class MasterPage implements OnInit {
       },
       error: (error) => {
         console.log('error: ', error);
-
+        this.alert.setAlertMessage('Height List: ' + error?.statusText, AlertType.error);
       }
     })
 
@@ -513,7 +534,7 @@ export class MasterPage implements OnInit {
           console.log('data: ', data);
           this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
-            item['isSubCast'] = item?.isSubcast;
+            // item['hasSubCast'] = item?.hasSubcast;
             return item;
           });
         }
@@ -539,7 +560,7 @@ export class MasterPage implements OnInit {
       },
       error: (error) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Cast List: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Handyap List: ' + error?.statusText, AlertType.error);
       }
     })
 
