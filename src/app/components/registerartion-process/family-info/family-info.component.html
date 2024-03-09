@@ -1,6 +1,6 @@
 <div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
-    <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
+    <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4">
       <app-input label="Father Name" type="text" class="flex-grow-1" [control]="formGroupControl['fatherName']"
         formControlName="fatherName" [required]="true" />
 
@@ -25,11 +25,26 @@
 
       <app-input label="No Of Married Sisters" type="number" class="" [control]="formGroupControl['noOfMarriedSisters']"
         formControlName="noOfMarriedSisters" />
+
+      @if (castListOptions.length) {
+      <app-dropdown label="Cast" [control]="formGroupControl['castId']" formControlName="castId"
+        [controlValue]="formGroup.get('castId')?.value" (onSelectionChange)="onSelectionChange($event, 'castId')"
+        [options]="castListOptions" />
+      }
+
+      @if (hasSubCast && subCastListOptions.length && isSubCastDataAvailable) {
+        <app-dropdown label="Sub Cast" [control]="formGroupControl['subCastId']"
+          [controlValue]="formGroup.get('subCastId')?.value" formControlName="subCastId"
+          (onSelectionChange)="onSelectionChange($event, 'subCastId')" [options]="subCastListOptions" />
+        }
+
     </div>
 
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
-    <mt-button [size]="'md'" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('family')" />
-    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
+    <mt-button [size]="'md'" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
+      (action)="handleClickOnPrevious('family')" />
+    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'"
+      (action)="handleClickOnNext('personal')" />
   </div>
 </div>

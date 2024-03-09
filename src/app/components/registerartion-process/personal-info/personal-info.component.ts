@@ -103,7 +103,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       gender: ['', [Validators.required]],
       heightId: ['', [Validators.required]],
       eduationId: ['', [Validators.required]],
-      specializationId: ['', [Validators.required]],
+      specializationId: !['', [Validators.required]],
       dateOfBirth: [new Date(), [Validators.required]],
       timeOfBirth: !['', [Validators.required]],
       occupation: ['', [Validators.required]],

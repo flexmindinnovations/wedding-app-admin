@@ -35,6 +35,8 @@ export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAcc
   searchQuery: string = '';
   filteredOptions: any = [];
 
+  isNumberValue: boolean = false;
+
   invalidControl = ' border-red-700 bg-red-200';
   validControl = ' border-gray-300 bg-gray-50';
 
@@ -113,6 +115,7 @@ export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAcc
   }
 
   ngAfterViewInit(): void {
+    this.isNumberValue = typeof this.value === 'number' ? true : false;
     this.cdr.detectChanges();
   }
 
