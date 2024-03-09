@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 import { forkJoin, map } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -29,6 +30,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
   showPatrika: boolean = false;
+  spectacles: boolean = false;
   isEditMode: boolean = false;
   personalData: any;
 
@@ -65,7 +67,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit() {
     this.initFormGroup();
-    this.getMasterData();
     this.genderOptions = [
       { id: 'male', title: 'Male' },
       { id: 'female', title: 'Female' },
@@ -88,6 +89,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       this.isEditMode = this.personalData?.personalInfoId > 0 ? true : false;
       if (this.isEditMode) this.patchValue();
     }
+    this.getMasterData();
     this.cdref.detectChanges();
   }
 
@@ -97,20 +99,28 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       middleName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       locationOfBirth: ['', [Validators.required]],
-      shakeDate: ['', [Validators.required]],
+      shakeDate: !['', [Validators.required]],
       gender: ['', [Validators.required]],
       heightId: ['', [Validators.required]],
       eduationId: ['', [Validators.required]],
       specializationId: ['', [Validators.required]],
       dateOfBirth: [new Date(), [Validators.required]],
+      timeOfBirth: !['', [Validators.required]],
       occupation: ['', [Validators.required]],
-      physicalStatus: ['', [Validators.required]],
+      physicalStatus: !['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
-      hobbies: ['', ![Validators.required]],
-      bloodGroup: ['', ![Validators.required]],
-      foodPreference: ['', ![Validators.required]]
+      hobbies: !['', ![Validators.required]],
+      bloodGroup: !['', ![Validators.required]],
+      foodPreferencesId: !['', ![Validators.required]]
     });
+  }
+
+  handleInputValue(event: any) {
+    setTimeout(() => {
+      this.formGroup.patchValue({ timeOfBirth: event });
+      this.cdref.detectChanges();
+    })
   }
 
   patchValue() {
@@ -127,8 +137,13 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
-    formVal['specializationId'] = this.specializationId ? this.specializationId : '';
-    formVal['dateOfBirth'] = new Date(formVal['dateOfBirth']);
+    formVal['specializationId'] = this.specializationId ? this.specializationId : null;
+    formVal['bloodGroup'] = formVal['bloodGroup'] ? formVal['bloodGroup'] : null;
+    formVal['physicalStatus'] = formVal['physicalStatus'] ? formVal['physicalStatus'] : null;
+    formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";
+    formVal['dateOfBirth'] = moment(formVal['dateOfBirth'], 'MM/DD/YYYY').format();
+    formVal['shakeDate'] = formVal['shakeDate'] ? moment(formVal['shakeDate'], 'MM/DD/YYYY').format() : null;
+
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src)
       else this.saveNewCustomerInfo(formVal, src)
@@ -141,7 +156,10 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, personalInfoId: 0 };
+    let payload = { ...formVal, isPatrika: this.showPatrika, spectacles: this.spectacles, personalInfoId: 0 };
+    this.tithiList.forEach((item: any) => {
+      payload = { ...payload, [item.title]: item.value ? item.value : "" }
+    });
     this.customerRegistrationService.savePersonalInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
@@ -172,13 +190,19 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   updateCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, personalInfoId: this.personalData.personalInfoId };
-    this.customerRegistrationService.updatePersonalInformation(payload, this.customerData?.customerId).subscribe({
+    const customerId = this.customerData?.customerId;
+    let payload = { ...formVal, isPatrika: this.showPatrika, spectacles: this.spectacles, personalInfoId: this.personalData.personalInfoId };
+    this.tithiList.forEach((item: any) => {
+      payload = { ...payload, [item.title]: item.value ? item.value : "" }
+    });
+    console.log('payload: ', payload);
+
+    this.customerRegistrationService.updatePersonalInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {
           const props: FormStep = {
             source: src,
-            data: { ...formVal, customerId: data?.id },
+            data: { ...formVal, customerId: customerId },
             formId: 1,
             action: ActionValue.next,
             isCompleted: data?.status,
@@ -212,7 +236,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       .subscribe({
         next: async (result) => {
           this.isDataAvailable = true;
-          const { education, height, handycap, bloodGroup, foodPreferences } = result;          
+          const { education, height, handycap, bloodGroup, foodPreferences } = result;
           this.heightListOptions = height.map((item: any) => {
             return { id: item?.heightId, title: item?.heightName }
           });
@@ -273,6 +297,10 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  handleSpectacleStateChange(event: any) {
+    const value = event?.currentTarget.checked;
+    this.spectacles = value;
+  }
   handlePatrikaStateChange(event: any) {
     this.tithiList.forEach((row: any) => row.tithi = false);
     const value = event?.currentTarget.checked;
@@ -286,7 +314,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   handleOnTithiChange(event: any, item: any) {
     const value = event.target.value;
-    item.description = value;
+    item.value = value;
   }
 
   getSpecialization(educationId: number) {

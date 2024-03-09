@@ -144,7 +144,7 @@ export class FamilyInfoComponent implements OnInit {
       },
       error: (error: any) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
       }
     })
   }
@@ -181,7 +181,7 @@ export class FamilyInfoComponent implements OnInit {
       },
       error: (error: any) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
       }
     })
   }

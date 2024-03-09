@@ -1,7 +1,7 @@
 @if (isDataAvailable) {
 <div class="personal-info-container h-full flex flex-col gap-5 items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="w-full flex-grow overflow-auto p-3">
-    <div class="grid gap-4">
+    <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4">
       <app-input label="First Name" type="text" [control]="formGroupControl['firstName']" formControlName="firstName"
         [controlValue]="formGroup.get('firstName')?.value" [required]="true" />
 
@@ -11,14 +11,11 @@
       <app-input label="Last Name" type="text" [control]="formGroupControl['lastName']" formControlName="lastName"
         [controlValue]="formGroup.get('lastName')?.value" />
 
-      <!-- <app-input label="Mobile Number" type="text" [control]="formGroupControl['mobileNo']"
-        formControlName="mobileNo" [controlValue]="formGroup.get('mobileNo')?.value" /> -->
-
       <app-input label="Date Of Birth" presentaion="date" type="date" [control]="formGroupControl['dateOfBirth']"
         formControlName="dateOfBirth" [controlValue]="formGroup.get('dateOfBirth')?.value || ''" />
 
-      <app-input label="Time Of Birth" presentaion="time" type="text" [control]="formGroupControl['dateOfBirth']"
-        formControlName="dateOfBirth" [controlValue]="formGroup.get('dateOfBirth')?.value || ''" />
+      <app-input label="Time Of Birth" presentaion="time" type="text" [control]="formGroupControl['timeOfBirth']"
+        formControlName="timeOfBirth" (inputValue)="handleInputValue($event)" />
 
       <app-input label="Occupation" type="text" [control]="formGroupControl['occupation']" formControlName="occupation"
         [controlValue]="formGroup.get('occupation')?.value" />
@@ -46,9 +43,15 @@
       }
 
       <!--Optional-->
-      <app-input label="Hobbies" class="flex-grow-1 col-span-3 lg:col-span-4" type="text"
-        [control]="formGroupControl['hobbies']" formControlName="hobbies"
-        [controlValue]="formGroup.get('hobbies')?.value" [isMultiline]=true />
+      <app-input label="Hobbies" class="col-span-3 lg:col-span-4" type="text" [control]="formGroupControl['hobbies']"
+        formControlName="hobbies" [controlValue]="formGroup.get('hobbies')?.value" [isMultiline]=true />
+
+      <p class="flex items-center justify-start gap-3">
+        <input #hasSpectaclesSelector type="checkbox" id="react-option" (change)="handleSpectacleStateChange($event)"
+          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
+        <span (click)="hasSpectaclesSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">
+          Do you have Spectacles?</span>
+      </p>
 
       <div class="col-span-3 lg:col-span-4 flex flex-col gap-3">
         <p class="flex items-center justify-start gap-3">
@@ -63,7 +66,7 @@
           <li class="flex items-center justify-start gap-4 ml-5" [ngClass]="$index > 0 ? 'my-2' : '0'">
             <label [for]="$index" class="min-w-28 select-none">{{item?.title}}</label>
             <input type="text" [placeholder]="item?.title" [ngClass]="colorVarients" [name]="item?.title" [id]="$index"
-              (change)="handleOnTithiChange($event, item)" class="p-2.5 w-4/12">
+              (change)="handleOnTithiChange($event, item)" class="p-2.5 !w-2/6">
           </li>
           }
         </ul>
@@ -78,9 +81,9 @@
         formControlName="otherPhysicalCondition" [controlValue]="formGroup.get('otherPhysicalCondition')?.value" />
       }
 
-      <app-dropdown label="Food Preferences" [control]="formGroupControl['foodPreference']"
-        formControlName="foodPreference" (onSelectionChange)="onSelectionChange($event, 'foodPreference')"
-        [controlValue]="formGroup.get('foodPreference')?.value" [options]="foodPreferencesListOptions" />
+      <app-dropdown label="Food Preferences" [control]="formGroupControl['foodPreferencesId']"
+        formControlName="foodPreferencesId" (onSelectionChange)="onSelectionChange($event, 'foodPreferencesId')"
+        [controlValue]="formGroup.get('foodPreferencesId')?.value" [options]="foodPreferencesListOptions" />
 
       <app-dropdown label="Blood Group" [control]="formGroupControl['bloodGroup']" formControlName="bloodGroup"
         (onSelectionChange)="onSelectionChange($event, 'bloodGroup')"

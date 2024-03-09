@@ -52,12 +52,12 @@ export class CustomerRegistrationService {
     return this.http.put(this.endpoint + `/CustomerOtherInfo/updateCustomerOtherInfo/${customerId}`, payload);
   }
 
-  // savePhotos(payload: any): Observable<any> {
-  //   return this.http.post(this.endpoint + '/CustomerContactInfo/saveCustomerContactInfo', payload);
-  // }
+  savePhotos(payload: any): Observable<any> {
+    return this.http.post(this.endpoint + '/CustomerImage/UploadCustomerImage', payload);
+  }
 
-  // updatePhotos(payload: any): Observable<any> {
-  //   return this.http.post(this.endpoint + '/CustomerContactInfo/saveCustomerContactInfo', payload);
-  // }
+  updatePhotos(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `CustomerImage/UpdateCustomerImage${customerId}`, payload);
+  }
 
 }

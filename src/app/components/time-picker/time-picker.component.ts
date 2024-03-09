@@ -1,11 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'time-picker',
   templateUrl: './time-picker.component.html',
   styleUrls: ['./time-picker.component.scss'],
 })
-export class TimePickerComponent implements OnInit {
+export class TimePickerComponent implements OnInit, AfterViewInit {
 
   hoursData: any;
   minutesData: any;
@@ -34,6 +34,11 @@ export class TimePickerComponent implements OnInit {
 
   ngOnInit() {
     this.setHours();
+  }
+
+  ngAfterViewInit(): void {
+    const isTimeSelected = this.hour && this.minute && this.ampm ? true : false;
+    if (isTimeSelected) this.selectedTime.emit(`${this.hour}:${this?.minute}:${this?.ampm.toUpperCase()}`);
   }
 
   setHours() {
@@ -77,7 +82,6 @@ export class TimePickerComponent implements OnInit {
         break;
     }
     const isTimeSelected = this.selectedHour && this.selectedMinutes && this.selectedAmPm ? true : false;
-    if (isTimeSelected) this.selectedTime.emit({ hour: this.selectedHour, minute: this.selectedMinutes, ampm: this.selectedAmPm });
-
+    if (isTimeSelected) this.selectedTime.emit(`${this.selectedHour}:${this.selectedMinutes}:${this.selectedAmPm.toUpperCase()}`);
   }
 }

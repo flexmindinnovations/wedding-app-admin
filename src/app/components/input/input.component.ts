@@ -53,12 +53,12 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
 
   ngAfterViewInit(): void {
-    const dtEl: any = document.getElementById(this.datePickerId);
-    if (this.type === 'date') this.initDatePicker(dtEl);
     const control: any = this.control;
     const controlName = (Object.keys(control.parent.controls).find(key => control.parent.controls[key] === control));
     this.formatInputData(controlName);
     this.cdr.detectChanges();
+    const dtEl: any = document.getElementById(this.datePickerId);
+    if (this.type === 'date') this.initDatePicker(dtEl);
   }
 
   formatInputData(controlName: any) {
@@ -83,9 +83,9 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
       mutations.forEach((mutation: any) => {
         if (mutation.attributeName === 'class') {
           const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
-          document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px`);
+          document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px !important`);
           document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
-          document.getElementsByClassName('months')[0]?.setAttribute('style', `width: 100%`);
+          document.getElementsByClassName('months')[0]?.setAttribute('style', `width: auto !important`);
           document.getElementsByClassName('years')[0]?.setAttribute('style', `width: 100%`);
           document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
           document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);

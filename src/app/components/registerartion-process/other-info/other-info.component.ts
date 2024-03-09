@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -23,6 +23,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
+  cdref = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder
@@ -44,15 +45,13 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       expectations: ['', [Validators.required]],
       extraInformation: ['', [Validators.required]]
     })
-
-    this.patchFormData();
   }
 
   patchFormData() {
-    this.formGroup.patchValue({
-      expectations: 'Test',
-      extraInformation: 'Test',
-    })
+    console.log('otherData: ', this.otherData);
+
+    this.formGroup.patchValue(this.otherData);
+    this.cdref.detectChanges();
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -86,7 +85,9 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   saveNewCustomerInfo(formVal: any, src: string): void {
     const payload = { ...formVal, otherInfoId: 0 };
-    this.customerRegistrationService.saveContactInformation(payload).subscribe({
+    console.log('payload: ', payload);
+
+    this.customerRegistrationService.saveOtherInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
@@ -116,16 +117,16 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       },
       error: (error: any) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
       }
     })
   }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const otherInfo = this.customerData['otherInfoModel'];
-    console.log('customerData: ', this.customerData);
+    const customerId = this.customerData?.customerId;
     const payload = { ...formVal, otherInfoId: otherInfo.otherInfoId };
-    this.customerRegistrationService.updateOtherInformation(payload, this.customerData?.customerId).subscribe({
+    this.customerRegistrationService.updateOtherInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
@@ -155,10 +156,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       },
       error: (error: any) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
       }
     })
   }
-
-
 }

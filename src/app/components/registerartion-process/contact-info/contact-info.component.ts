@@ -145,9 +145,9 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
 
   updateCustomerInfo(formVal: any, src: string): void {
     const contactInfo = this.customerData['contactInfoModel'];
-    console.log('customerData: ', this.customerData);
+    const customerId = this.customerData?.customerId;
     const payload = { ...formVal, contactInfoId: contactInfo.contactInfoModel };
-    this.customerRegistrationService.updateContactInformation(payload, this.customerData?.customerId).subscribe({
+    this.customerRegistrationService.updateContactInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
