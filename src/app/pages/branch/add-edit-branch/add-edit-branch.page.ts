@@ -88,12 +88,13 @@ export class AddEditBranchPage implements OnInit {
     formVal = { ...formVal, isActive: this.isActive, branchImagePath: '' }
     const formData: FormData = new FormData();
     formData.append('branchModel', JSON.stringify(formVal));
-    if(this.selectedImage) formData.append('file', this.selectedImage, this.selectedImage.name);
+    if (this.selectedImage) formData.append('file', this.selectedImage, this.selectedImage.name);
     this.branchService.addBranch(formData).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
           this.router.navigateByUrl('branch');
+          this.branchService.setUpdate(true);
         }
       },
       error: (error) => {

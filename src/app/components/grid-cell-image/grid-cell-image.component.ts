@@ -18,6 +18,7 @@ export class GridCellImageComponent implements OnInit, ICellRendererAngularComp 
   agInit(params: ICellRendererParams<any, any, any>): void {
     this.params = params;
     this.src = `${this.endpoint}/${this.params?.data?.branchImagePath}` || '';
+    console.log();
   }
   refresh(params: ICellRendererParams<any, any, any>): boolean {
     return true;

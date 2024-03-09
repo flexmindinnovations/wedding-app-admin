@@ -34,6 +34,10 @@
       provide valid input</span> }
     @if (type === 'email' && control.hasError('email')) { <span class="text-xs dark:bg-gray-700 font-light text-red-700">Invalid
       email</span> }
+    @if (type === 'number' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Invalid
+      Mobile number</span> }
+    @if (type === 'password' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Must be 4
+      to 15</span> }
   </div>
   }
   }

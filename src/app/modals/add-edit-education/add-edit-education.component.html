@@ -15,7 +15,7 @@
         <input #hasSpecializationSelector type="checkbox" id="react-option" formControlName="hasSpecialization"
           (change)="handleEducationStateChange($event)"
           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
-        <span class="text-sm">Has Specialization</span>
+        <span (click)="hasSpecializationSelector.click()" class="text-sm">Has Specialization</span>
       </p>
 
       @if (hasSpecializationToggle) {
