@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -11,17 +11,19 @@ import { findInvalidControlsRecursive } from 'src/util/util';
   templateUrl: './other-info.component.html',
   styleUrls: ['./other-info.component.scss'],
 })
-export class OtherInfoComponent implements OnInit {
+export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   @Input() completedStep!: FormStep;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
-  @Input() isEditMode: boolean = false;
   @Input() customerData: any = null;
+  isEditMode: boolean = false;
+  otherData: any;
   @Output() otherInfoData = new EventEmitter();
 
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
+  cdref = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder
@@ -32,20 +34,24 @@ export class OtherInfoComponent implements OnInit {
     this.initFormGroup();
   }
 
+  ngAfterViewInit(): void {
+    this.otherData = this.customerData['otherInfoModel'];
+    this.isEditMode = this.otherData?.otherInfoId > 0 ? true : false;
+    if (this.isEditMode) this.patchFormData();
+  }
+
   initFormGroup() {
     this.formGroup = this.fb.group({
       expectations: ['', [Validators.required]],
       extraInformation: ['', [Validators.required]]
     })
-
-    this.patchFormData();
   }
 
   patchFormData() {
-    this.formGroup.patchValue({
-      expectations: 'Test',
-      extraInformation: 'Test',
-    })
+    console.log('otherData: ', this.otherData);
+
+    this.formGroup.patchValue(this.otherData);
+    this.cdref.detectChanges();
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -67,39 +73,8 @@ export class OtherInfoComponent implements OnInit {
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
     if (this.formGroup.valid) {
-      this.customerRegistrationService.saveOtherInformation(formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            const props: FormStep = {
-              source: src,
-              data: { ...formVal, otherInfoId: data?.id },
-              formId: 4,
-              action: ActionValue.next,
-              isCompleted: data?.status,
-              previous: {
-                source: 'contact',
-                data: {},
-                formId: 3,
-                action: ActionValue.previous,
-                isCompleted: true
-              },
-              next: {
-                source: 'photos',
-                data: {},
-                formId: 5,
-                action: ActionValue.next,
-                isCompleted: false
-              }
-            }
-            this.otherInfoData.emit(props);
-          }
-        },
-        error: (error: any) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
-        }
-      })
+      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -108,5 +83,81 @@ export class OtherInfoComponent implements OnInit {
     }
   }
 
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, otherInfoId: 0 };
+    console.log('payload: ', payload);
 
+    this.customerRegistrationService.saveOtherInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, otherInfoId: data?.id },
+            formId: 4,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: {
+              source: 'contact',
+              data: {},
+              formId: 3,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'photos',
+              data: {},
+              formId: 5,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.otherInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+
+  updateCustomerInfo(formVal: any, src: string): void {
+    const otherInfo = this.customerData['otherInfoModel'];
+    const customerId = this.customerData?.customerId;
+    const payload = { ...formVal, otherInfoId: otherInfo.otherInfoId };
+    this.customerRegistrationService.updateOtherInformation(payload, customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, otherInfoId: data?.id },
+            formId: 4,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: {
+              source: 'contact',
+              data: {},
+              formId: 3,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'photos',
+              data: {},
+              formId: 5,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.otherInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 }

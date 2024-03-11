@@ -1,14 +1,12 @@
 :host(app-input) {
     border: 0;
     padding: 0;
+    @apply bg-white dark:bg-gray-700;
 }
 
 ::ng-deep ion-input {
-
     .native-wrapper {
-
         input {
-
             &:focus {
                 box-shadow: none;
             }
@@ -17,11 +15,8 @@
 }
 
 ::ng-deep ion-text-area {
-
     .native-wrapper {
-
         textarea {
-
             &:focus {
                 box-shadow: none;
             }
@@ -29,15 +24,24 @@
     }
 }
 
-
 textarea {
     resize: none;
 }
 
-::ng-deep [type='date'] {
+::ng-deep [type="date"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     background-color: transparent;
     // padding: 0;
+}
+
+::ng-deep .datepicker-picker.inline-block {
+    @apply bg-white dark:bg-gray-700;
+
+    .datepicker-main {
+        .datepicker-view.flex {
+            @apply w-auto;
+        }
+    }
 }

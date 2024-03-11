@@ -1,6 +1,25 @@
 :host {
-    ion-menu {
+  ion-menu {
     --side-min-width: 0 !important;
     --side-max-width: 0;
-    }
   }
+}
+
+.modal-container {
+  @apply h-screen w-full blur-md;
+}
+::ng-deep ion-modal {
+  --width: 42%;
+}
+
+::ng-deep ion-modal::part(content) {
+  height: 22%;
+  @apply rounded-lg;
+}
+
+::ng-deep .timeout-container {
+  ion-content::part(scroll) {
+    @apply flex flex-col items-center justify-center;
+  }
+}
+

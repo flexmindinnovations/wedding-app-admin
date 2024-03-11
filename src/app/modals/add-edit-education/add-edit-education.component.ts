@@ -180,6 +180,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
 
   handleRemoveRowClick(event: any) {
     this.specializationList.splice(event, 1);
+    this.specializationFormGroup.controls.splice(event, 1);
   }
 
   ngOnDestroy() {

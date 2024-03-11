@@ -8,6 +8,7 @@ import { LayoutPageRoutingModule } from './layout-routing.module';
 
 import { LayoutPage } from './layout.page';
 import { SharedModule } from 'src/app/shared.module';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { SharedModule } from 'src/app/shared.module';
     FormsModule,
     IonicModule,
     LayoutPageRoutingModule,
+    NgIdleKeepaliveModule.forRoot(),
     SharedModule
   ],
   declarations: [LayoutPage]

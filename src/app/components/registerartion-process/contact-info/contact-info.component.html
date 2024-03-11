@@ -1,6 +1,6 @@
 <div class="conact-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
-    <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
+    <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4">
       <!-- <app-dropdown label="Contact Of" class="" [control]="formGroupControl['contactOf']" formControlName="contactOf"
         [options]="[]" /> -->
 
@@ -10,6 +10,10 @@
       <app-input label="WhatsApp Number" class="flex-grow" type="number"
         [controlValue]="formGroup.get('whatsAppNumber')?.value" [control]="formGroupControl['whatsAppNumber']"
         formControlName="whatsAppNumber" />
+
+        <app-input label="Email" class="flex-grow" type="email"
+        [controlValue]="formGroup.get('email')?.value" [control]="formGroupControl['email']"
+        formControlName="email" />
 
       @if (countryList.length) {
       <app-dropdown label="Country" class="" [control]="formGroupControl['countryId']"
@@ -36,8 +40,8 @@
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
-    <mt-button [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
+    <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
       (action)="handleClickOnPrevious('contact')" />
-    <mt-button title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
+    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>

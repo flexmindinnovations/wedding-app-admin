@@ -7,7 +7,7 @@
       <h1 class="m-0 text-lg font-bold w-full text-center">Login</h1>
     </div>
     <div class="form-cotnainer p-3 border-b border-b-gray-100">
-      <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-4">
+      <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-4" (keydown.enter)="handleSignIn()">
         <app-input label="Username" class="w-full" [control]="formGroupControl['username']"
           formControlName="username" />
 
@@ -17,7 +17,7 @@
         <div class="actions flex items-center w-full justify-center p-3">
           <button type="button"
             class="text-center p-3 text-white flex items-center justify-center rounded-md shadow-md hover:bg-br-700 bg-br-500 disabled:bg-gray-300 disabled:cursor-not-allowed w-full"
-            (click)="handleSignIn()" [disabled]="isLoading">
+            (click)="handleSignIn()" [disabled]="formGroup.invalid || isLoading">
             <p>{{isLoading ? 'Signing In ...' : 'Sign In'}}</p>
           </button>
         </div>

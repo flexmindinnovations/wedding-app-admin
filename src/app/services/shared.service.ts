@@ -13,7 +13,7 @@ export class SharedService {
   endpoint = environment.endpoint + '/api';
   http = inject(HttpConfigService);
   httpAssests = inject(HttpClient);
-  
+
   getDashboardItems(): Observable<any> {
     return this.httpAssests.get('../../assets/data/dashboard-items.json')
   }
@@ -31,6 +31,14 @@ export class SharedService {
 
   getHandyCapItemList(): Observable<any> {
     return this.http.get(`${this.endpoint}/Handycap/GetHandycapList`);
+  }
+
+  getBloodGroupList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/BloodGroup/GetBloodGroupList`);
+  }
+
+  getFoodPreferencesList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/FoodPreferences/getFoodPreferencesList`);
   }
 
 

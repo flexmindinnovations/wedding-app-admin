@@ -34,8 +34,8 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.activeRouter.params.subscribe((params: any) => {
       this.customerId = params && params['id'] ? params['id'] : 0;
-      this.isEditMode = this.customerId > 0 ? true : false;
-      this.getCustomerDetails();
+      if (this.customerId > 0) this.getCustomerDetails();
+      else this.isDataLoaded = true;
     })
   }
 

@@ -17,8 +17,8 @@ export class CastService {
   getCastListById(castId: any): Observable<any> {
     return this.http.get(`${this.endpoint}/GetCastListById?castId=${castId}`)
   }
-  getSubCastListByCast(payload: any): Observable<any> {
-    return this.http.get(`${this.endpoint}/GetSubCastListByCastId`, payload)
+  getSubCastListByCast(castId: number): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetSubCastListByCastId?castId=${castId}`);
   }
   addNewCast(payload: any): Observable<any> {
     return this.http.post(`${this.endpoint}/saveCastMaster`, payload);

@@ -32,16 +32,32 @@ export class CustomerRegistrationService {
     return this.http.post(this.endpoint + '/CustomerFamilyInfo/saveCustomerFamilyInfo', payload);
   }
 
+  updateFamilyInformation(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `/CustomerFamilyInfo/updateCustomerFamilyInfo/${customerId}`, payload);
+  }
+
   saveContactInformation(payload: any): Observable<any> {
     return this.http.post(this.endpoint + '/CustomerContactInfo/saveCustomerContactInfo', payload);
+  }
+
+  updateContactInformation(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `/CustomerContactInfo/updateCustomerContactInfo/${customerId}`, payload);
   }
 
   saveOtherInformation(payload: any): Observable<any> {
     return this.http.post(this.endpoint + '/CustomerOtherInfo/saveCustomerOtherInfo', payload);
   }
 
+  updateOtherInformation(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `/CustomerOtherInfo/updateCustomerOtherInfo/${customerId}`, payload);
+  }
+
   savePhotos(payload: any): Observable<any> {
-    return this.http.post(this.endpoint + '/CustomerContactInfo/saveCustomerContactInfo', payload);
+    return this.http.post(this.endpoint + '/CustomerImage/UploadCustomerImage', payload);
+  }
+
+  updatePhotos(payload: any, customerId: number): Observable<any> {
+    return this.http.put(this.endpoint + `CustomerImage/UpdateCustomerImage${customerId}`, payload);
   }
 
 }

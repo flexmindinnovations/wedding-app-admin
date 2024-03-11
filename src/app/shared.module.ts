@@ -31,6 +31,7 @@ import { AddEditRoleComponent } from "./modals/add-edit-role/add-edit-role.compo
 import { AddEditEducationComponent } from "./modals/add-edit-education/add-edit-education.component";
 import { AlertComponent } from "./components/alert/alert.component";
 import { DeleteConfirmComponent } from "./modals/delete-confirm/delete-confirm.component";
+import { TimePickerComponent } from "./components/time-picker/time-picker.component";
 import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.component";
 import { AddEditHandycapComponent } from "./modals/add-edit-handycap/add-edit-handycap.component";
 import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.component";
@@ -62,6 +63,7 @@ import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.compo
         AddEditCastComponent,
         AlertComponent,
         DeleteConfirmComponent,
+        TimePickerComponent,
         AddEditHandycapComponent,
         AddEditUserComponent,
     ],
@@ -113,6 +115,7 @@ import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.compo
         AddEditCastComponent,
         AlertComponent,
         DeleteConfirmComponent,
+        TimePickerComponent,
         AddEditHandycapComponent,
         AddEditUserComponent
     ],

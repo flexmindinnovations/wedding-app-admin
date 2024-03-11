@@ -31,7 +31,6 @@
             <app-input [label]="'Specialization Name'" [controlValue]="item?.get('specializationName')?.value"
               class="flex-grow-1 w-full" type="text" [control]="item?.get('specializationName')"
               (inputValue)="handleInputValue($event, item, $index)" formControlName="specializationName" />
-
             <div class="remove-specialization flex items-center justify-center h-11">
               @if (specializationList.length > 1) {
               <mt-button [iconOnly]="true" [isCancel]="true" [size]="'lg'" [icon]="'close-outline'"

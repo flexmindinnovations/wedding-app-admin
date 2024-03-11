@@ -55,9 +55,9 @@ export const buttonThemeVariables: any = {
 }
 
 export const iconSize = {
-    sm:'text-sm',
-    md:'text-xl',
-    lg:'text-2xl'
+    sm: 'text-sm',
+    md: 'text-xl',
+    lg: 'text-2xl'
 }
 
 export const inputThemeVariables: any = {
@@ -160,3 +160,12 @@ export const findInvalidControlsRecursive = (formToInvestigate: FormGroup | Form
 }
 
 export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', 'customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
+
+export const TITHI_LIST = [
+    { tithi: false, title: 'Gotra', value: '' },
+    { tithi: false, title: 'Raas', value: '' },
+    { tithi: false, title: 'Nakshatra', value: '' },
+    { tithi: false, title: 'Charan', value: '' },
+    { tithi: false, title: 'Nadi', value: '' },
+    { tithi: false, title: 'Gana', value: '' }
+];
