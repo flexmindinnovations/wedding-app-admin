@@ -20,3 +20,17 @@
     </div>
   </main>
 </ion-split-pane>
+@if (isTimeOut) {
+  <div class="modal-container blur-lg bg-black/500 h-screen w-screen">
+    <ion-modal #timeOutModal [isOpen]="isTimeOut" [showBackdrop]="true" [backdropDismiss]="false" [cssClass]="'timeout-container'">
+      <ng-template>
+        <ion-content class="ion-padding flex flex-col items-center justify-center gap-5">
+          <!-- <img src="/assets/spinner.svg" class="h-24 w-24" /> -->
+          <p>
+            Your session has been ended due to inactivity. Please login again to continue...
+          </p>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </div>
+}

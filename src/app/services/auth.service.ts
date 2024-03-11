@@ -14,4 +14,8 @@ export class AuthService {
     else return false;
     // return !!token;
   }
+
+  logoutUser() {
+    localStorage.removeItem('user');
+  }
 }
