@@ -189,7 +189,6 @@ export class MasterPage implements OnInit {
     this.roleService.getRoleList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
           this.roleMasterRowData = data.map((item: any) => {
             item['id'] = item?.roleId;
             return item;
@@ -228,11 +227,9 @@ export class MasterPage implements OnInit {
   getEducationTableData() {
     this.educationService.getEducationList().subscribe({
       next: (data: any) => {
-        // let datum = data.map(e=>)
         if (data) {
           this.educationMasterRowData = data.map((item: any) => {
             item['id'] = item?.educationId;
-            // item['specializationCount'] = this.
             return item;
           });
         }
@@ -357,17 +354,19 @@ export class MasterPage implements OnInit {
       component: AddEditRoleComponent,
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Role',
-          data: event
+          title: isEditMode ? 'Edit: Role ' : 'Add New Role',
+          data: { ...event, isEditMode }
         }
       },
       cssClass: 'roles-modal'
     });
     await modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-    // console.log('data: ', data);
-    // console.log('role: ', role);
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getRolesTableData();
+    }
   }
 
   async openAddEditHeightModal(event?: any) {
@@ -531,8 +530,7 @@ export class MasterPage implements OnInit {
     this.castService.getCastList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('data: ', data);
-          this.castMasterRowData = data.map((item: any) => {
+          this.castMasterRowData = data?.map((item: any) => {
             item['id'] = item?.castId;
             // item['hasSubCast'] = item?.hasSubcast;
             return item;
@@ -551,7 +549,6 @@ export class MasterPage implements OnInit {
     this.handycapService.getHandycapList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('data: ', data);
           this.handycapMasterRowData = data?.map((item: any) => {
             item['id'] = item?.handycapId;
             return item;

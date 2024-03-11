@@ -27,7 +27,6 @@ export class AddEditHeightComponent implements OnInit {
     this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
-    console.log(this.isEditMode);
     if (this.isEditMode) this.patchFormData();
   }
 
@@ -40,7 +39,6 @@ export class AddEditHeightComponent implements OnInit {
       inch: heightData[2]
     }
     this.formGroup.patchValue(props);
-    console.log(this.formGroup.value)
   }
 
   initFormGroup() {

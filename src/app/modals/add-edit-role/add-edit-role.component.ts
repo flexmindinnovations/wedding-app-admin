@@ -14,15 +14,15 @@ import { RolesService } from 'src/app/services/role/roles.service';
 export class AddEditRoleComponent implements OnInit {
 
   @Input() data: any;
-
+  isEditMode: boolean = false;
   formGroup!: FormGroup;
   modalControllerService = inject(ModalController);
   accessRolesDataService = inject(RoleAccessService);
   accessRoleData: any[] = [];
   roleService = inject(RolesService);
   roleObj: any;
-  roleId = 0;
   alert: any;
+  roleId = 0;
 
   constructor(
     private fb: FormBuilder
@@ -32,6 +32,19 @@ export class AddEditRoleComponent implements OnInit {
   ngOnInit() {
     this.getRoleAccessData();
     this.initFormGroup();
+    const data = this.data?.data;
+    this.isEditMode = data?.isEditMode;
+    console.log(this.isEditMode)
+    if (this.isEditMode) this.patchFormData();
+  }
+
+  patchFormData() {
+    const modalData = this.data?.data?.rowData;
+    this.roleId = modalData?.id;
+    const props = {
+      roleName: modalData?.roleName
+    }
+    this.formGroup.patchValue(props);
   }
 
   getRoleAccessData() {
@@ -45,10 +58,10 @@ export class AddEditRoleComponent implements OnInit {
     this.roleObj = {
       roleId: this.roleId,
       roleName: this.formGroup.get('roleName')?.value,
-      permissionList: roleList.map((role, index) => {
+      permissionList: roleList.map((role) => {
         const obj = {
           permissionId: 0,
-          moduleId: 0,
+          moduleId: 1,
           roleId: role?.id,
           canAdd: role?.actions[0].enabled,
           canEdit: role?.actions[1].enabled,
@@ -78,7 +91,7 @@ export class AddEditRoleComponent implements OnInit {
 
   handleButtonClick(event: any) {
     if (event?.isCancel) {
-      this.modalControllerService.dismiss();
+      this.modalControllerService.dismiss({ event: 'cancel' });
     }
 
 
@@ -92,7 +105,7 @@ export class AddEditRoleComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+          this.modalControllerService.dismiss({ event: 'update' });
         }
       },
       error: (error) => {
