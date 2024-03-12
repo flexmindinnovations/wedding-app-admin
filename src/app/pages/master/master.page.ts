@@ -510,7 +510,6 @@ export class MasterPage implements OnInit {
     this.castService.getCastList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('data: ', data);
           this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
             item['isSubCast'] = item?.isSubcast;
@@ -530,7 +529,6 @@ export class MasterPage implements OnInit {
     this.handycapService.getHandycapList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('data: ', data);
           this.handycapMasterRowData = data?.map((item: any) => {
             item['id'] = item?.handycapId;
             return item;
