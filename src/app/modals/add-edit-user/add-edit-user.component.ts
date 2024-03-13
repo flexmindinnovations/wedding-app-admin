@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class AddEditUserComponent implements OnInit {
   formGroup: any;
   modalControllerService = inject(ModalController);
   accessUserDataService = inject(UserService);
+  roleService = inject(RolesService);
   alert = inject(AlertService);
   userId = 0;
   roleList: any = [];
@@ -26,6 +28,7 @@ export class AddEditUserComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getRoleData();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     console.log(data);
@@ -41,11 +44,14 @@ export class AddEditUserComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      fullName: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      middleName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       roleId: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.pattern(/^\d{3,15}$/)]],
+      password: ['', [Validators.required, Validators.pattern('^[a-z]{3,15}$')]],
+      address: ['', [Validators.required]],
     })
 
     this.formGroup.valueChanges.subscribe((event: any) => {
@@ -55,6 +61,26 @@ export class AddEditUserComponent implements OnInit {
   }
   get formGroupControl(): { [key: string]: FormControl } {
     return this.formGroup.controls as { [key: string]: FormControl };
+  }
+
+  getRoleData() {
+    this.roleService.getRoleList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.roleList = data?.map((item: any) => {
+            const obj = {
+              id: item?.roleId,
+              title: item?.roleName
+            }
+            return obj;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Role List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   handleButtonClick(event: any) {
@@ -70,7 +96,19 @@ export class AddEditUserComponent implements OnInit {
 
   addNewUser() {
     let formVal = this.formGroup.value;
-    formVal = { UserId: 0, }
+    formVal = {
+      UserId: 0,
+      firstName: formVal.firstName,
+      middleName: formVal.middleName,
+      lastName: formVal.lastName,
+      emailId: formVal.email,
+      mobileNo: formVal.mobileNo,
+      userAddress: formVal.address,
+      userPassword: formVal.address,
+      roleId: formVal.roleId,
+      roleName: "",
+      "isActive": true
+    }
     this.accessUserDataService.saveUser(formVal).subscribe({
       next: (data: any) => {
         if (data) {
@@ -87,7 +125,19 @@ export class AddEditUserComponent implements OnInit {
 
   updateUser() {
     let formVal = this.formGroup.value;
-    formVal = { userId: this.userId, };
+    formVal = {
+      UserId: this.userId,
+      firstName: formVal.firstName,
+      middleName: formVal.middleName,
+      lastName: formVal.lastName,
+      emailId: formVal.email,
+      mobileNo: formVal.mobileNo,
+      userAddress: formVal.address,
+      userPassword: formVal.address,
+      roleId: formVal.roleId,
+      roleName: "",
+      "isActive": true
+    }
     this.accessUserDataService.updateUser(formVal).subscribe({
       next: (data: any) => {
         if (data) {
@@ -107,7 +157,7 @@ export class AddEditUserComponent implements OnInit {
   }
 
   onSelectionChange(event: any, src: any) {
-    console.log(event, src)
+    this.formGroup.get('roleId').setValue(event?.id);
   }
 
 }

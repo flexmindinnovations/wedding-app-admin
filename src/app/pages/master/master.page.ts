@@ -146,10 +146,14 @@ export class MasterPage implements OnInit {
 
     this.userMasterColumnDefs = [
       { field: "id", width: 60 },
-      { field: "fullName", minWidth: 235 },
-      { field: "email", minWidth: 235 },
-      { field: 'mobile', width: 235 },
-      { field: 'role', width: 235 },
+      { field: "firstName", minWidth: 235 },
+      { field: "middleName", minWidth: 235 },
+      { field: "lastName", minWidth: 235 },
+      { field: "isActive", minWidth: 235 },
+      { field: "emailId", minWidth: 235 },
+      { field: 'mobileNo', width: 235 },
+      { field: 'roleName', width: 235 },
+      { field: "userAddress", minWidth: 235 },
       {
         field: "action",
         colId: 'user',
@@ -350,12 +354,13 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    const alreadyRolesList = [...this.roleMasterRowData.map((role: any) => role.roleName)]
     const modal = await this.modalCtrl.create({
       component: AddEditRoleComponent,
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: Role ' : 'Add New Role',
-          data: { ...event, isEditMode }
+          data: { ...event, alreadyRolesList, isEditMode }
         }
       },
       cssClass: 'roles-modal'
@@ -370,14 +375,12 @@ export class MasterPage implements OnInit {
   }
 
   async openAddEditHeightModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
 
     let isEditMode = false;
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    console.log('isEditMode: ', isEditMode);
 
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
@@ -389,26 +392,22 @@ export class MasterPage implements OnInit {
       },
       cssClass: 'height-modal'
     });
-    console.log('>>>>> modal : ', modal);
     await modal.present();
     const data = await modal.onWillDismiss();
     const actionEvents = ['add', 'update'];
     const eventType = data?.data?.event;
-    console.log(eventType);
     if (actionEvents.includes(eventType)) {
       this.getHeightList();
     }
   }
 
   async openAddEditHandycapModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
 
     let isEditMode = false;
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    console.log('isEditMode: ', isEditMode);
     let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName)]
     const modal = await this.modalCtrl.create({
       component: AddEditHandycapComponent,
@@ -420,12 +419,10 @@ export class MasterPage implements OnInit {
       },
       cssClass: 'handycap-modal'
     });
-    console.log('>>>>> modal : ', modal);
     await modal.present();
     const data = await modal.onWillDismiss();
     const actionEvents = ['add', 'update'];
     const eventType = data?.data?.event;
-    console.log(eventType);
     if (actionEvents.includes(eventType)) {
       this.getHandycapList();
     }
@@ -530,7 +527,7 @@ export class MasterPage implements OnInit {
     this.castService.getCastList().subscribe({
       next: (data: any) => {
         if (data) {
-          this.castMasterRowData = data?.map((item: any) => {
+          this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
             // item['hasSubCast'] = item?.hasSubcast;
             return item;
@@ -563,8 +560,19 @@ export class MasterPage implements OnInit {
 
   }
   getUserList(): any {
-    this.userMasterRowData = [
-      { id: 0, fullName: 'shafiquddin', mobile: '1234567890', email: 'shafiquddin2k@gmail.com', role: 'admin' }
-    ];
+    this.userService.getUserList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.userMasterRowData = data?.map((item: any) => {
+            item['id'] = item?.userId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('User List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 }

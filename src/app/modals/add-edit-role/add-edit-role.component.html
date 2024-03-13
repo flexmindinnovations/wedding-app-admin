@@ -7,13 +7,13 @@
   <div class="body ion-padding border-b border-b-gray-200">
     <form [formGroup]="formGroup" class="flex flex-col items-start justify-start gap-2">
       <app-input label="Role Name" class="flex-grow-1 w-full" type="text" [control]="formGroupControl['roleName']"
-        formControlName="roleName" />
+        formControlName="roleName" (inputValue)="handleInputChange($event)" />
 
       <p class="text-sm text-gray-600">
         Select access for this role:
       </p>
 
-      <div class="access-roles-container">
+      <div class="access-roles-container" *ngIf="accessRoleData">
         <ul class="parent-wrapper grid w-full gap-6 md:grid-cols-3">
           @for (item of accessRoleData; track item?.id) {
           <li
@@ -22,7 +22,7 @@
               <input type="checkbox" id="react-option" (change)="handleParentStateChange($event, item)"
                 [checked]="item?.enabled"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
-              <span class="text-xs font-bold">{{item?.module}}</span>
+              <span class="text-xs font-bold">{{item?.moduleName}}</span>
             </p>
             <ul class="ml-4 flex flex-col items-start gap-1 justify-start w-full">
               @for (access of item?.actions; track $index) {
@@ -43,7 +43,8 @@
     </form>
   </div>
   <div class="actions flex items-center justify-end p-3 gap-4">
-    <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
+    <mt-button [title]="'Cancel'" size="md" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" size="md" [icon]="'save-outline'"
+      (action)="handleButtonClick($event)" />
   </div>
 </div>

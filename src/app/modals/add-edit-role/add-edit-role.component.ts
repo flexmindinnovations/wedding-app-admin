@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { retry } from 'rxjs';
+import { debounceTime, forkJoin, of } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { RoleAccessService } from 'src/app/services/role-access.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 
@@ -11,7 +12,7 @@ import { RolesService } from 'src/app/services/role/roles.service';
   templateUrl: './add-edit-role.component.html',
   styleUrls: ['./add-edit-role.component.scss'],
 })
-export class AddEditRoleComponent implements OnInit {
+export class AddEditRoleComponent implements OnInit, AfterViewInit {
 
   @Input() data: any;
   isEditMode: boolean = false;
@@ -19,69 +20,83 @@ export class AddEditRoleComponent implements OnInit {
   modalControllerService = inject(ModalController);
   accessRolesDataService = inject(RoleAccessService);
   accessRoleData: any[] = [];
-  roleService = inject(RolesService);
-  roleObj: any;
-  alert: any;
+  alert = inject(AlertService);
+  roleService = inject(RolesService)
+  existingRoles: any[] = [];
+  isRoleExists: boolean = false;
+  alreadyRoleList: any;
   roleId = 0;
 
   constructor(
     private fb: FormBuilder
   ) {
   }
+  ngAfterViewInit(): void {
+
+  }
 
   ngOnInit() {
     this.getRoleAccessData();
     this.initFormGroup();
     const data = this.data?.data;
-    this.isEditMode = data?.isEditMode;
-    console.log(this.isEditMode)
-    if (this.isEditMode) this.patchFormData();
+    this.alreadyRoleList = data?.alreadyRolesList;
   }
 
+
   patchFormData() {
-    const modalData = this.data?.data?.rowData;
-    this.roleId = modalData?.id;
+    const modalData = this.data?.data?.rowData;;
+    this.roleId = modalData?.roleId;
     const props = {
       roleName: modalData?.roleName
     }
     this.formGroup.patchValue(props);
+    const permissionProps = this.getPermissionList(this.roleId);
+    console.log(permissionProps);
   }
 
   getRoleAccessData() {
-    this.accessRolesDataService.getRoleAccessData().subscribe((data: any) => {
-      this.accessRoleData = data;
+    const moduleList = this.accessRolesDataService.getModuleList();
+    const roleList = this.accessRolesDataService.getRoleList();
+    forkJoin({ moduleList, roleList }).subscribe({
+      next: (response: any) => {
+        if (response) {
+          const { moduleList, roleList } = response;
+          this.existingRoles = roleList;
+          console.log('roleList: ', roleList);
+
+          if (moduleList?.length) {
+            const moduleListMapper = moduleList.map((item: any) => {
+              return {
+                "id": item?.moduleId,
+                "moduleName": item?.moduleName,
+                "enabled": false,
+                "actions": [
+                  { "action": "Can Add", "enabled": false },
+                  { "action": "Can Edit", "enabled": false },
+                  { "action": "Can Delete", "enabled": false }
+                ]
+              }
+            })
+            console.log('moduleListMapper: ', moduleListMapper);
+            this.accessRoleData = moduleListMapper;
+            const data = this.data?.data;
+            this.isEditMode = data?.isEditMode;
+            console.log(data);
+            if (this.isEditMode) this.patchFormData();
+          }
+        }
+      },
+      error: (error) => {
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
     })
   }
 
-  getRoleList() {
-    const roleList = this.accessRoleData.filter(role => role.enabled);
-    this.roleObj = {
-      roleId: this.roleId,
-      roleName: this.formGroup.get('roleName')?.value,
-      permissionList: roleList.map((role) => {
-        const obj = {
-          permissionId: 0,
-          moduleId: 1,
-          roleId: role?.id,
-          canAdd: role?.actions[0].enabled,
-          canEdit: role?.actions[1].enabled,
-          canDelete: role?.actions[2].enabled
-        }
-        return obj;
-      })
-    }
-  }
 
   initFormGroup() {
     this.formGroup = this.fb.group({
       roleName: ['', [Validators.required]],
       roleAccess: !['', [Validators.required]],
-    })
-
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
-
     })
   }
 
@@ -89,45 +104,100 @@ export class AddEditRoleComponent implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
+  handleInputChange(event: string) {
+    of(event)
+      .pipe(
+        debounceTime(2000),
+      ).subscribe((val: any) => {
+        this.isRoleExists = this.isRoleNameExists(val);
+        if (this.isRoleExists) {
+          this.formGroup.get('roleName')?.setErrors({ 'alreadytExists': '' });
+        }
+      })
+  }
+
+  isRoleNameExists(roleName: string): boolean {
+    return this.existingRoles.some((item: any) => item.roleName === roleName);
+  }
+
   handleButtonClick(event: any) {
     if (event?.isCancel) {
-      this.modalControllerService.dismiss({ event: 'cancel' });
+      this.modalControllerService.dismiss();
+      return;
     }
 
+    const rolePayload = {
+      roleId: this.roleId,
+      roleName: this.formGroup.get('roleName')?.value,
+      permissionList: this.getPermissionList(this.roleId)
+    };
+    console.log('rolePayload: ', rolePayload);
 
-    if (this.roleId > 0) this.updateRole();
-    else this.addNewRole();
+    // console.log('accessRoleData: ', this.accessRoleData);
+    if (this.roleId > 0) this.updateRole(rolePayload);
+    else this.addNewRole(rolePayload);
 
   }
 
-  updateRole() {
-    this.roleService.updateRole(this.roleObj).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'update' });
+
+  updateRole(rolePayload: any) {
+    if (this.alreadyRoleList.includes(rolePayload.roleName)) {
+      this.alert.setAlertMessage(`${rolePayload.roleName} Already exists`, AlertType.warning);
+    } else {
+      this.roleService.updateRole(rolePayload).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'update' });
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
+
   }
 
-  addNewRole() {
-    this.roleService.saveRole(this.roleObj).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+  addNewRole(rolePayload: any) {
+    if (this.alreadyRoleList.includes(rolePayload.roleName)) {
+      this.alert.setAlertMessage(`${rolePayload.roleName} Already exists`, AlertType.warning);
+    } else {
+      this.roleService.saveRole(rolePayload).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
+      })
+    }
+  }
+
+
+  getPermissionList(roleId: number) {
+    const permissionList = this.accessRoleData.map((item: any) => {
+      const canAdd = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'canadd')[0].enabled;
+      const canEdit = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'canedit')[0].enabled;
+      const canDelete = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'candelete')[0].enabled;
+      return {
+        permissionId: 0,
+        moduleId: item?.id,
+        moduleName: item?.moduleName,
+        roleId,
+        canView: item.enabled,
+        canAdd,
+        canEdit,
+        canDelete
       }
     })
+
+    return permissionList;
   }
 
   handleParentStateChange(event: any, item: any) {
@@ -135,14 +205,12 @@ export class AddEditRoleComponent implements OnInit {
     // this.accessRoleData.forEach((role) => role.enabled = false);
     item.enabled = value;
     item.actions.forEach((action: any) => action.enabled = value);
-    this.getRoleList();
   }
 
   handleChildStateChange(event: any, item: any) {
     const value = event?.currentTarget.checked;
     item.enabled = value;
     // console.log('accessRoleData: ', this.accessRoleData);
-    this.getRoleList();
   }
 
 }

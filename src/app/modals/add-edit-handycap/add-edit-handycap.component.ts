@@ -72,7 +72,7 @@ export class AddEditHandycapComponent implements OnInit {
     let formVal = this.formGroup.value;
     formVal = { handycapId: 0, handycapName: formVal.disablity };
     if (this.alreadyHandycapList.includes(formVal.handycapName)) {
-      this.alert.setAlertMessage(formVal.handycapName, AlertType.warning);
+      this.alert.setAlertMessage(`${formVal.handycapName} Already exists`, AlertType.warning);
     }
     else {
       this.accessHandycapDataService.saveHandycap(formVal).subscribe({
@@ -95,7 +95,7 @@ export class AddEditHandycapComponent implements OnInit {
     let formVal = this.formGroup.value;
     formVal = { handycapId: this.handycapId, handycapName: formVal.disablity };
     if (this.alreadyHandycapList.includes(formVal.handycapName)) {
-      this.alert.setAlertMessage(formVal.handycapName, AlertType.warning);
+      this.alert.setAlertMessage(`${formVal.handycapName} Already exists`, AlertType.warning);
     }
     else {
       this.accessHandycapDataService.updateHandycap(this.handycapId, formVal).subscribe({
