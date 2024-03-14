@@ -63,42 +63,46 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
 
   formatInputData(controlName: any) {
     switch (controlName) {
-      case 'dateOfBirth':
-        this.value = new Date(this.value).toLocaleDateString('en-GB');
+      case 'dateOfBirth' && this.type === 'date':
+        this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
         break;
     }
   }
 
-  initDatePicker(element: Element) {
-    this.datePicker = new Datepicker(element, {
-      theme: 'dark',
-      autohide: true,
-      todayHighlight: true,
-      // maxDate: new Date(),
-      autoselectToday: true,
-      // datepickerButtons: true
-    });
-    const datePickerParentEl: any = document.getElementsByClassName('datepicker-dropdown')[0];
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation: any) => {
-        if (mutation.attributeName === 'class') {
-          const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
-          document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px !important`);
-          document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
-          document.getElementsByClassName('months')[0]?.setAttribute('style', `width: auto !important`);
-          document.getElementsByClassName('years')[0]?.setAttribute('style', `width: 100%`);
-          document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
-          document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);
-        }
-      })
-    })
+  initDatePicker(element: any) {
+    const today = new Date();
+    element.value = this.value ? new Date(this.value).toISOString().split('T')[0] : today.toISOString().split('T')[0];
+    // this.datePicker = new Datepicker(element, {
+    //   theme: 'dark',
+    //   autohide: true,
+    //   todayHighlight: true,
+    //   // maxDate: new Date(),
+    //   autoselectToday: true,
+    //   defaultDate: new Date('02/25/2022'),
+    //   format: 'dd/mm/yyyy',
+    // });
 
-    observer.observe(datePickerParentEl, {
-      attributes: true,
-      attributeFilter: ['class'],
-      childList: false,
-      characterData: false
-    })
+    // const datePickerParentEl: any = document.getElementsByClassName('datepicker-dropdown')[0];
+    // const observer = new MutationObserver((mutations) => {
+    //   mutations.forEach((mutation: any) => {
+    //     if (mutation.attributeName === 'class') {
+    //       const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
+    //       document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px !important`);
+    //       document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
+    //       document.getElementsByClassName('months')[0]?.setAttribute('style', `width: auto !important`);
+    //       document.getElementsByClassName('years')[0]?.setAttribute('style', `width: 100%`);
+    //       document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
+    //       document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);
+    //     }
+    //   })
+    // })
+
+    // observer.observe(datePickerParentEl, {
+    //   attributes: true,
+    //   attributeFilter: ['class'],
+    //   childList: false,
+    //   characterData: false
+    // })
   }
 
   setCurrentClass() {
@@ -119,14 +123,10 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   setDisabledState?(isDisabled: boolean): void {
     // this.disabled = isDisabled;
   }
-
-  // handleOnChange(event: any) {
-  //   const value = event.target.value;
-  //   this.inputValue.emit(value);
-  //   this.onChange(value);
-  // }
   handleOnChange(event: any, src?: string) {
     const value = src === 'time' ? event : event.target.value;
+    if (src === 'dt') console.log('value: ', value);
+
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);

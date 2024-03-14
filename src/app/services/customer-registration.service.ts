@@ -57,7 +57,11 @@ export class CustomerRegistrationService {
   }
 
   updatePhotos(payload: any, customerId: number): Observable<any> {
-    return this.http.put(this.endpoint + `CustomerImage/UpdateCustomerImage${customerId}`, payload);
+    return this.http.put(this.endpoint + `/CustomerImage/UpdateCustomerImage`, payload);
+  }
+
+  getCustomerPhotos(customerId: number): Observable<any> {
+    return this.http.get(this.endpoint + `/CustomerImage/Get/${customerId}`);
   }
 
 }

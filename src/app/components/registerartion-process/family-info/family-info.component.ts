@@ -51,8 +51,8 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    this.isEditMode = this.customerData['isFamilyInfoFill'];
     if (this.familyData) {
-      this.isEditMode = this.familyData?.familyInfoId > 0 ? true : false;
       if (this.isEditMode) this.patchFormData();
     }
   }
@@ -216,7 +216,7 @@ export class FamilyInfoComponent implements OnInit {
   getCastList() {
     this.castService.getCastList().subscribe({
       next: (response: any) => {
-        if(response) {
+        if (response) {
           this.castListOptions = response.map((item: any) => {
             return {
               id: item?.castId,
@@ -235,7 +235,7 @@ export class FamilyInfoComponent implements OnInit {
     this.isSubCastDataAvailable = false;
     this.castService.getSubCastListByCast(castId).subscribe({
       next: (response: any) => {
-        if(response) {
+        if (response) {
           this.subCastListOptions = response.map((item: any) => {
             return {
               id: item?.subCastId,

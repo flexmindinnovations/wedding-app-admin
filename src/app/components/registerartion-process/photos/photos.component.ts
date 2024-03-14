@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -10,7 +10,7 @@ import { CustomerRegistrationService } from 'src/app/services/customer-registrat
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.scss'],
 })
-export class PhotosComponent implements OnInit, OnChanges {
+export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() completedStep!: FormStep;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
@@ -26,6 +26,27 @@ export class PhotosComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() { }
+
+  ngAfterViewInit(): void {
+    this.isEditMode = this.customerData['isImagesAdded'];
+    if (this.isEditMode) this.getCustomerImages();
+  }
+
+  getCustomerImages() {
+    const customerId = this.customerData?.customerId;
+    this.customerRegistrationService.getCustomerPhotos(customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log('data getCustomerImages: ', data);
+          
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 
   handleSelectedImage(event: any, src: string) {
     switch (src) {
@@ -56,8 +77,13 @@ export class PhotosComponent implements OnInit, OnChanges {
 
 
   saveNewCustomerInfo(src: string): void {
-    const payload = { file: this.selectedFiles };
-    this.customerRegistrationService.savePhotos(payload).subscribe({
+    const customerId = this.customerData?.customerId;
+    const formData: FormData = new FormData();
+    formData.append('customerId', customerId);
+    this.selectedFiles.forEach((file: any) => {
+      formData.append('file', file, file.name);
+    })
+    this.customerRegistrationService.savePhotos(formData).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
@@ -87,8 +113,13 @@ export class PhotosComponent implements OnInit, OnChanges {
   }
 
   updateCustomerInfo(src: string): void {
-    const payload = { file: this.selectedFiles };
-    this.customerRegistrationService.updatePhotos(payload, this.customerData?.customerId).subscribe({
+    const customerId = this.customerData?.customerId;
+    const formData: FormData = new FormData();
+    formData.append('customerId', customerId);
+    this.selectedFiles.forEach((file: any) => {
+      formData.append('file', file, file.name);
+    })
+    this.customerRegistrationService.updatePhotos(formData, customerId).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);

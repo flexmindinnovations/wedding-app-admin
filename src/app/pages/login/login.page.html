@@ -7,12 +7,13 @@
       <h1 class="m-0 text-lg font-bold w-full text-center">Login</h1>
     </div>
     <div class="form-cotnainer p-3 border-b border-b-gray-100">
-      <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-4" (keydown.enter)="handleSignIn()">
-        <app-input label="Username" class="w-full" [control]="formGroupControl['username']"
-          formControlName="username" />
+      <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-4"
+        (keydown.enter)="handleSignIn()">
+        <app-input label="Username" class="w-full" [control]="formGroupControl['userName']"
+          formControlName="userName" />
 
-        <app-input type="password" class="w-full" label="Password" [control]="formGroupControl['username']"
-          formControlName="password" />
+        <app-input type="password" class="w-full" label="Password" [control]="formGroupControl['userPassword']"
+          formControlName="userPassword" />
 
         <div class="actions flex items-center w-full justify-center p-3">
           <button type="button"

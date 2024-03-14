@@ -47,7 +47,8 @@
         formControlName="hobbies" [controlValue]="formGroup.get('hobbies')?.value" [isMultiline]=true />
 
       <p class="flex items-center justify-start gap-3">
-        <input #hasSpectaclesSelector type="checkbox" id="react-option" (change)="handleSpectacleStateChange($event)"
+        <input #hasSpectaclesSelector type="checkbox" id="react-option" [checked]="spectacles"
+          (change)="handleSpectacleStateChange($event)"
           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
         <span (click)="hasSpectaclesSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">
           Do you have Spectacles?</span>
@@ -55,7 +56,8 @@
 
       <div class="col-span-3 lg:col-span-4 flex flex-col gap-3">
         <p class="flex items-center justify-start gap-3">
-          <input #showPatrikaSelector type="checkbox" id="react-option" (change)="handlePatrikaStateChange($event)"
+          <input #showPatrikaSelector type="checkbox" id="react-option" [checked]="showPatrika"
+            (change)="handlePatrikaStateChange($event)"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
           <span (click)="showPatrikaSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">Show
             Patrika</span>
@@ -65,14 +67,23 @@
           @for (item of tithiList; track $index) {
           <li class="flex items-center justify-start gap-4 ml-5" [ngClass]="$index > 0 ? 'my-2' : '0'">
             <label [for]="$index" class="min-w-28 select-none">{{item?.title}}</label>
-            <input type="text" [placeholder]="item?.title" [ngClass]="colorVarients" [name]="item?.title" [id]="$index"
-              (change)="handleOnTithiChange($event, item)" class="p-2.5 !w-2/6">
+            <input type="text" [placeholder]="item?.title" [ngClass]="colorVarients" [value]="item?.value"
+              [name]="item?.title" [id]="$index" (change)="handleOnTithiChange($event, item)" class="p-2.5 !w-2/6">
           </li>
           }
         </ul>
         }
       </div>
 
+      <p class="flex items-center justify-start col-span-3 lg:col-span-4 gap-3">
+        <input #isPhysicallyAbledSelector type="checkbox" id="react-option" [checked]="isPhysicallyAbled"
+          (change)="isPhysicallyAbledStateChange($event)"
+          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
+        <span (click)="isPhysicallyAbledSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">
+          Is Physically Abled?</span>
+      </p>
+
+      @if (isPhysicallyAbled) {
       <app-dropdown label="Physical Status" [control]="formGroupControl['physicalStatus']"
         [controlValue]="formGroup.get('physicalStatus')?.value" formControlName="physicalStatus"
         (onSelectionChange)="onSelectionChange($event, 'physicalStatus')" [options]="physicalStatusListOptions" />
@@ -80,14 +91,15 @@
       <app-input label="Physical Condition" type="text" [control]="formGroupControl['otherPhysicalCondition']"
         formControlName="otherPhysicalCondition" [controlValue]="formGroup.get('otherPhysicalCondition')?.value" />
       }
+      }
 
       <app-dropdown label="Food Preferences" [control]="formGroupControl['foodPreferencesId']"
         formControlName="foodPreferencesId" (onSelectionChange)="onSelectionChange($event, 'foodPreferencesId')"
         [controlValue]="formGroup.get('foodPreferencesId')?.value" [options]="foodPreferencesListOptions" />
 
-      <app-dropdown label="Blood Group" [control]="formGroupControl['bloodGroup']" formControlName="bloodGroup"
-        (onSelectionChange)="onSelectionChange($event, 'bloodGroup')"
-        [controlValue]="formGroup.get('bloodGroup')?.value" [options]="bloodGroupListOptions" />
+      <app-dropdown label="Blood Group" [control]="formGroupControl['bloodGroupId']" formControlName="bloodGroupId"
+        (onSelectionChange)="onSelectionChange($event, 'bloodGroupId')"
+        [controlValue]="formGroup.get('bloodGroupId')?.value" [options]="bloodGroupListOptions" />
 
       <app-input label="Location Of Birth" type="text" [control]="formGroupControl['locationOfBirth']"
         formControlName="locationOfBirth" [controlValue]="formGroup.get('locationOfBirth')?.value || ''" />

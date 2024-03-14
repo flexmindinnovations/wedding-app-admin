@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IBranch } from '../interfaces/IBranch';
 import { HttpConfigService } from './http-config.service';
@@ -11,8 +11,18 @@ import { HttpClient } from '@angular/common/http';
 export class SharedService {
 
   endpoint = environment.endpoint + '/api';
+  permissionListMap = new Map<string, any>();
+  userPermissions = new Subject();
   http = inject(HttpConfigService);
   httpAssests = inject(HttpClient);
+
+  setUserPermissions(permissionList: any) {
+    this.userPermissions.next(permissionList);
+  }
+
+  getUserPermissions(): Observable<any> {
+    return this.userPermissions.asObservable();
+  }
 
   getDashboardItems(): Observable<any> {
     return this.httpAssests.get('../../assets/data/dashboard-items.json')
