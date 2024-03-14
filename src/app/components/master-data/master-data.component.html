@@ -1,5 +1,8 @@
 <div class="data-grid flex flex-col gap-3">
-  <div class="action flex items-center justify-end min-h-7">
+  <div class="action flex items-center justify-between px-3 min-h-7">
+    <div>
+      <p class="text-sm font-bold">{{gridTitle}}</p>
+    </div>
     @if (canAddItem) {
     <mt-button [title]="gridTitle" [icon]="'add-outline'" [size]="'sm'"
       (action)="handleActionClick($event)"></mt-button>

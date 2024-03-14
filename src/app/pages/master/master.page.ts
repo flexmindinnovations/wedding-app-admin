@@ -337,7 +337,7 @@ export class MasterPage implements OnInit {
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Role',
-          data: event
+          data: {...event, isEditMode}
         }
       },
       cssClass: 'roles-modal'

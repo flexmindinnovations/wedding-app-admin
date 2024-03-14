@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'photos',
@@ -19,7 +20,11 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() photosData = new EventEmitter();
   customerRegistrationService = inject(CustomerRegistrationService);
   alert = inject(AlertService);
+  cdref = inject(ChangeDetectorRef);
   selectedFiles: any[] = [];
+
+  thumbnailImage = '';
+  photo1 = '';
 
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
@@ -33,19 +38,10 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getCustomerImages() {
-    const customerId = this.customerData?.customerId;
-    this.customerRegistrationService.getCustomerPhotos(customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          console.log('data getCustomerImages: ', data);
-          
-        }
-      },
-      error: (error: any) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
-      }
-    })
+    const imageInfoModel = this.customerData['imageInfoModel'];
+    this.thumbnailImage = `${environment.endpoint}/${imageInfoModel?.imagePath1}`;
+    this.photo1 = `${environment.endpoint}/${imageInfoModel?.imagePath2}`;
+    this.cdref.detectChanges();
   }
 
   handleSelectedImage(event: any, src: string) {
