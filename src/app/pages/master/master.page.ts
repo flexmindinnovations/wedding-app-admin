@@ -171,7 +171,7 @@ export class MasterPage implements OnInit {
 
   setRoleMasterGridData() {
     this.roleMasterColumnDefs = [
-      { field: 'id', width: 60 },
+      { field: 'id', width: 80 },
       { field: 'roleName', width: 150 },
       { field: 'roleAccess', width: 285 },
       {
