@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ export class GridCellImageComponent implements OnInit, ICellRendererAngularComp 
 
   agInit(params: ICellRendererParams<any, any, any>): void {
     this.params = params;
-    this.src = `${this.endpoint}/${params?.value}` || '';
+    this.src = params?.value ? `${this.endpoint}/${params?.value}` : '/assets/image/image-placeholder.png';
   }
   refresh(params: ICellRendererParams<any, any, any>): boolean {
     return true;
