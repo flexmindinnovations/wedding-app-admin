@@ -75,13 +75,15 @@ export class LoginPage implements OnInit, OnDestroy {
           of(true).pipe(
             delay(2000),
             tap(() => {
-              this.isLoading = false;
               this.router.navigateByUrl('/');
               if (user) {
+                const { token } = user;
+                const exp  = this.authService.decodeToken(token);
                 const { permissionList } = user;
                 this.alert.setAlertMessage('User authenticated successfully', AlertType.success);
                 this.sharedService.setUserPermissions(permissionList);
                 this.sharedService.permissionListMap.set('permissionList', permissionList);
+                this.isLoading = false;
               }
             })
           ).subscribe();

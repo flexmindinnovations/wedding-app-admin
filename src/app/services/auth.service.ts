@@ -7,6 +7,7 @@ import { getSalt } from 'src/util/util';
 import { AlertService } from './alert/alert.service';
 import { AlertType } from '../enums/alert-types';
 import { SharedService } from './shared.service';
+import { jwtDecode } from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,6 @@ export class AuthService {
         if (data) {
           const { user } = data;
           if (user) {
-            console.log('user: ', user);
             const { token, roleName, firstName, lastName, middleName, mobileNo, emailId, permissionList } = user;
             const salt = getSalt(10);
             const profile = { firstName, lastName, middleName, mobileNo, emailId };
@@ -43,6 +43,15 @@ export class AuthService {
         }
       })
     );
+  }
+
+  decodeToken(token: string) {
+    try {
+      const { exp } = jwtDecode(token);
+      return exp;
+    } catch(Error) {
+      return null;
+    }
   }
 
   logoutUser() {

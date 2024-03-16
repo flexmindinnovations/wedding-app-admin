@@ -52,13 +52,13 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
     this.roleService.getPermissionListById(this.roleId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
           data?.forEach((item: any) => {
             const itemIndex = this.accessRoleData.findIndex((row) => row.id === item?.moduleId);
             this.permissionId = item?.permissionId;
             if (itemIndex > -1) {
               this.accessRoleData[itemIndex] = {
                 "id": item?.moduleId,
+                "permissionId": item?.permissionId,
                 "moduleName": item?.moduleName,
                 "enabled": item?.canView,
                 "actions": [
@@ -80,8 +80,6 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
       roleName: modalData?.roleName
     }
     this.formGroup.patchValue(props);
-    // const permissionProps = this.getPermissionList(this.roleId);
-    // console.log(permissionProps);
   }
 
   getRoleAccessData() {
@@ -92,8 +90,6 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
         if (response) {
           const { moduleList, roleList } = response;
           this.existingRoles = roleList;
-          console.log('roleList: ', roleList);
-
           if (moduleList?.length) {
             const moduleListMapper = moduleList.map((item: any) => {
               return {
@@ -107,11 +103,9 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
                 ]
               }
             })
-            // console.log('moduleListMapper: ', moduleListMapper);
             this.accessRoleData = moduleListMapper;
             const data = this.data?.data;
             this.isEditMode = data?.isEditMode;
-            // console.log(data);
             if (this.isEditMode) this.patchFormData();
           }
         }
@@ -161,9 +155,6 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
       roleName: this.formGroup.get('roleName')?.value,
       permissionList: this.getPermissionList(this.roleId)
     };
-    // console.log('rolePayload: ', rolePayload);
-
-    // console.log('accessRoleData: ', this.accessRoleData);
     if (this.roleId > 0) this.updateRole(rolePayload);
     else this.addNewRole(rolePayload);
 
@@ -212,7 +203,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
       const canEdit = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'canedit')[0].enabled;
       const canDelete = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'candelete')[0].enabled;
       return {
-        permissionId: this.permissionId,
+        permissionId: item.permissionId ? item.permissionId : 0,
         moduleId: item?.id,
         moduleName: item?.moduleName,
         roleId,
@@ -228,7 +219,6 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
 
   handleParentStateChange(event: any, item: any) {
     const value = event?.currentTarget.checked;
-    // this.accessRoleData.forEach((role) => role.enabled = false);
     item.enabled = value;
     item.actions.forEach((action: any) => action.enabled = value);
   }
@@ -236,7 +226,6 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   handleChildStateChange(event: any, item: any) {
     const value = event?.currentTarget.checked;
     item.enabled = value;
-    // console.log('accessRoleData: ', this.accessRoleData);
   }
 
 }
