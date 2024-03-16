@@ -17,6 +17,9 @@ import { CastService } from 'src/app/services/cast/cast.service';
 import { HandycapService } from 'src/app/services/handycap/handycap.service';
 import { AddEditHandycapComponent } from 'src/app/modals/add-edit-handycap/add-edit-handycap.component';
 import { AddEditUserComponent } from 'src/app/modals/add-edit-user/add-edit-user.component';
+import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 
 @Component({
   selector: 'app-master',
@@ -29,6 +32,8 @@ export class MasterPage implements OnInit {
   educationService = inject(EducationService);
   castService = inject(CastService);
   handycapService = inject(HandycapService);
+  userService = inject(UserService);
+  roleService = inject(RolesService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
@@ -118,7 +123,7 @@ export class MasterPage implements OnInit {
     this.castMasterColumnDefs = [
       { field: "castId", headerName: 'id', width: 60 },
       { field: "castName", minWidth: 235 },
-      { field: "isSubCast", minWidth: 235 },
+      { field: "hasSubcast", minWidth: 235 },
       { field: 'subCastCount', width: 235 },
       {
         field: "action",
@@ -141,10 +146,14 @@ export class MasterPage implements OnInit {
 
     this.userMasterColumnDefs = [
       { field: "id", width: 60 },
-      { field: "fullName", minWidth: 235 },
-      { field: "email", minWidth: 235 },
-      { field: 'mobile', width: 235 },
-      { field: 'role', width: 235 },
+      { field: "firstName", minWidth: 235 },
+      { field: "middleName", minWidth: 235 },
+      { field: "lastName", minWidth: 235 },
+      { field: "isActive", minWidth: 235 },
+      { field: "emailId", minWidth: 235 },
+      { field: 'mobileNo', width: 235 },
+      { field: 'roleName', width: 235 },
+      { field: "userAddress", minWidth: 235 },
       {
         field: "action",
         colId: 'user',
@@ -177,9 +186,24 @@ export class MasterPage implements OnInit {
       },
     ];
 
-    this.roleMasterRowData = [
-      { id: 1, roleName: "Super Admin", roleAccess: 'All Permissions' }
-    ];
+    this.getRolesTableData();
+  }
+
+  getRolesTableData() {
+    this.roleService.getRoleList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.roleMasterRowData = data.map((item: any) => {
+            item['id'] = item?.roleId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Role List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   setEducationMasterGridData() {
@@ -207,11 +231,9 @@ export class MasterPage implements OnInit {
   getEducationTableData() {
     this.educationService.getEducationList().subscribe({
       next: (data: any) => {
-        // let datum = data.map(e=>)
         if (data) {
           this.educationMasterRowData = data.map((item: any) => {
             item['id'] = item?.educationId;
-            // item['specializationCount'] = this.
             return item;
           });
         }
@@ -332,32 +354,33 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    const alreadyRolesList = [...this.roleMasterRowData.map((role: any) => role.roleName)]
     const modal = await this.modalCtrl.create({
       component: AddEditRoleComponent,
       componentProps: {
         data: {
-          title: isEditMode ? 'Edit: ' + event?.rowData.roleName : 'Add New Role',
-          data: {...event, isEditMode}
+          title: isEditMode ? 'Edit: Role ' : 'Add New Role',
+          data: { ...event, alreadyRolesList, isEditMode }
         }
       },
       cssClass: 'roles-modal'
     });
     await modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-    // console.log('data: ', data);
-    // console.log('role: ', role);
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getRolesTableData();
+    }
   }
 
   async openAddEditHeightModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
 
     let isEditMode = false;
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    console.log('isEditMode: ', isEditMode);
 
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
@@ -369,26 +392,22 @@ export class MasterPage implements OnInit {
       },
       cssClass: 'height-modal'
     });
-    console.log('>>>>> modal : ', modal);
     await modal.present();
     const data = await modal.onWillDismiss();
     const actionEvents = ['add', 'update'];
     const eventType = data?.data?.event;
-    console.log(eventType);
     if (actionEvents.includes(eventType)) {
       this.getHeightList();
     }
   }
 
   async openAddEditHandycapModal(event?: any) {
-    console.log('data: ', event);
     this.canShowModal = true;
 
     let isEditMode = false;
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    console.log('isEditMode: ', isEditMode);
     let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName)]
     const modal = await this.modalCtrl.create({
       component: AddEditHandycapComponent,
@@ -400,12 +419,10 @@ export class MasterPage implements OnInit {
       },
       cssClass: 'handycap-modal'
     });
-    console.log('>>>>> modal : ', modal);
     await modal.present();
     const data = await modal.onWillDismiss();
     const actionEvents = ['add', 'update'];
     const eventType = data?.data?.event;
-    console.log(eventType);
     if (actionEvents.includes(eventType)) {
       this.getHandycapList();
     }
@@ -501,7 +518,7 @@ export class MasterPage implements OnInit {
       },
       error: (error) => {
         console.log('error: ', error);
-
+        this.alert.setAlertMessage('Height List: ' + error?.statusText, AlertType.error);
       }
     })
 
@@ -512,7 +529,7 @@ export class MasterPage implements OnInit {
         if (data) {
           this.castMasterRowData = data.map((item: any) => {
             item['id'] = item?.castId;
-            item['isSubCast'] = item?.isSubcast;
+            // item['hasSubCast'] = item?.hasSubcast;
             return item;
           });
         }
@@ -537,14 +554,25 @@ export class MasterPage implements OnInit {
       },
       error: (error) => {
         console.log('error: ', error);
-        this.alert.setAlertMessage('Cast List: ' + error?.statusText, AlertType.error);
+        this.alert.setAlertMessage('Handyap List: ' + error?.statusText, AlertType.error);
       }
     })
 
   }
   getUserList(): any {
-    this.userMasterRowData = [
-      { id: 0, fullName: 'shafiquddin', mobile: '1234567890', email: 'shafiquddin2k@gmail.com', role: 'admin' }
-    ];
+    this.userService.getUserList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.userMasterRowData = data?.map((item: any) => {
+            item['id'] = item?.userId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('User List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 }

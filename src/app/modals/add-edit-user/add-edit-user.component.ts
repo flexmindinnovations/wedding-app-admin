@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -16,8 +17,10 @@ export class AddEditUserComponent implements OnInit {
   formGroup: any;
   modalControllerService = inject(ModalController);
   accessUserDataService = inject(UserService);
+  roleService = inject(RolesService);
   alert = inject(AlertService);
   userId = 0;
+  roleId = 0;
   roleList: any = [];
   constructor(
     private fb: FormBuilder
@@ -26,35 +29,61 @@ export class AddEditUserComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getRoleData();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
-    console.log(data);
-    if (this.isEditMode) this.patchFormData();
   }
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
     this.userId = modalData?.id;
-    // this.formGroup.patchValue(props);
-    console.log(this.formGroup.value)
+    const props = {
+      firstName: modalData?.firstName,
+      middleName: modalData?.middleName,
+      lastName: modalData?.lastName,
+      emailId: modalData?.emailId,
+      mobileNo: modalData?.mobileNo,
+      roleId: modalData['roleId'],
+      userAddress: modalData.userAddress,
+    }
+    this.roleId = modalData['roleId'];
+    this.formGroup.patchValue(props);
   }
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      fullName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      firstName: ['', [Validators.required]],
+      middleName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      emailId: ['', [Validators.required, Validators.email]],
+      mobileNo: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       roleId: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.pattern(/^\d{3,15}$/)]],
-    })
-
-    this.formGroup.valueChanges.subscribe((event: any) => {
-      const val = event
-      console.log('val: ', val);
+      userAddress: ['', [Validators.required]],
     })
   }
   get formGroupControl(): { [key: string]: FormControl } {
     return this.formGroup.controls as { [key: string]: FormControl };
+  }
+
+  getRoleData() {
+    this.roleService.getRoleList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.roleList = data?.map((item: any) => {
+            const obj = {
+              id: item?.roleId,
+              title: item?.roleName
+            }
+            return obj;
+          });
+          if (this.isEditMode) this.patchFormData();
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Role List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   handleButtonClick(event: any) {
@@ -70,7 +99,14 @@ export class AddEditUserComponent implements OnInit {
 
   addNewUser() {
     let formVal = this.formGroup.value;
-    formVal = { UserId: 0, }
+    formVal = {
+      userId: 0,
+      ...formVal,
+      roleName: "",
+      userPassword: "",
+      roleId: this.roleId,
+      "isActive": true
+    }
     this.accessUserDataService.saveUser(formVal).subscribe({
       next: (data: any) => {
         if (data) {
@@ -87,7 +123,15 @@ export class AddEditUserComponent implements OnInit {
 
   updateUser() {
     let formVal = this.formGroup.value;
-    formVal = { userId: this.userId, };
+    formVal = {
+      userId: this.userId,
+      ...formVal,
+      roleName: "",
+      userPassword: "",
+      roleId: this.roleId,
+      "isActive": true
+    }
+
     this.accessUserDataService.updateUser(formVal).subscribe({
       next: (data: any) => {
         if (data) {
@@ -107,7 +151,8 @@ export class AddEditUserComponent implements OnInit {
   }
 
   onSelectionChange(event: any, src: any) {
-    console.log(event, src)
+    this.roleId = event?.id;
+    this.formGroup.get('roleId').setValue(event?.id);
   }
 
 }

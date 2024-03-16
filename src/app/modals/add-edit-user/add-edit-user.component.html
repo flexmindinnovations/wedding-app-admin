@@ -5,24 +5,33 @@
     </div>
   </div>
   <div class="body ion-padding border-b border-b-gray-200">
-    <form [formGroup]="formGroup">
+    <form [formGroup]="formGroup" class="flex flex-col gap-4">
       <div class="grid grid-cols-2 gap-4">
-        <app-input label="Full Name" type="text" id="user" [control]="formGroupControl['fullName']"
-          formControlName="fullName" [controlValue]="formGroup.get('fullName')?.value" class="" />
-        <app-input label="Email" type="email" id="user" [control]="formGroupControl['email']" formControlName="email"
-          [controlValue]="formGroup.get('email')?.value" class="" />
-        <app-input label="Mobile" type="number" id="user" [control]="formGroupControl['mobile']"
-          formControlName="mobile" [controlValue]="formGroup.get('mobile')?.value" class="" />
+        <app-input label="First Name" type="text" id="user" [control]="formGroupControl['firstName']"
+          formControlName="firstName" [controlValue]="formGroup.get('firstName')?.value" class="" />
+        <app-input label="Middle Name" type="text" id="user" [control]="formGroupControl['middleName']"
+          formControlName="middleName" [controlValue]="formGroup.get('middleName')?.value" class="" />
+        <app-input label="Last Name" type="text" id="user" [control]="formGroupControl['lastName']"
+          formControlName="lastName" [controlValue]="formGroup.get('lastName')?.value" class="" />
+        <app-input label="Email" type="email" id="user" [control]="formGroupControl['emailId']"
+          formControlName="emailId" [controlValue]="formGroup.get('emailId')?.value" class="" />
+        <app-input label="Mobile" type="number" id="user" [control]="formGroupControl['mobileNo']"
+          formControlName="mobileNo" [controlValue]="formGroup.get('mobileNo')?.value" class="" />
+        @if(roleList.length){
         <app-dropdown label="Role" (onSelectionChange)="onSelectionChange($event,'roleId')" class=""
-          [control]="formGroupControl['roleId']" formControlName="roleId" [options]="roleList" />
-        <app-input label="Password" type="password" id="user" [control]="formGroupControl['password']"
-          formControlName="password" [controlValue]="formGroup.get('password')?.value" class="" />
+          [control]="formGroupControl['roleId']" [controlValue]="formGroup.get('roleId')?.value"
+          formControlName="roleId" [options]="roleList" />
+        }
+        <!-- <app-input label="Password" type="password" id="user" [control]="formGroupControl['userPassword']"
+          formControlName="userPassword" [controlValue]="formGroup.get('userPassword')?.value" class="" /> -->
       </div>
+      <app-input label="Address" type="text" id="user" [control]="formGroupControl['userAddress']"
+        formControlName="userAddress" [isMultiline]=true [controlValue]="formGroup.get('userAddress')?.value"
+        class="" />
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'"
-      (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
   </div>
 </div>

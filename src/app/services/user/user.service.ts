@@ -20,7 +20,7 @@ export class UserService {
   }
 
   updateUser(payload: any): Observable<any> {
-    return this.http.post(`${this.endpoint}/updateUser`, payload)
+    return this.http.put(`${this.endpoint}/updateUser`, payload)
   }
 
   deleteUser(id: any): Observable<any> {

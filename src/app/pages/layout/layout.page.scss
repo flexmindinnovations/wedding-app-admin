@@ -8,11 +8,12 @@
 .modal-container {
   @apply h-screen w-full blur-md;
 }
+
 ::ng-deep ion-modal {
   --width: 42%;
 }
 
-::ng-deep ion-modal::part(content) {
+::ng-deep timeout-container::part(content) {
   height: 22%;
   @apply rounded-lg;
 }
@@ -22,4 +23,3 @@
     @apply flex flex-col items-center justify-center;
   }
 }
-

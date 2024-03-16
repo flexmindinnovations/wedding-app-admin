@@ -44,6 +44,7 @@
   </div>
   <div class="actions flex items-center justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" size="md" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [title]="'Save'" size="md" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" size="md" [icon]="'save-outline'"
+      (action)="handleButtonClick($event)" />
   </div>
 </div>
