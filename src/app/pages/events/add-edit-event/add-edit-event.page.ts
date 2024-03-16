@@ -128,7 +128,6 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
     if (this.selectedImage) {
       formData.append('file', this.selectedImage, this.selectedImage.name);
     }
-
     this.eventService.addNewEvent(formData).subscribe({
       next: (data: any) => {
         if (data) {

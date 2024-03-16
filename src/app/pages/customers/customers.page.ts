@@ -77,7 +77,6 @@ export class CustomersPage implements OnInit {
               registrationDate: moment(item['registrationDate']).format('DD/MM/YYYY')
             }
           });
-          console.log('rowData: ', this.rowData);
         }
       },
       error: (error) => {
