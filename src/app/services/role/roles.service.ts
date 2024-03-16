@@ -12,7 +12,11 @@ export class RolesService {
   http = inject(HttpConfigService);
 
   getRoleList(): Observable<any> {
-    return this.http.get(`${this.endpoint}/getRoleList`);
+    return this.http.get(`${this.endpoint}/GetRoleList`);
+  }
+
+  getPermissionListById(roleId: number): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetPermissionListByRoleId?roleId=${roleId}`)
   }
 
   saveRole(payload: any): Observable<any> {

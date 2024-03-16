@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, inject, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import { Console } from 'console';
 import { debounceTime, forkJoin, of } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -26,6 +27,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   isRoleExists: boolean = false;
   alreadyRoleList: any;
   roleId = 0;
+  permissionId = 0;
 
   constructor(
     private fb: FormBuilder
@@ -46,12 +48,40 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   patchFormData() {
     const modalData = this.data?.data?.rowData;;
     this.roleId = modalData?.roleId;
+
+    this.roleService.getPermissionListById(this.roleId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log(data);
+          data?.forEach((item: any) => {
+            const itemIndex = this.accessRoleData.findIndex((row) => row.id === item?.moduleId);
+            this.permissionId = item?.permissionId;
+            if (itemIndex > -1) {
+              this.accessRoleData[itemIndex] = {
+                "id": item?.moduleId,
+                "moduleName": item?.moduleName,
+                "enabled": item?.canView,
+                "actions": [
+                  { "action": "Can Add", "enabled": item?.canAdd },
+                  { "action": "Can Edit", "enabled": item?.canEdit },
+                  { "action": "Can Delete", "enabled": item?.canDelete }
+                ]
+              }
+            }
+          })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
     const props = {
       roleName: modalData?.roleName
     }
     this.formGroup.patchValue(props);
-    const permissionProps = this.getPermissionList(this.roleId);
-    console.log(permissionProps);
+    // const permissionProps = this.getPermissionList(this.roleId);
+    // console.log(permissionProps);
   }
 
   getRoleAccessData() {
@@ -77,11 +107,11 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
                 ]
               }
             })
-            console.log('moduleListMapper: ', moduleListMapper);
+            // console.log('moduleListMapper: ', moduleListMapper);
             this.accessRoleData = moduleListMapper;
             const data = this.data?.data;
             this.isEditMode = data?.isEditMode;
-            console.log(data);
+            // console.log(data);
             if (this.isEditMode) this.patchFormData();
           }
         }
@@ -131,7 +161,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
       roleName: this.formGroup.get('roleName')?.value,
       permissionList: this.getPermissionList(this.roleId)
     };
-    console.log('rolePayload: ', rolePayload);
+    // console.log('rolePayload: ', rolePayload);
 
     // console.log('accessRoleData: ', this.accessRoleData);
     if (this.roleId > 0) this.updateRole(rolePayload);
@@ -141,22 +171,18 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
 
 
   updateRole(rolePayload: any) {
-    if (this.alreadyRoleList.includes(rolePayload.roleName)) {
-      this.alert.setAlertMessage(`${rolePayload.roleName} Already exists`, AlertType.warning);
-    } else {
-      this.roleService.updateRole(rolePayload).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            this.modalControllerService.dismiss({ event: 'update' });
-          }
-        },
-        error: (error) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage(error?.message, AlertType.error);
+    this.roleService.updateRole(rolePayload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalControllerService.dismiss({ event: 'update' });
         }
-      })
-    }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
 
   }
 
@@ -186,7 +212,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
       const canEdit = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'canedit')[0].enabled;
       const canDelete = item.actions.filter((access: any) => access.action.replace(' ', '').toLowerCase() === 'candelete')[0].enabled;
       return {
-        permissionId: 0,
+        permissionId: this.permissionId,
         moduleId: item?.id,
         moduleName: item?.moduleName,
         roleId,
