@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'time-picker',
@@ -7,6 +7,7 @@ import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular
 })
 export class TimePickerComponent implements OnInit, AfterViewInit {
 
+  @Input() value: string = '';
   hoursData: any;
   minutesData: any;
   amPmData: any;
@@ -33,6 +34,11 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if (this.value) {
+      this.hour = this.value.split(':')[0];
+      this.minute = this.value.split(':')[1];
+      this.ampm = this.value.split(':')[2].toLowerCase();
+    }
     this.setHours();
   }
 
@@ -72,16 +78,15 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
     const value = event?.target?.value;
     switch (src) {
       case 'hour':
-        this.selectedHour = value.toString();
+        this.selectedHour = value ? value.toString() : this.hour;
         break;
       case 'minutes':
-        this.selectedMinutes = value.toString();
+        this.selectedMinutes = value ? value.toString() : this.minute;
         break;
       case 'ampm':
-        this.selectedAmPm = value.toString();
+        this.selectedAmPm = value ? value.toString() : this.ampm;
         break;
     }
-    const isTimeSelected = this.selectedHour && this.selectedMinutes && this.selectedAmPm ? true : false;
-    if (isTimeSelected) this.selectedTime.emit(`${this.selectedHour}:${this.selectedMinutes}:${this.selectedAmPm.toUpperCase()}`);
+    this.selectedTime.emit(`${this.selectedHour ? this.selectedHour : this.hour}:${this.selectedMinutes ? this.selectedMinutes : this.minute}:${this.selectedAmPm ? this.selectedAmPm?.toUpperCase() : this.ampm.toUpperCase()}`);
   }
 }

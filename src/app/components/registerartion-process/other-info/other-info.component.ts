@@ -36,7 +36,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.otherData = this.customerData['otherInfoModel'];
-    this.isEditMode = this.otherData?.otherInfoId > 0 ? true : false;
+    this.isEditMode = this.customerData['isOtherInfoFill'];
     if (this.isEditMode) this.patchFormData();
   }
 
@@ -48,8 +48,6 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   }
 
   patchFormData() {
-    console.log('otherData: ', this.otherData);
-
     this.formGroup.patchValue(this.otherData);
     this.cdref.detectChanges();
   }
@@ -85,8 +83,6 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   saveNewCustomerInfo(formVal: any, src: string): void {
     const payload = { ...formVal, otherInfoId: 0 };
-    console.log('payload: ', payload);
-
     this.customerRegistrationService.saveOtherInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {

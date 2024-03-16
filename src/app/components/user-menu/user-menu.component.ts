@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterContentInit, Component, OnInit, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -7,14 +7,19 @@ import { Router } from '@angular/router';
   templateUrl: './user-menu.component.html',
   styleUrls: ['./user-menu.component.scss'],
 })
-export class UserMenuComponent implements OnInit {
+export class UserMenuComponent implements OnInit, AfterContentInit {
   iconSrc = '/assets/icon/user.png';
   router = inject(Router);
+  profileInfo: any = {}; 
 
   constructor() { }
 
   ngOnInit() { }
 
+  ngAfterContentInit(): void {
+    const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+    this.profileInfo = profile ? profile : {};
+  }
 
   handleImageLoadError(event: ErrorEvent) {
   }

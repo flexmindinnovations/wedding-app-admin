@@ -11,6 +11,7 @@ export class ImagePickerComponent implements OnInit {
   @Input() id: string = '';
   @Input() showPreview: boolean = true;
   @Input() src: string = '';
+  @Input() fileName: string = '';
   imagePath: string = '';
   imgSrc: any;
 
@@ -19,8 +20,8 @@ export class ImagePickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.imagePath = this.imagePath ? this.imagePath : 'No File chosen';
-    this.imgSrc = this.imgSrc ? this.imgSrc : '/assets/image/image-placeholder.png';
+    this.imagePath = this.imagePath ? this.imagePath : this.fileName ? this.fileName : 'No File chosen';
+    this.src = this.src ? this.src : this.imgSrc = this.imgSrc ? this.imgSrc : '/assets/image/image-placeholder.png';
   }
 
   handleImageChange(event: any) {
@@ -31,7 +32,7 @@ export class ImagePickerComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imgSrc = reader.result;
-        this.src = this.src ? this.src : this.imgSrc;
+        this.src = this.imgSrc;
         const params = { id: this.id, file }
         this.selectedImage.emit(params);
       }

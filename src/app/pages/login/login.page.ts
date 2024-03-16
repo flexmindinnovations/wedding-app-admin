@@ -5,6 +5,9 @@ import { of } from 'rxjs';
 import { COLOR_SCHEME } from 'src/util/util';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { AlertType } from 'src/app/enums/alert-types';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-login',
@@ -21,9 +24,12 @@ export class LoginPage implements OnInit, OnDestroy {
   fb = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
+  alert = inject(AlertService);
+
+  sharedService = inject(SharedService);
 
   ngOnInit() {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.setCurrentClass();
     this.initFormGroup();
     const isLoggedIn = this.authService.isLoggedIn();
@@ -43,8 +49,8 @@ export class LoginPage implements OnInit, OnDestroy {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(3)]]
+      userName: ['', [Validators.required]],
+      userPassword: ['', [Validators.required, Validators.minLength(3)]]
     })
   }
 
@@ -62,20 +68,29 @@ export class LoginPage implements OnInit, OnDestroy {
     this.isLoading = true;
     const formInput = this.formGroup.value;
     if (!this.formGroup.valid) return;
-    if (formInput.username === 'admin' && formInput.password === 'admin') {
-      const user = {
-        username: formInput.username,
-        password: formInput.password
+    this.authService.loginUser(formInput).subscribe({
+      next: (response: any) => {
+        if (response) {
+          const { user } = response;
+          of(true).pipe(
+            delay(2000),
+            tap(() => {
+              this.isLoading = false;
+              this.router.navigateByUrl('/');
+              if (user) {
+                const { permissionList } = user;
+                this.alert.setAlertMessage('User authenticated successfully', AlertType.success);
+                this.sharedService.setUserPermissions(permissionList);
+                this.sharedService.permissionListMap.set('permissionList', permissionList);
+              }
+            })
+          ).subscribe();
+        }
+      },
+      error: (error) => {
+        this.alert.setAlertMessage(error?.message, AlertType.error);
       }
-      localStorage.setItem('user', JSON.stringify(user));
-      of(true).pipe(
-        delay(2000),
-        tap(() => {
-          this.isLoading = false;
-          this.router.navigateByUrl('/');
-        })
-      ).subscribe();
-    }
+    });
   }
 
   ngOnDestroy(): void {

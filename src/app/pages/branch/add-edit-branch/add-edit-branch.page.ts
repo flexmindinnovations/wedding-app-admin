@@ -98,8 +98,11 @@ export class AddEditBranchPage implements OnInit {
         }
       },
       error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
+        console.log('error: ', error.title);
+        const err = error?.error;
+        console.log('err: ', err);
+        
+        this.alert.setAlertMessage(err?.title, AlertType.error);
       }
     })
   }

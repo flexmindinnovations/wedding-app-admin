@@ -8,12 +8,12 @@
         type="number" [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
 
       <app-input label="WhatsApp Number" class="flex-grow" type="number"
-        [controlValue]="formGroup.get('whatsAppNumber')?.value" [control]="formGroupControl['whatsAppNumber']"
-        formControlName="whatsAppNumber" />
+        [controlValue]="formGroup.get('whatsUpNumber')?.value" [control]="formGroupControl['whatsUpNumber']"
+        formControlName="whatsUpNumber" />
 
         <app-input label="Email" class="flex-grow" type="email"
-        [controlValue]="formGroup.get('email')?.value" [control]="formGroupControl['email']"
-        formControlName="email" />
+        [controlValue]="formGroup.get('emailId')?.value" [control]="formGroupControl['emailId']"
+        formControlName="emailId" />
 
       @if (countryList.length) {
       <app-dropdown label="Country" class="" [control]="formGroupControl['countryId']"
@@ -34,14 +34,14 @@
         [options]="cityList" />
       }
 
-      <app-input label="Home Address" class="flex-grow col-span-3" type="text"
+      <app-input label="Home Address"  class="col-span-3 lg:col-span-4" type="text"
         [control]="formGroupControl['homeAddress']" [controlValue]="formGroup.get('homeAddress')?.value"
         formControlName="homeAddress" [isMultiline]=true />
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
-    <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
-      (action)="handleClickOnPrevious('contact')" />
+    <!-- <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
+      (action)="handleClickOnPrevious('contact')" /> -->
     <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
   </div>
 </div>

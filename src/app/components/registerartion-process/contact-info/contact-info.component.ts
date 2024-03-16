@@ -49,8 +49,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.isEditMode = this.customerData['isContactInfoFill'];
     if (this.contactData) {
-      this.isEditMode = this.contactData?.contactInfoId > 0 ? true : false;
       if (this.isEditMode) this.patchFormData();
     }
   }
@@ -59,8 +59,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     this.formGroup = this.fb.group({
       // contactOf: ['', [Validators.required]],
       contactNumber: ['', [Validators.required]],
-      whatsAppNumber: ['', [Validators.required]],
-      email: ['', [Validators.required]],
+      whatsUpNumber: ['', [Validators.required]],
+      emailId: ['', [Validators.required]],
       homeAddress: ['', [Validators.required]],
       countryId: ['', [Validators.required]],
       stateId: ['', [Validators.required]],
@@ -146,7 +146,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   updateCustomerInfo(formVal: any, src: string): void {
     const contactInfo = this.customerData['contactInfoModel'];
     const customerId = this.customerData?.customerId;
-    const payload = { ...formVal, contactInfoId: contactInfo.contactInfoModel };
+    const payload = { ...formVal, contactInfoId: contactInfo.contactInfoId };
     this.customerRegistrationService.updateContactInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {

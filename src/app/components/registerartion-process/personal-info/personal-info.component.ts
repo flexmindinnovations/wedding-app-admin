@@ -32,6 +32,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   showPatrika: boolean = false;
   spectacles: boolean = false;
   isEditMode: boolean = false;
+  isPhysicallyAbled: boolean = false;
   personalData: any;
 
   @Output() personalInfoData = new EventEmitter();
@@ -81,15 +82,12 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
+    this.getMasterData();
     if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
   }
 
   ngAfterViewInit(): void {
-    if (this.personalData) {
-      this.isEditMode = this.personalData?.personalInfoId > 0 ? true : false;
-      if (this.isEditMode) this.patchValue();
-    }
-    this.getMasterData();
+    this.isEditMode = this.customerData['isPersonInfoFill'];
     this.cdref.detectChanges();
   }
 
@@ -111,7 +109,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
       hobbies: !['', ![Validators.required]],
-      bloodGroup: !['', ![Validators.required]],
+      bloodGroupId: !['', ![Validators.required]],
       foodPreferencesId: !['', ![Validators.required]]
     });
   }
@@ -128,6 +126,16 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       ...this.personalData,
       dateOfBirth: new Date(this.personalData['dateOfBirth'])
     });
+    this.spectacles = this.personalData['spectacles'];
+    this.showPatrika = this.personalData['isPatrika'];
+    this.tithiList = this.tithiList.map((item: any) => {
+      Object.keys(this.personalData).forEach((key: any) => {
+          if(item?.title.toLowerCase() === key) {
+            item.value = this.personalData[key];
+          }
+      })
+      return item;
+    })
     this.cdref.detectChanges();
   }
 
@@ -138,11 +146,15 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
     formVal['specializationId'] = this.specializationId ? this.specializationId : null;
-    formVal['bloodGroup'] = formVal['bloodGroup'] ? formVal['bloodGroup'] : null;
-    formVal['physicalStatus'] = formVal['physicalStatus'] ? formVal['physicalStatus'] : null;
+    formVal['bloodGroupId'] = formVal['bloodGroupId'] ? formVal['bloodGroupId'] : null;
+    formVal['physicalStatus'] = this.isPhysicallyAbled ? formVal['physicalStatus'] : null;
     formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";
-    formVal['dateOfBirth'] = moment(formVal['dateOfBirth'], 'MM/DD/YYYY').format();
-    formVal['shakeDate'] = formVal['shakeDate'] ? moment(formVal['shakeDate'], 'MM/DD/YYYY').format() : null;
+    formVal['dateOfBirth'] = moment(formVal['dateOfBirth']).format();
+    formVal['shakeDate'] = formVal['shakeDate'] ? moment(formVal['shakeDate']).format() : null;
+    formVal['customerId'] = this.customerData?.customerId;
+    formVal['spectacles'] = this.spectacles;
+    formVal['isPatrika'] = this.showPatrika;
+    formVal['isPhysicallyAbled'] = this.isPhysicallyAbled;
 
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src)
@@ -156,7 +168,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    let payload = { ...formVal, isPatrika: this.showPatrika, spectacles: this.spectacles, personalInfoId: 0 };
+    let payload = { ...formVal, personalInfoId: 0 };
     this.tithiList.forEach((item: any) => {
       payload = { ...payload, [item.title]: item.value ? item.value : "" }
     });
@@ -191,12 +203,10 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   updateCustomerInfo(formVal: any, src: string): void {
     const customerId = this.customerData?.customerId;
-    let payload = { ...formVal, isPatrika: this.showPatrika, spectacles: this.spectacles, personalInfoId: this.personalData.personalInfoId };
+    let payload = { ...formVal, personalInfoId: this.personalData.personalInfoId };
     this.tithiList.forEach((item: any) => {
       payload = { ...payload, [item.title]: item.value ? item.value : "" }
     });
-    console.log('payload: ', payload);
-
     this.customerRegistrationService.updatePersonalInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {
@@ -265,6 +275,8 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
               title: item?.foodName,
             }
           });
+          if (this.isEditMode) this.patchValue();
+          this.cdref.detectChanges();
         },
         error: (error: Error) => {
           console.log('error: ', error);
@@ -301,6 +313,12 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     const value = event?.currentTarget.checked;
     this.spectacles = value;
   }
+
+  isPhysicallyAbledStateChange(event: any) {
+    const value = event?.currentTarget.checked;
+    this.isPhysicallyAbled = value;
+  }
+
   handlePatrikaStateChange(event: any) {
     this.tithiList.forEach((row: any) => row.tithi = false);
     const value = event?.currentTarget.checked;

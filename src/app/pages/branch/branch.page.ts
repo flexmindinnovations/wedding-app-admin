@@ -47,7 +47,6 @@ export class BranchPage implements OnInit {
         innerRenderer: GridCellStatusComponent,
       } as IGroupCellRendererParams
     },
-
     {
       field: "action",
       width: 90,
