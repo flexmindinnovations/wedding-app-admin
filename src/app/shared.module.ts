@@ -65,7 +65,7 @@ import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.compo
         DeleteConfirmComponent,
         TimePickerComponent,
         AddEditHandycapComponent,
-        AddEditUserComponent,
+        AddEditUserComponent
     ],
     imports: [
         CommonModule,

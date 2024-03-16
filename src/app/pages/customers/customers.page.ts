@@ -7,6 +7,9 @@ import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
+import * as moment from 'moment';
+import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
+import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 
 
 @Component({
@@ -23,14 +26,31 @@ export class CustomersPage implements OnInit {
 
   rowData: any = [];
 
-  // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
     { field: "customerId", headerName: '#id', width: 60 },
+    {
+      field: "imagePath1",
+      headerName: 'Image',
+      wrapText: true,
+      autoHeaderHeight: true,
+      width: 100,
+      cellRenderer: 'agGroupCellRenderer',
+      cellRendererParams: {
+        innerRenderer: GridCellImageComponent,
+      } as IGroupCellRendererParams
+    },
     { field: "fullName", width: 400 },
     { field: "mobileNo", width: 150 },
-    // { field: "country" },
-    // { field: "state" },
-    // { field: "city" },
+    { field: "emailId", width: 150 },
+    { field: "registrationDate", headerName: 'Registered On', width: 150 },
+    {
+      field: "isActive",
+      width: 100,
+      cellRenderer: 'agGroupCellRenderer',
+      cellRendererParams: {
+        innerRenderer: GridCellStatusComponent,
+      } as IGroupCellRendererParams
+    },
     {
       field: "action",
       pinned: 'right',
@@ -50,7 +70,15 @@ export class CustomersPage implements OnInit {
   getCustomerList(): void {
     this.customerService.getCustomerList().subscribe({
       next: (data: any) => {
-        this.rowData = data;
+        if(data) {
+          this.rowData = data.map((item: any) => {
+            return {
+              ...item,
+              registrationDate: moment(item['registrationDate']).format('DD/MM/YYYY')
+            }
+          });
+          console.log('rowData: ', this.rowData);
+        }
       },
       error: (error) => {
         console.log('error: ', error);

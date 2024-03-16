@@ -8,6 +8,7 @@ import { AddEditEventPageRoutingModule } from './add-edit-event-routing.module';
 
 import { AddEditEventPage } from './add-edit-event.page';
 import { SharedModule } from 'src/app/shared.module';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { SharedModule } from 'src/app/shared.module';
     FormsModule,
     IonicModule,
     AddEditEventPageRoutingModule,
+    QuillModule.forRoot(),
     SharedModule
   ],
   declarations: [AddEditEventPage]

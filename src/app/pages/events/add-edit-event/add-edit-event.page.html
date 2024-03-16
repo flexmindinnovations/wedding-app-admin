@@ -1,13 +1,42 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>add-edit-event</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="add-edit-blog main ion-padding" *ngIf="isDataLoaded">
+  <ion-content [fullscreen]="true">
+    <div class="form-container flex flex-col h-full">
+      <form [formGroup]="formGroup" class="flex-grow">
+        <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4 px-2">
+          <div class="flex flex-col gap-2 col-span-4">
+            <label>Status</label>
+            <div class="flex" role="group">
+              <button type="button" (click)="toggleActive()"
+                class="p-1 text-sm font-medium rounded-s-lg bg-gray-100 focus:z-10">
+                <p class="p-1 min-w-16 rounded-md" [ngClass]="[isActive ? cssClass + ' shadow-lg' : '']">Active</p>
+              </button>
+              <button type="button" (click)="toggleActive()"
+                class="p-1 text-sm font-medium  rounded-e-lg bg-gray-100 focus:z-10">
+                <p class="p-1 min-w-16 rounded-md" [ngClass]="[!isActive ? cssClass + ' shadow-lg' : '']">Inactive</p>
+              </button>
+            </div>
+          </div>
+          <app-input label="Event Name" id="eventNameInput" formControlName="eventName"
+            [control]="formGroupControl['eventName']" />
+          <app-input label="Location" id="locationInput" formControlName="location"
+            [control]="formGroupControl['location']" />
+          <app-input label="Event Date" class="flex-grow" type="date" [control]="formGroupControl['eventDate']"
+            formControlName="eventDate" [controlValue]="formGroup.get('eventDate')?.value"
+            (inputValue)="handleInputChange($event)" />
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">add-edit-event</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+          <div class="text-editor min-h-[16rem] w-full col-span-4">
+            <quill-editor id="quillEditor" class="content-editor w-full h-[16rem]"
+              [formControl]="formGroupControl['eventDescription']" [modules]="quillConfiguration" theme="snow">
+            </quill-editor>
+          </div>
+          <image-picker [fileName]="imageName" [src]="imagePath" label="Add Image" (selectedImage)="handleSelectedImage($event)" />
+        </div>
+      </form>
+
+      <div class="actions flex items-center justify-end p-2">
+        <mt-button size="md" [title]="eventId > 0 ? 'Update Event' : 'Save Event'" (action)="handleFormSubmit()"
+          [icon]="'document-outline'" />
+      </div>
+    </div>
+  </ion-content>
+</div>

@@ -55,18 +55,21 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   ngAfterViewInit(): void {
     const control: any = this.control;
     const controlName = (Object.keys(control.parent.controls).find(key => control.parent.controls[key] === control));
-    this.formatInputData(controlName);
+    if(this.value || this.controlValue) this.formatInputData(controlName);
     this.cdr.detectChanges();
     const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
   }
 
   formatInputData(controlName: any) {
-    switch (controlName) {
-      case 'dateOfBirth' && this.type === 'date':
-        this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
-        break;
+    if (this.type === 'date') {
+      this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
     }
+    // switch (controlName) {
+    //   case 'dateOfBirth' && this.type === 'date':
+    //     this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+    //     break;
+    // }
   }
 
   initDatePicker(element: any) {
@@ -125,8 +128,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
   handleOnChange(event: any, src?: string) {
     const value = src === 'time' ? event : event.target.value;
-    if (src === 'dt') console.log('value: ', value);
-
+    // if (src === 'dt') console.log('value: ', value);
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);
