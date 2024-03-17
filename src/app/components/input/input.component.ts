@@ -38,6 +38,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   validControl = ' border-gray-300 bg-gray-50';
   datePicker: any;
   datePickerId = uuidv4();
+  showPassword: boolean = true;
+  passwordToggleIcon = 'eye-off-outline';
 
   constructor(
     @Self()
@@ -55,7 +57,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   ngAfterViewInit(): void {
     const control: any = this.control;
     const controlName = (Object.keys(control.parent.controls).find(key => control.parent.controls[key] === control));
-    if(this.value || this.controlValue) this.formatInputData(controlName);
+    if (this.value || this.controlValue) this.formatInputData(controlName);
     this.cdr.detectChanges();
     const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
@@ -65,47 +67,11 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     if (this.type === 'date') {
       this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
     }
-    // switch (controlName) {
-    //   case 'dateOfBirth' && this.type === 'date':
-    //     this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
-    //     break;
-    // }
   }
 
   initDatePicker(element: any) {
     const today = new Date();
     element.value = this.value ? new Date(this.value).toISOString().split('T')[0] : today.toISOString().split('T')[0];
-    // this.datePicker = new Datepicker(element, {
-    //   theme: 'dark',
-    //   autohide: true,
-    //   todayHighlight: true,
-    //   // maxDate: new Date(),
-    //   autoselectToday: true,
-    //   defaultDate: new Date('02/25/2022'),
-    //   format: 'dd/mm/yyyy',
-    // });
-
-    // const datePickerParentEl: any = document.getElementsByClassName('datepicker-dropdown')[0];
-    // const observer = new MutationObserver((mutations) => {
-    //   mutations.forEach((mutation: any) => {
-    //     if (mutation.attributeName === 'class') {
-    //       const parentWidth = document.getElementsByClassName('picker-container')[0].clientWidth;
-    //       document.getElementsByClassName('datepicker-picker')[0].setAttribute('style', `width: ${parentWidth}px !important`);
-    //       document.getElementsByClassName('days')[0].setAttribute('style', `width: 100%`);
-    //       document.getElementsByClassName('months')[0]?.setAttribute('style', `width: auto !important`);
-    //       document.getElementsByClassName('years')[0]?.setAttribute('style', `width: 100%`);
-    //       document.getElementsByClassName('days-of-week')[0].setAttribute('style', `width: 100%`);
-    //       document.getElementsByClassName('datepicker-grid')[0].setAttribute('style', `width: 100%`);
-    //     }
-    //   })
-    // })
-
-    // observer.observe(datePickerParentEl, {
-    //   attributes: true,
-    //   attributeFilter: ['class'],
-    //   childList: false,
-    //   characterData: false
-    // })
   }
 
   setCurrentClass() {
@@ -128,10 +94,14 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
   handleOnChange(event: any, src?: string) {
     const value = src === 'time' ? event : event.target.value;
-    // if (src === 'dt') console.log('value: ', value);
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);
   }
 
+  handlePasswordVisiblity() {
+    this.showPassword = !this.showPassword;
+    this.passwordToggleIcon = this.showPassword ? 'eye-outline' : 'eye-off-outline';
+    this.type = this.showPassword ? 'text' : 'password';
+  }
 }

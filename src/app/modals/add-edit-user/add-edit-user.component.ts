@@ -36,6 +36,8 @@ export class AddEditUserComponent implements OnInit {
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
+    console.log('modalData: ', modalData);
+    
     this.userId = modalData?.id;
     const props = {
       firstName: modalData?.firstName,
@@ -45,6 +47,7 @@ export class AddEditUserComponent implements OnInit {
       mobileNo: modalData?.mobileNo,
       roleId: modalData['roleId'],
       userAddress: modalData.userAddress,
+      userPassword: modalData.userPassword,
     }
     this.roleId = modalData['roleId'];
     this.formGroup.patchValue(props);
@@ -59,6 +62,7 @@ export class AddEditUserComponent implements OnInit {
       mobileNo: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       roleId: ['', [Validators.required]],
       userAddress: ['', [Validators.required]],
+      userPassword: ['', [Validators.required]],
     })
   }
   get formGroupControl(): { [key: string]: FormControl } {
@@ -127,7 +131,7 @@ export class AddEditUserComponent implements OnInit {
       userId: this.userId,
       ...formVal,
       roleName: "",
-      userPassword: "",
+      // userPassword: "",
       roleId: this.roleId,
       "isActive": true
     }
