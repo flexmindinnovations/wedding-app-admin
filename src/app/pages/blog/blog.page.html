@@ -2,10 +2,10 @@
   <div class="header page-header">
     <div class="static"></div>
     <div class="action">
-      <mt-button [title]="'Add Blog'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
+      <mt-button size="md" [title]="'Add Blog'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
     </div>
   </div>
   <div class="data-grid">
-    <app-data-grid [rowDefs]="rowData" [height]="500" [columnDefs]="colDefs" />
+    <app-data-grid gridSize="lg" [rowDefs]="rowData" [height]="500" [columnDefs]="colDefs" />
   </div>
 </div>

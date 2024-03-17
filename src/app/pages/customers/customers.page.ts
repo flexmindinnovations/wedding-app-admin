@@ -23,11 +23,9 @@ export class CustomersPage implements OnInit {
   sidebarItemService = inject(SidebarItemsService);
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
-
   rowData: any = [];
-
   colDefs: ColDef[] = [
-    { field: "customerId", headerName: '#id', width: 60 },
+    { field: "customerId", headerName: '#id', width: 100 },
     {
       field: "imagePath1",
       headerName: 'Image',
@@ -40,9 +38,9 @@ export class CustomersPage implements OnInit {
       } as IGroupCellRendererParams
     },
     { field: "fullName", width: 400 },
-    { field: "mobileNo", width: 150 },
-    { field: "emailId", width: 150 },
-    { field: "registrationDate", headerName: 'Registered On', width: 150 },
+    { field: "mobileNo", width: 130 },
+    { field: "emailId", width: 205 },
+    { field: "registrationDate", headerName: 'Registered On', width: 120 },
     {
       field: "isActive",
       width: 100,

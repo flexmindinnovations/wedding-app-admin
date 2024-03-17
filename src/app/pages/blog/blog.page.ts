@@ -15,18 +15,11 @@ export class BlogPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   frameworkComponents: any;
-
-  // Row Data: The data to be displayed.
-  rowData = [
-    { id: 1, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 2, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 3, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" },
-    { id: 4, title: "Test Title", date: new Date(), country: "India", state: "Maharashtra", city: "Nanded" }
-  ];
+  rowData = [];
 
   // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "id", width: 60},
+    { field: "id", width: 100},
     { field: "title" },
     { field: "date" },
     { field: "country" },

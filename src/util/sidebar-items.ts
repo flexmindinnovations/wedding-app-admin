@@ -36,13 +36,6 @@ export const SIDEBAR_ITEMS = [
     },
     {
         "id": 6,
-        "title": "Locations",
-        "route": "locations",
-        "isActive": false,
-        "icon": "navigate-outline"
-    },
-    {
-        "id": 7,
         "title": "Other",
         "route": "Other",
         "isActive": false,

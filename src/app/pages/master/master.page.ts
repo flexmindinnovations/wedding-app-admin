@@ -59,6 +59,7 @@ export class MasterPage implements OnInit {
 
   specializationMasterRowData: any = [];
   specializationMasterColumnDefs: ColDef[] = [];
+  idColWidth = 80;
 
   ngOnInit() {
     this.setMasterData();
@@ -79,11 +80,12 @@ export class MasterPage implements OnInit {
     this.heightMasterRowData = [];
 
     this.heightMasterColumnDefs = [
-      { field: "id", width: 60 },
+      { field: "id", headerName: 'Id', width: this.idColWidth },
       { field: "heightName", minWidth: 435 },
       {
         field: "action",
         colId: 'height',
+        pinned: 'right',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -100,11 +102,12 @@ export class MasterPage implements OnInit {
     this.handycapMasterRowData = [];
 
     this.handycapMasterColumnDefs = [
-      { field: "id", width: 60 },
+      { field: "id", headerName: 'Id', width: this.idColWidth },
       { field: "handycapName", minWidth: 435 },
       {
         field: "action",
         colId: 'handycap',
+        pinned: 'right',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -121,7 +124,7 @@ export class MasterPage implements OnInit {
     this.castMasterRowData = [];
 
     this.castMasterColumnDefs = [
-      { field: "castId", headerName: 'id', width: 60 },
+      { field: "castId", headerName: 'Id', width: this.idColWidth },
       { field: "castName", minWidth: 235 },
       { field: "hasSubcast", minWidth: 235 },
       { field: 'subCastCount', width: 235 },
@@ -145,7 +148,7 @@ export class MasterPage implements OnInit {
     this.userMasterRowData = [];
 
     this.userMasterColumnDefs = [
-      { field: "id", width: 60 },
+      { field: "id", headerName: 'Id', width: this.idColWidth },
       { field: "firstName", minWidth: 235 },
       { field: "middleName", minWidth: 235 },
       { field: "lastName", minWidth: 235 },
@@ -171,12 +174,13 @@ export class MasterPage implements OnInit {
 
   setRoleMasterGridData() {
     this.roleMasterColumnDefs = [
-      { field: 'id', width: 80 },
+      { field: 'id', headerName: 'Id', width: this.idColWidth },
       { field: 'roleName', width: 150 },
       { field: 'roleAccess', width: 285 },
       {
         field: "action",
         colId: 'role',
+        pinned: 'right',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -208,7 +212,7 @@ export class MasterPage implements OnInit {
 
   setEducationMasterGridData() {
     this.educationMasterColumnDefs = [
-      { field: 'id', width: 60 },
+      { field: 'id', headerName: 'Id', width: this.idColWidth },
       { field: 'educationName', width: 300 },
       { field: 'hasSpecialization', width: 155 },
       { field: 'specializationCount', width: 80 },
@@ -248,7 +252,7 @@ export class MasterPage implements OnInit {
   setSpecializationMasterGridData() {
 
     this.specializationMasterColumnDefs = [
-      { field: 'id', width: 60 },
+      { field: 'id', headerName: 'Id', width: this.idColWidth },
       { field: 'specializationName', width: 200 },
       { field: 'course', width: 235 },
       {

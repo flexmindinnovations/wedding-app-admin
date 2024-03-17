@@ -13,15 +13,15 @@
           formControlName="middleName" [controlValue]="formGroup.get('middleName')?.value" class="" />
         <app-input label="Last Name" type="text" id="user" [control]="formGroupControl['lastName']"
           formControlName="lastName" [controlValue]="formGroup.get('lastName')?.value" class="" />
-        <app-input label="Email" type="email" id="user" [control]="formGroupControl['emailId']"
-          formControlName="emailId" [controlValue]="formGroup.get('emailId')?.value" class="" />
-        <app-input label="Mobile" type="number" id="user" [control]="formGroupControl['mobileNo']"
-          formControlName="mobileNo" [controlValue]="formGroup.get('mobileNo')?.value" class="" />
         @if(roleList.length){
         <app-dropdown label="Role" (onSelectionChange)="onSelectionChange($event,'roleId')" class=""
           [control]="formGroupControl['roleId']" [controlValue]="formGroup.get('roleId')?.value"
           formControlName="roleId" [options]="roleList" />
         }
+        <app-input label="Email" type="email" id="user" [control]="formGroupControl['emailId']"
+          formControlName="emailId" [controlValue]="formGroup.get('emailId')?.value" class="" />
+        <app-input label="Mobile" type="number" id="user" [control]="formGroupControl['mobileNo']"
+          formControlName="mobileNo" [controlValue]="formGroup.get('mobileNo')?.value" class="" />
         <!-- <app-input label="Password" type="password" id="user" [control]="formGroupControl['userPassword']"
           formControlName="userPassword" [controlValue]="formGroup.get('userPassword')?.value" class="" /> -->
       </div>
@@ -31,7 +31,7 @@
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
-    <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
+    <mt-button [title]="'Cancel'" size="md" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" size="md" [icon]="'save-outline'" (action)="handleButtonClick($event)" />
   </div>
 </div>

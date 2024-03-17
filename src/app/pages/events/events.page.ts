@@ -22,9 +22,8 @@ export class EventsPage implements OnInit, AfterViewInit {
   eventService = inject(EventService);
   alert = inject(AlertService);
   rowData: any[] = [];
-  // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "eventId", headerName: "#id", width: 80 },
+    { field: "eventId", headerName: "#id", width: 100 },
     {
       field: "eventImagePath",
       headerName: 'Image',
@@ -38,7 +37,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     },
     { field: "eventName", width: 400 },
     { field: "eventDate" },
-    { field: "eventLocation" },
+    { field: "eventLocation", width: 250 },
     {
       field: "isActive",
       width: 100,

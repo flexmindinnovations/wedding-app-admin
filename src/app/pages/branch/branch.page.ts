@@ -17,13 +17,9 @@ export class BranchPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   branchService = inject(BranchService);
-
   rowData: IBranch[] = [];
-
-  // Column Definitions: Defines & controls grid columns.
-
   colDefs: ColDef[] = [
-    { field: "branchId", headerName: '#Id', width: 60 },
+    { field: "branchId", headerName: '#Id', width: 100 },
     {
       field: "branchImagePath",
       headerName: 'Image',

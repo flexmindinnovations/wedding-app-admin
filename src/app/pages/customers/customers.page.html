@@ -1,11 +1,11 @@
-<div class="customer-content main ion-padding">
+<div class="customer-content main ion-padding flex flex-col w-full">
   <div class="header">
     <div class="static"></div>
     <div class="action">
       <mt-button size="md" [title]="'Add Customer'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
     </div>
   </div>
-  <div class="data-grid">
-    <app-data-grid [rowDefs]="rowData" [height]="'500'" [columnDefs]="colDefs" />
+  <div class="data-grid flex-grow">
+    <app-data-grid [rowDefs]="rowData" [gridSize]="'lg'" [columnDefs]="colDefs" />
   </div>
 </div>
