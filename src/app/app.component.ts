@@ -28,19 +28,21 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     localStorage.setItem('color-scheme', COLOR_SCHEME);
+  }
+
+  ngAfterViewInit(): void {
+    initFlowbite();
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
           const url = event.url;
           const activeRoute = url.substring(url.lastIndexOf('/') + 1, url.length);
+          console.log('activeRoute: ', activeRoute);
+          
           this.sidebarItemService.setCurrentPage(this.titleCasePipe.transform(activeRoute));
         }
       }
     })
-  }
-
-  ngAfterViewInit(): void {
-    initFlowbite();
   }
 
   handleIsCollapsed(isCollapsed: boolean) {

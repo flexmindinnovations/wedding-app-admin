@@ -68,7 +68,7 @@ export class CustomersPage implements OnInit {
   getCustomerList(): void {
     this.customerService.getCustomerList().subscribe({
       next: (data: any) => {
-        if(data) {
+        if (data) {
           this.rowData = data.map((item: any) => {
             return {
               ...item,
@@ -86,14 +86,14 @@ export class CustomersPage implements OnInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add Customer');
-    this.router.navigateByUrl('customers/add');
+    this.router.navigateByUrl('customers/add', { state: { route: 'add', pageName: 'Add Customer', title: 'Add Customer' } });
   }
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.customerId}`);
+      this.router.navigateByUrl(`customers/edit/${data?.customerId}`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer' } });
     } else {
       console.log('>>>>> event delete: ', event);
     }

@@ -87,7 +87,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.isEditMode = this.customerData['isPersonInfoFill'];
+    this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
     this.cdref.detectChanges();
   }
 

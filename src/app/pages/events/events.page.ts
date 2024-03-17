@@ -90,7 +90,7 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add Event');
-    this.router.navigateByUrl('events/add');
+    this.router.navigateByUrl('events/add', { state: { route: 'add', pageName: 'Add Event', title: 'Add Event' } });
   }
 
   handleGridActionButtonClick(event: any) {
@@ -98,7 +98,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     const data = event?.rowData;
     if (action === GridActions.edit) {
       this.sidebarItemService.setCurrentPage('Edit Event');
-      this.router.navigateByUrl(`events/edit/${data?.eventId}`)
+      this.router.navigateByUrl(`events/edit/${data?.eventId}`, { state: { route: 'edit', pageName: 'Edit Event', title: 'Edit Event' } })
     } else {
       console.log('>>>>> event delete: ', event);
     }

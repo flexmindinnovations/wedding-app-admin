@@ -46,14 +46,14 @@ export class BlogPage implements OnInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add New Blog Page')
-    this.router.navigateByUrl('blog/add');
+    this.router.navigateByUrl('blog/add', { state: { route: 'add', pageName: 'Add Blog', title: 'Add Blog' } });
   }
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
     if(action === GridActions.edit) {
-      this.router.navigateByUrl(`blog/edit/${data?.id}`)
+      this.router.navigateByUrl(`blog/edit/${data?.id}`, { state: { route: 'edit', pageName: 'Edit Blog', title: 'Edit Blog' } })
     } else {
       console.log('>>>>> event delete: ', event);
     }
