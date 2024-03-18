@@ -25,7 +25,7 @@
   <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)" class="p-2.5"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     [value]="value" [placeholder]="placeholder" [required]="isRequired">
-  @if (formControlName === 'userPassword') {
+  @if (formControlName === 'userPassword' && hasValue) {
   <button type="button" (click)="handlePasswordVisiblity()" id="togglePassword"
     class=" absolute top-10 right-4 focus:outline-none -ml-8">
     <ion-icon [name]="passwordToggleIcon"></ion-icon>

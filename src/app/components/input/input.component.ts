@@ -26,7 +26,7 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
   @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';
-
+  hasValue: boolean = false;
   cdr = inject(ChangeDetectorRef);
 
   sharedService = inject(SharedService);
@@ -41,8 +41,8 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
   validControl = ' border-gray-300 bg-gray-50';
   datePicker: any;
   datePickerId = uuidv4();
-  showPassword: boolean = true;
-  passwordToggleIcon = 'eye-off-outline';
+  showPassword: boolean = false;
+  passwordToggleIcon = 'eye-outline';
 
   constructor(
     @Self()
@@ -68,10 +68,12 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
     this.sharedService.resetControl().subscribe((reset: any) => {
       this.inputValue.emit('');
       this.control.reset();
+      this.hasValue = false;
     })
   }
 
   formatInputData(controlName: any) {
+    this.hasValue = true;
     if (this.type === 'date') {
       this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
     }
@@ -102,6 +104,7 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
   }
   handleOnChange(event: any, src?: string) {
     const value = src === 'time' ? event : event.target.value;
+    this.hasValue = !!value;
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);
@@ -109,7 +112,7 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
 
   handlePasswordVisiblity() {
     this.showPassword = !this.showPassword;
-    this.passwordToggleIcon = this.showPassword ? 'eye-outline' : 'eye-off-outline';
+    this.passwordToggleIcon = this.passwordToggleIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
     this.type = this.showPassword ? 'text' : 'password';
   }
 
