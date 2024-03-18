@@ -85,7 +85,7 @@ export class LoginPage implements OnInit, OnDestroy {
                     const { permissionList } = user;
                     this.sharedService.setUserPermissions(permissionList);
                     this.sharedService.permissionListMap.set('permissionList', permissionList);
-                    this.isLoading = false;
+                    this.resetForm();
                   }
                 })
               ).subscribe();
@@ -94,16 +94,20 @@ export class LoginPage implements OnInit, OnDestroy {
           error: (error) => {
             const err = error?.error;
             this.alert.setAlertMessage(err?.message, AlertType.error);
-            setTimeout(() => {
-              this.isLoading = false;
-              this.sharedService.controlRest.next(true);
-              this.subs.forEach((sub) => {
-                sub.unsubscribe()
-              });
-            }, 2000)
+            this.resetForm();
           }
         })
     );
+  }
+
+  resetForm() {
+    setTimeout(() => {
+      this.isLoading = false;
+      this.sharedService.controlRest.next(true);
+      this.subs.forEach((sub) => {
+        sub.unsubscribe()
+      });
+    }, 2000)
   }
 
   ngOnDestroy(): void {
