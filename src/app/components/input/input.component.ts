@@ -1,5 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,7 +11,7 @@ declare var Datepicker: any;
   styleUrls: ['./input.component.scss']
 })
 
-export class InputComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class InputComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
@@ -27,6 +28,8 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   pickerFormat: string = 'DD MM YYYY';
 
   cdr = inject(ChangeDetectorRef);
+
+  sharedService = inject(SharedService);
 
   onChange(value: any) { }
   onTouched() { }
@@ -61,6 +64,11 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     this.cdr.detectChanges();
     const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
+
+    this.sharedService.resetControl().subscribe((reset: any) => {
+      this.inputValue.emit('');
+      this.control.reset();
+    })
   }
 
   formatInputData(controlName: any) {
@@ -103,5 +111,10 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     this.showPassword = !this.showPassword;
     this.passwordToggleIcon = this.showPassword ? 'eye-outline' : 'eye-off-outline';
     this.type = this.showPassword ? 'text' : 'password';
+  }
+
+  ngOnDestroy(): void {
+    this.value = '';
+    this.controlValue = '';
   }
 }

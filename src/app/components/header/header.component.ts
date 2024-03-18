@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
         title: string
       };
       this.currentPage = state ? state.title : '';
-      const pageTitle = `${DOMAIN} | ${state.title}`;
+      const pageTitle = `${DOMAIN} | ${state ? state.title : ''}`;
       this.pageTitle.setTitle(pageTitle);
     });
   }

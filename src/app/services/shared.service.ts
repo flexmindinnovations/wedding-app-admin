@@ -16,6 +16,12 @@ export class SharedService {
   http = inject(HttpConfigService);
   httpAssests = inject(HttpClient);
 
+  controlRest = new Subject();
+
+  resetControl() {
+    return this.controlRest.asObservable();
+  }
+
   setUserPermissions(permissionList: any) {
     this.userPermissions.next(permissionList);
   }

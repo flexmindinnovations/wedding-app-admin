@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { delay, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { delay, takeUntil, tap } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
 import { COLOR_SCHEME } from 'src/util/util';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
@@ -25,7 +25,7 @@ export class LoginPage implements OnInit, OnDestroy {
   authService = inject(AuthService);
   router = inject(Router);
   alert = inject(AlertService);
-
+  subs: Subscription[] = [];
   sharedService = inject(SharedService);
 
   ngOnInit() {
@@ -68,35 +68,53 @@ export class LoginPage implements OnInit, OnDestroy {
     this.isLoading = true;
     const formInput = this.formGroup.value;
     if (!this.formGroup.valid) return;
-    this.authService.loginUser(formInput).subscribe({
-      next: (response: any) => {
-        if (response) {
-          const { user } = response;
-          of(true).pipe(
-            delay(2000),
-            tap(() => {
-              this.router.navigateByUrl('/');
-              if (user) {
-                const { token } = user;
-                const { permissionList } = user;
-                this.alert.setAlertMessage('User authenticated successfully', AlertType.success);
-                this.sharedService.setUserPermissions(permissionList);
-                this.sharedService.permissionListMap.set('permissionList', permissionList);
-                this.isLoading = false;
-              }
-            })
-          ).subscribe();
-        }
-      },
-      error: (error) => {
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    });
+    this.subs.push(
+      this.authService.loginUser(formInput)
+        .pipe(takeUntil(this.subs))
+        .subscribe({
+          next: (response: any) => {
+            if (response) {
+              this.alert.setAlertMessage('User authenticated successfully', AlertType.success);
+              const { user } = response;
+              of(true).pipe(
+                delay(2000),
+                tap(() => {
+                  this.router.navigateByUrl('/');
+                  if (user) {
+                    const { token } = user;
+                    const { permissionList } = user;
+                    this.sharedService.setUserPermissions(permissionList);
+                    this.sharedService.permissionListMap.set('permissionList', permissionList);
+                    this.isLoading = false;
+                  }
+                })
+              ).subscribe();
+            }
+          },
+          error: (error) => {
+            const err = error?.error;
+            this.alert.setAlertMessage(err?.message, AlertType.error);
+            setTimeout(() => {
+              this.isLoading = false;
+              this.sharedService.controlRest.next(true);
+              this.subs.forEach((sub) => {
+                sub.unsubscribe()
+              });
+            }, 2000)
+          }
+        })
+    );
   }
 
   ngOnDestroy(): void {
     this.isLoggedIn = false;
     this.isLoading = false;
+    this.formGroup.reset();
+    this.subs.forEach((sub) => {
+      console.log('sub: ', sub);
+
+      sub.unsubscribe()
+    });
   }
 
 }

@@ -1,4 +1,4 @@
-<div class="alert-container" id="alertContainer">
+<div class="alert-container absolute z-[10000]" id="alertContainer" [ngClass]="outside ? 'top-10' : 'top-0'">
   @if (alertType === 1 && alertId) {
   <div [id]="alertId"
     class="flex items-center p-4 mb-4 shadow-md text-green-900 border-t-4 border-green-400 bg-green-50 dark:text-green-400 dark:bg-gray-900 dark:border-green-900"

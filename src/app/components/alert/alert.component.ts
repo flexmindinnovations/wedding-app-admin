@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { Dismiss } from "flowbite";
@@ -20,19 +20,19 @@ export class AlertComponent implements AfterViewInit, OnDestroy {
   alertMessage: string = '';
   alertMessages: string[] = [];
   alertId: string = '';
-
-  alertSubscription: Subscription | null = null;
+  @Input() outside = false;
+  alertSubscription: Subscription[] = [];
 
 
   ngAfterViewInit() {
-    this.alertSubscription = this.alertService.getAlertMessage().subscribe((alert: IAlert) => {
+    this.alertSubscription.push(this.alertService.getAlertMessage().subscribe((alert: IAlert) => {
       const alertEl = document.getElementById('alertContainer');
       alertEl?.classList.add('show');
       this.alertType = alert?.type;
       this.alertMessage = alert?.message;
       this.alertId = `alert-${this.alertType}`;
       this.autoHideAlert();
-    })
+    }));
   }
 
   autoHideAlert() {
@@ -45,10 +45,14 @@ export class AlertComponent implements AfterViewInit, OnDestroy {
   handleHideAlert() {
     const alertEl = document.getElementById('alertContainer');
     alertEl?.classList.toggle('show');
+    this.alertService.alertSubject.unsubscribe();
   }
 
   ngOnDestroy(): void {
-    this.alertSubscription?.unsubscribe();
+    this.alertSubscription.forEach((sub) => {
+      sub.unsubscribe()
+    });
+    this.alertService.alertSubject.unsubscribe();
   }
 
 }

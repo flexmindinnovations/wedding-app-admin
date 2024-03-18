@@ -36,8 +36,6 @@ export class AddEditUserComponent implements OnInit {
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
-    console.log('modalData: ', modalData);
-    
     this.userId = modalData?.id;
     const props = {
       firstName: modalData?.firstName,

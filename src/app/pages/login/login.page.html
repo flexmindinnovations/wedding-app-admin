@@ -1,4 +1,5 @@
 <div class="login-container main min-h-screen flex items-center justify-center bg-bo-200">
+  <app-alert [outside]="true" />
   @if(isLoggedIn) {
   <h1 class="m-0 text-lg text-br-500">Already logged in. Please wait, redirecting to dashboard...</h1>
   } @else {
