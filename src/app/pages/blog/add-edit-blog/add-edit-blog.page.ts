@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QuillConfig } from 'ngx-quill';
+import { AlertService } from 'src/app/services/alert/alert.service';
 
 @Component({
   selector: 'app-add-edit-blog',
@@ -10,8 +12,14 @@ import { QuillConfig } from 'ngx-quill';
 export class AddEditBlogPage implements OnInit {
 
   formGroup!: FormGroup;
-
+  isEditMode: boolean = false;
+  blogId = 0;
+  blogDetails: any = null;
+  isDataLoaded = false;
+  router = inject(Router);
   fb = inject(FormBuilder)
+  activeRouter = inject(ActivatedRoute);
+  alertService = inject(AlertService);
 
   quillConfiguration = {
     // toolbar: [
@@ -29,6 +37,19 @@ export class AddEditBlogPage implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+  }
+
+
+  ngAfterViewInit(): void {
+    this.activeRouter.params.subscribe((params: any) => {
+      this.blogId = params && params['id'] ? params['id'] : 0;
+      if (this.blogId > 0) this.getBlogDetails();
+      else this.isDataLoaded = true;
+    })
+  }
+
+  getBlogDetails() {
+
   }
 
   initFormGroup() {
@@ -51,8 +72,8 @@ export class AddEditBlogPage implements OnInit {
   }
 
 
-  handleFormSubmit(){
-    
+  handleFormSubmit() {
+
   }
 
 }
