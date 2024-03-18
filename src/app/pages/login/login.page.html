@@ -1,12 +1,12 @@
 <div class="login-container main min-h-screen flex items-center justify-center bg-gradient-to-bl
-from-bo-600 from-20% via-br-600 via-40% to-red-600 backdrop-blur-2xl">
+from-bo-300 from-20% via-br-400 via-40% to-red-300 backdrop-blur-2xl">
   <app-alert [outside]="true" />
   @if(isLoggedIn) {
   <h1 class="m-0 text-lg text-br-500">Already logged in. Please wait, redirecting to dashboard...</h1>
   } @else {
   <div class="login-box w-3/4 h-3/4 min-h-40 min-w-40 shadow-md rounded-md">
     <div class="overlay rounded-md h-full backdrop-blur-sm w-full flex">
-      <div class="login-form p-5 min-w-96 bg-white rounded-s-lg flex flex-col items-start gap-5 justify-center">
+      <div class="login-form p-5 min-w-96 rounded-s-lg backdrop-blur-md bg-gradient-to-br from-br-300 to-bo-300 flex flex-col items-start gap-5 justify-center">
         <div class="header w-full flex flex-col items-start justify-start p-3">
           <h1 class="m-0 text-2xl font-extrabold w-full text-left select-none">Welcome</h1>
           <p class="font-thin text-base block w-full select-none text-gray-600">Enter your credentials to continue</p>
@@ -22,7 +22,7 @@ from-bo-600 from-20% via-br-600 via-40% to-red-600 backdrop-blur-2xl">
 
             <div class="actions flex items-center w-full justify-center p-3">
               <button type="button"
-                class="text-center select-none h-12 font-bold p-3 text-white flex items-center justify-center rounded-md shadow-md hover:bg-br-700 bg-br-500 disabled:bg-gray-300 disabled:cursor-not-allowed w-full"
+                class="text-center select-none h-12 font-bold p-3 text-white flex items-center justify-center rounded-md shadow-md hover:bg-br-700 bg-br-500 disabled:bg-gray-100 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed w-full"
                 (click)="handleSignIn()" [disabled]="formGroup.invalid || isLoading">
                 <p>{{isLoading ? 'Signing In ...' : 'Sign In'}}</p>
               </button>
