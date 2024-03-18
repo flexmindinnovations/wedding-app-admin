@@ -1,4 +1,4 @@
-<div class="input flex flex-col items-start justify-start gap-0 dark:bg-gray-700">
+<div class="input flex flex-col items-start relative justify-start gap-0 dark:bg-gray-700">
   <label class="mb-2" for="username">{{label}}
   </label>
   @if(isMultiline){
@@ -9,7 +9,8 @@
   <div class="picker-container relative w-full"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     (click)="datePicker.showPicker()">
-    <input type="date" #datePicker [id]="datePickerId" (focus)="'showPicker'" (change)="handleOnChange($event, 'dt');" />
+    <input type="date" #datePicker [id]="datePickerId" (focus)="'showPicker'"
+      (change)="handleOnChange($event, 'dt');" />
     <div class="absolute inset-y-0 start-[88%] flex items-center pointer-events-none" (click)="datePicker.showPicker()">
       <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
         fill="currentColor" viewBox="0 0 20 20">
@@ -24,6 +25,12 @@
   <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)" class="p-2.5"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     [value]="value" [placeholder]="placeholder" [required]="isRequired">
+  @if (formControlName === 'userPassword') {
+  <button type="button" (click)="handlePasswordVisiblity()" id="togglePassword"
+    class=" absolute top-10 right-4 focus:outline-none -ml-8">
+    <ion-icon [name]="passwordToggleIcon"></ion-icon>
+  </button>
+  }
   @if (control.touched && control.invalid) {
   <div class="validation-errors px-2 bg-white dark:bg-gray-700 mt-[2px]">
     @if (control.hasError('required')) { <span class="text-xs font-light dark:bg-gray-700 text-red-700">{{label}} is
@@ -36,8 +43,6 @@
       email</span> }
     @if (type === 'number' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Invalid
       Mobile number</span> }
-    @if (type === 'password' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Must be 4
-      to 15</span> }
   </div>
   }
   }

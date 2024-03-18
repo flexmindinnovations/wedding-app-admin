@@ -1,30 +1,46 @@
 <div class="add-edit-blog main ion-padding">
   <ion-content [fullscreen]="true">
     <div class="form-container">
-      <form [formGroup]="formGroup">
-        <div class="grid grid-cols-3 gap-3">
-          <app-input label="Enter Blog Title" class="col-span-1" formControlName="title" [control]="formGroupControl['title']" />
-  
-          <div class="text-editor min-h-[16rem] w-full col-span-3">
-            <quill-editor class="content-editor w-full h-[16rem]" 
-            [formControl]="formGroupControl['htmlText']"
-            [modules]="quillConfiguration" 
-            theme="snow"> </quill-editor>
+      <form [formGroup]="formGroup" class="flex-grow">
+        <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4 px-2">
+          <div class="flex flex-col gap-2 col-span-4">
+            <label>Status</label>
+            <div class="flex" role="group">
+              <button type="button" (click)="toggleActive()"
+                class="p-1 text-sm font-medium rounded-s-lg bg-gray-100 focus:z-10">
+                <p class="p-1 min-w-16 rounded-md" [ngClass]="[isActive ? cssClass + ' shadow-lg' : '']">Active</p>
+              </button>
+              <button type="button" (click)="toggleActive()"
+                class="p-1 text-sm font-medium  rounded-e-lg bg-gray-100 focus:z-10">
+                <p class="p-1 min-w-16 rounded-md" [ngClass]="[!isActive ? cssClass + ' shadow-lg' : '']">Inactive</p>
+              </button>
+            </div>
           </div>
-  
-          <app-dropdown label="Country" class="col-span-1" [control]="formGroupControl['country']" formControlName="country" [options]="[]"/>
-  
-          <app-dropdown label="State" class="" [control]="formGroupControl['state']" formControlName="state" [options]="[]"/>
-  
-          <app-dropdown label="City" class="" [control]="formGroupControl['city']" formControlName="city" [options]="[]"/>
-  
-          <app-input label="Date" class="flex-grow-1" type="date" [control]="formGroupControl['date']"
-          formControlName="date" />
+          <app-input label="Enter Blog Title" formControlName="blogTitle" [control]="formGroupControl['blogTitle']" />
+          <app-dropdown label="Country" [control]="formGroupControl['country']" formControlName="country"
+            [options]="[]" />
+
+          <app-dropdown label="State" class="" [control]="formGroupControl['state']" formControlName="state"
+            [options]="[]" />
+
+          <app-dropdown label="City" class="" [control]="formGroupControl['city']" formControlName="city"
+            [options]="[]" />
+
+          <app-input label="Date" type="date" [control]="formGroupControl['blogDate']"
+            [controlValue]="formGroup.get('blogDate')?.value" formControlName="blogDate"
+            (inputValue)="handleInputChange($event)" />
+          <div class="text-editor min-h-[16rem] w-full col-span-4">
+            <quill-editor class="content-editor w-full h-[16rem]" [formControl]="formGroupControl['blogText']"
+              [modules]="quillConfiguration" theme="snow"> </quill-editor>
+          </div>
+          <image-picker [fileName]="imageName" [src]="imagePath" label="Add Image"
+            (selectedImage)="handleSelectedImage($event)" />
         </div>
       </form>
 
       <div class="actions flex items-center justify-end">
-        <mt-button title="Add Blog" (action)="handleFormSubmit()" [icon]="'document-outline'"/>
+        <mt-button [title]="blogId > 0 ? 'Update Blog' : 'Save Blog'" (action)="handleFormSubmit()"
+          [icon]="'document-outline'" />
       </div>
     </div>
   </ion-content>

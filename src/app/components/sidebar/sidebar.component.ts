@@ -93,7 +93,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   handleSidebarItemClick(item: SideBarItem) {
     this.setActiveItem(item.route);
-    this.router.navigateByUrl(item.route);
+    this.router.navigateByUrl(item.route, {state: item});
   }
 
   setActiveItem(param: number | string) {

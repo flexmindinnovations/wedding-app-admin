@@ -17,13 +17,9 @@ export class BranchPage implements OnInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   branchService = inject(BranchService);
-
   rowData: IBranch[] = [];
-
-  // Column Definitions: Defines & controls grid columns.
-
   colDefs: ColDef[] = [
-    { field: "branchId", headerName: '#Id', width: 60 },
+    { field: "branchId", headerName: '#Id', width: 100 },
     {
       field: "branchImagePath",
       headerName: 'Image',
@@ -84,7 +80,7 @@ export class BranchPage implements OnInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add Branch');
-    this.router.navigateByUrl('branch/add');
+    this.router.navigateByUrl('branch/add', { state: { route: 'add', pageName: 'Add Branch', title: 'Add Branch' } });
   }
 
   handleGridActionButtonClick(event: any) {
@@ -94,7 +90,7 @@ export class BranchPage implements OnInit {
 
     if (action === GridActions.edit) {
       this.sidebarItemService.setCurrentPage('Edit Branch');
-      this.router.navigateByUrl(`branch/edit/${data?.branchId}`)
+      this.router.navigateByUrl(`branch/edit/${data?.branchId}`, { state: { route: 'edit', pageName: 'Edit Branch', title: 'Edit Branch' } })
     } else {
       console.log('>>>>> event delete: ', event);
     }

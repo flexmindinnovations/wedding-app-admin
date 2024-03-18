@@ -6,7 +6,12 @@ import { BranchPage } from './branch.page';
 const routes: Routes = [
   {
     path: '',
-    component: BranchPage
+    component: BranchPage,
+    data: {
+      route: 'branch',
+      pageName: `Branch`,
+      title: `Branch`,
+    }
   },
   {
     path: 'add',

@@ -22,9 +22,8 @@ export class EventsPage implements OnInit, AfterViewInit {
   eventService = inject(EventService);
   alert = inject(AlertService);
   rowData: any[] = [];
-  // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "eventId", headerName: "#id", width: 80 },
+    { field: "eventId", headerName: "#id", width: 100 },
     {
       field: "eventImagePath",
       headerName: 'Image',
@@ -38,7 +37,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     },
     { field: "eventName", width: 400 },
     { field: "eventDate" },
-    { field: "eventLocation" },
+    { field: "eventLocation", width: 250 },
     {
       field: "isActive",
       width: 100,
@@ -91,7 +90,7 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add Event');
-    this.router.navigateByUrl('events/add');
+    this.router.navigateByUrl('events/add', { state: { route: 'add', pageName: 'Add Event', title: 'Add Event' } });
   }
 
   handleGridActionButtonClick(event: any) {
@@ -99,7 +98,7 @@ export class EventsPage implements OnInit, AfterViewInit {
     const data = event?.rowData;
     if (action === GridActions.edit) {
       this.sidebarItemService.setCurrentPage('Edit Event');
-      this.router.navigateByUrl(`events/edit/${data?.eventId}`)
+      this.router.navigateByUrl(`events/edit/${data?.eventId}`, { state: { route: 'edit', pageName: 'Edit Event', title: 'Edit Event' } })
     } else {
       console.log('>>>>> event delete: ', event);
     }

@@ -66,6 +66,13 @@ export class LayoutPage implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    const token = localStorage.getItem('token') || '';
+    const exp = this.authService.decodeToken(token);
+    if (exp && exp * 1000 < Date.now()) {
+      this.idleState = "TIMED_OUT";
+      this.isTimeOut = true;
+      this.authService.logoutUser();
+    }
     this.reset();
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {

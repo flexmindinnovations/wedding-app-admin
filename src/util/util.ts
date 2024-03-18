@@ -1,6 +1,8 @@
 import { FormArray, FormGroup } from "@angular/forms";
 import * as bcrypt from 'bcryptjs';
 
+export const DOMAIN = 'Susangam';
+
 export const getSalt = (length: number) => {
     return bcrypt.genSaltSync(length);
 }

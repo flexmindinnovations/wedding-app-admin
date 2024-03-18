@@ -144,15 +144,15 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
   }
 
   updateEvent() {
+    const eventId = this.eventDetails['eventId'];
     const formVal = this.formGroup.value;
-    const payload = { ...formVal, eventImagePath: this.eventDetails['eventImagePath'], eventDate: moment(formVal?.eventDate).format() }
-    console.log('payload: ', payload);
+    const payload = { ...formVal, eventId, eventImagePath: this.eventDetails['eventImagePath'], eventDate: moment(formVal?.eventDate).format() }
     const formData = new FormData();
     formData.append('eventModel', JSON.stringify(payload));
     if (this.selectedImage) {
       formData.append('file', this.selectedImage, this.selectedImage.name);
     }
-    this.eventService.updateEvent(payload, this.eventDetails['eventId']).subscribe({
+    this.eventService.updateEvent(formData).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);

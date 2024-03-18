@@ -29,23 +29,23 @@ export class BlogPage implements OnInit {
 
   // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
-    { field: "id", width: 60 },
+    { field: "id", headerName: "#id", width: 110 },
     {
       field: "blogImagePath",
       headerName: 'Image',
       wrapText: true,
       autoHeaderHeight: true,
-      width: 100,
+      width: 120,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridCellImageComponent,
       } as IGroupCellRendererParams
     },
-    { field: "title" },
-    { field: "blogDate" },
+    { field: "title", width: 450 },
+    { field: "blogDate", width: 250 },
     {
       field: "isActive",
-      width: 100,
+      width: 110,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridCellStatusComponent,
@@ -54,6 +54,7 @@ export class BlogPage implements OnInit {
 
     {
       field: "action",
+      width: 120,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridButtonsComponent,
@@ -98,14 +99,14 @@ export class BlogPage implements OnInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add New Blog Page')
-    this.router.navigateByUrl('blog/add');
+    this.router.navigateByUrl('blog/add', { state: { route: 'add', pageName: 'Add Blog', title: 'Add Blog' } });
   }
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`blog/edit/${data?.id}`)
+      this.router.navigateByUrl(`blog/edit/${data?.id}`, { state: { route: 'edit', pageName: 'Edit Blog', title: 'Edit Blog' } })
     } else {
       console.log('>>>>> event delete: ', event);
     }

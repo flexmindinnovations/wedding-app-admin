@@ -10,8 +10,18 @@
 
 .full-height {
     height: 500px;
+    @apply h-[500px] dark:h-[500px]
 }
 
 .fixed-height {
     height: 300px;
+    @apply h-[300px] dark:h-[300px]
+}
+
+::ng-deep .ag-cell {
+    @apply flex items-center justify-start
+}
+
+::ng-deep .ag-root-wrapper {
+    @apply rounded-md;
 }

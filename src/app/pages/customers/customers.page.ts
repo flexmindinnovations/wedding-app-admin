@@ -23,11 +23,9 @@ export class CustomersPage implements OnInit {
   sidebarItemService = inject(SidebarItemsService);
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
-
   rowData: any = [];
-
   colDefs: ColDef[] = [
-    { field: "customerId", headerName: '#id', width: 60 },
+    { field: "customerId", headerName: '#id', width: 100 },
     {
       field: "imagePath1",
       headerName: 'Image',
@@ -40,9 +38,9 @@ export class CustomersPage implements OnInit {
       } as IGroupCellRendererParams
     },
     { field: "fullName", width: 400 },
-    { field: "mobileNo", width: 150 },
-    { field: "emailId", width: 150 },
-    { field: "registrationDate", headerName: 'Registered On', width: 150 },
+    { field: "mobileNo", width: 130 },
+    { field: "emailId", width: 205 },
+    { field: "registrationDate", headerName: 'Registered On', width: 120 },
     {
       field: "isActive",
       width: 100,
@@ -70,7 +68,7 @@ export class CustomersPage implements OnInit {
   getCustomerList(): void {
     this.customerService.getCustomerList().subscribe({
       next: (data: any) => {
-        if(data) {
+        if (data) {
           this.rowData = data.map((item: any) => {
             return {
               ...item,
@@ -88,14 +86,14 @@ export class CustomersPage implements OnInit {
 
   handleClick() {
     this.sidebarItemService.setCurrentPage('Add Customer');
-    this.router.navigateByUrl('customers/add');
+    this.router.navigateByUrl('customers/add', { state: { route: 'add', pageName: 'Add Customer', title: 'Add Customer' } });
   }
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.customerId}`);
+      this.router.navigateByUrl(`customers/edit/${data?.customerId}`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer' } });
     } else {
       console.log('>>>>> event delete: ', event);
     }

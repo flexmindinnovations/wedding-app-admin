@@ -7,6 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: BlogPage,
+    data: {
+      route: 'blog',
+      pageName: `Blogs`,
+      title: `Blogs`,
+    }
   },
   {
     path: 'add',

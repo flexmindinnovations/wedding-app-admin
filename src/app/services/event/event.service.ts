@@ -34,8 +34,8 @@ export class EventService {
   addNewEvent(formData: any): Observable<any> {
     return this.http.post(`${this.endpoint}/Event/UploadImageWithEventData`, formData);
   }
-  updateEvent(formData: any, eventId: number): Observable<any> {
-    return this.http.put(`${this.endpoint}/Event/Put/${eventId}`, formData);
+  updateEvent(formData: any): Observable<any> {
+    return this.http.put(`${this.endpoint}/Event/UpdateImageWithEventData`, formData);
   }
 
   deleteEvent(eventId: number): Observable<any> {

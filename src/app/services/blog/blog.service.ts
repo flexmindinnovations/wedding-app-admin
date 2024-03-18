@@ -12,12 +12,13 @@ export class BlogService {
   http = inject(HttpConfigService);
 
   isRequest = new Subject<any>();
+  isRequestCompleted = new Subject();
 
   getBlogList(): Observable<any> {
     return this.http.get(`${this.endpoint}/getBlogList`);
   }
 
-  geBlogById(blogId: number): Observable<any> {
+  getBlogById(blogId: number): Observable<any> {
     return this.http.get(`${this.endpoint}/getBlogById?blogId=${blogId}`)
   }
 
@@ -35,6 +36,10 @@ export class BlogService {
 
   getUpdate(): Observable<any> {
     return this.isRequest.asObservable();
+  }
+
+  setRequestStatus(status: boolean, action: string) {
+    this.isRequestCompleted.next({ status, action });
   }
 
 }
