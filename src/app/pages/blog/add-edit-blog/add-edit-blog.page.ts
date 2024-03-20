@@ -62,7 +62,7 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   handleSelectedImage(event: any) {
-    this.selectedImage = event?.target?.file[0];
+    this.selectedImage = event?.id;
   }
 
   getBlogDetails() {

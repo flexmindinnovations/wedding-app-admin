@@ -78,7 +78,6 @@ export class BlogPage implements OnInit {
     this.blogService.getBlogList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
           this.rowData = data?.map((blog: any) => {
             return {
               id: blog?.blogId,
