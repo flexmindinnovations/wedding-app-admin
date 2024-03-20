@@ -22,16 +22,12 @@ export class BranchService {
   }
 
 
-  addNewBranch(payload: any): Observable<any> {
-    return this.http.post(`${this.endpoint}/Post`, payload);
+  getBranchByBranchId(branchId: number): Observable<any> {
+    return this.http.get(`${this.endpoint}/GetBranchById?branchId=${branchId}`);
   }
 
-  updateNewBranch(payload: any, branchId: number): Observable<any> {
-    return this.http.put(`${this.endpoint}/Post/${branchId}`, payload);
-  }
-
-  getBranchId(branchId: number): Observable<any> {
-    return this.http.get(`${this.endpoint}/Get/${branchId}`);
+  updateBranch(payload: any): Observable<any> {
+    return this.http.put(`${this.endpoint}/UpdateBranchDataWithUploadImage`, payload);
   }
 
   deleteBranchById(branchId: number): Observable<any> {

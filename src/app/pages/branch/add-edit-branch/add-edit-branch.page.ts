@@ -1,11 +1,12 @@
 import { state } from '@angular/animations';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { BranchService } from 'src/app/services/branch/branch.service';
 import { SharedService } from 'src/app/services/shared.service';
+import { environment } from 'src/environments/environment';
 import { COLOR_SCHEME, buttonThemeVariables, themeVariables } from 'src/util/util';
 @Component({
   selector: 'app-add-edit-branch',
@@ -25,10 +26,16 @@ export class AddEditBranchPage implements OnInit {
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
   selectedImage: any;
-
+  branchId: number = 0;
   countryId = undefined;
   stateId = undefined;
   cityId = undefined;
+  imagePath: string = '';
+  imageName: string = '';
+  activeRouter = inject(ActivatedRoute);
+  branchDetails: any = null;
+  isDataLoaded = false;
+  cdref = inject(ChangeDetectorRef);
 
   constructor(
     private fb: FormBuilder
@@ -41,6 +48,40 @@ export class AddEditBranchPage implements OnInit {
     this.setCurrentClass();
     // this.alert.setAlertMessage('Data Saved Successfully', AlertType.success);
   }
+
+
+
+  ngAfterViewInit(): void {
+    this.activeRouter.params.subscribe((params: any) => {
+      this.branchId = params && params['branchId'] ? params['branchId'] : 0;
+      if (this.branchId > 0) this.getBranchDetails();
+      else this.isDataLoaded = true;
+    })
+  }
+
+  getBranchDetails() {
+    this.branchService.getBranchByBranchId(this.branchId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log('branchdata', data);
+          this.branchDetails = data;
+          this.imagePath = environment.endpoint + '/' + data?.branchImagePath;
+          const imageNameIndex = data?.branchImagePath.lastIndexOf('/') + 1;
+          this.imageName = data?.branchImagePath.substring(imageNameIndex, data?.branchImagePath.length);
+          this.isActive = data?.isActive;
+          this.formGroup.patchValue(data);
+          this.cdref.detectChanges();
+          this.isDataLoaded = true;
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
+  }
+
+
 
   setCurrentClass() {
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
@@ -84,6 +125,15 @@ export class AddEditBranchPage implements OnInit {
   }
 
   handleSubmitClick() {
+    this.cdref.detectChanges();
+    if (this.formGroup.invalid) {
+      return;
+    }
+    if (this.branchId === 0) this.saveBranch();
+    else this.updateBranch();
+  }
+
+  saveBranch() {
     let formVal = this.formGroup.value;
     formVal = { ...formVal, isActive: this.isActive, branchImagePath: '' }
     const formData: FormData = new FormData();
@@ -101,7 +151,32 @@ export class AddEditBranchPage implements OnInit {
         console.log('error: ', error.title);
         const err = error?.error;
         console.log('err: ', err);
-        
+
+        this.alert.setAlertMessage(err?.title, AlertType.error);
+      }
+    })
+  }
+
+  updateBranch() {
+    const branchId = this.branchDetails['branchId'];
+    let formVal = this.formGroup.value;
+    formVal = { ...formVal, branchId, isActive: this.isActive, branchImagePath: this.branchDetails['branchImagePath'] }
+    const formData: FormData = new FormData();
+    formData.append('branchModel', JSON.stringify(formVal));
+    if (this.selectedImage) formData.append('file', this.selectedImage, this.selectedImage.name);
+    this.branchService.updateBranch(formData).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl('branch');
+          this.branchService.setUpdate(true);
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error.title);
+        const err = error?.error;
+        console.log('err: ', err);
+
         this.alert.setAlertMessage(err?.title, AlertType.error);
       }
     })
@@ -109,6 +184,8 @@ export class AddEditBranchPage implements OnInit {
 
   toggleActive() {
     this.isActive = !this.isActive;
+    this.formGroup.patchValue({ isActive: this.isActive });
+
   }
 
   getCountryList() {
