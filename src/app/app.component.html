@@ -1,20 +1,10 @@
-<!-- <ion-app>
-  <ion-split-pane contentId="main-content" class="flex min-h-screen min-w-full bg-slate-200 dark:bg-gray-900">
-     <ion-menu class="hidden ion-no-padding border-r border-r-gray-100 md:flex lg:flex " [ngClass]="isCollapsed ? menuClassess['collapsed'] : menuClassess['expanded']" contentId="main-content" type="overlay">
-      <ion-content class="ion-no-padding">
-        <app-sidebar (isCollapsed)="handleIsCollapsed($event)"></app-sidebar>
-      </ion-content>
-    </ion-menu>
-    <main id="main-content" class="ion-page content w-full flex-grow-1" 
-    >
-      <app-layout class="w-full h-full"></app-layout>
-    </main>
-  </ion-split-pane>
-</ion-app> -->
 <ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar>
 <ng-http-loader [backdrop]="true" [backgroundColor]="loaderTheme" [debounceDelay]="20" [extraDuration]="100"
   [minDuration]="300" [opacity]="'.7'" [backdropBackgroundColor]="'#000000'" [spinner]="spinkit.skThreeBounce">
 </ng-http-loader>
+<div class="app-wrapper flex relative h-screen w-screen">
+  <app-alert [alertMessage]="alertMessage" [alertType]="alertType" [showAlert]="showAlert" class="absolute top-20 right-5 min-h-40 min-w-80" [ngClass]="showAlert ? 'z-[10000]' : 'z-0'" [outside]="true" />
+</div>
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

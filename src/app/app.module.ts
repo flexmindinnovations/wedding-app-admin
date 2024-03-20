@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared.module';
 import { TitleCasePipe } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TitleCasePipe } from '@angular/common';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(),
     SharedModule,
     AppRoutingModule,

@@ -43,6 +43,7 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
   datePickerId = uuidv4();
   showPassword: boolean = false;
   passwordToggleIcon = 'eye-outline';
+  inputSubscription: any;
 
   constructor(
     @Self()
@@ -65,10 +66,18 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
     const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
 
-    this.sharedService.resetControl().subscribe((reset: any) => {
+    this.inputSubscription = this.sharedService.resetControl().subscribe((reset: any) => {
+      console.log('reset: ', reset);
+      
       this.inputValue.emit('');
       this.control.reset();
+      // this.control.patchValue('');
+      // this.control.setValue('');
       this.hasValue = false;
+
+      setTimeout(() => {
+        this.inputSubscription.unsubscribe();
+      }, 2000)
     })
   }
 
@@ -119,5 +128,6 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
   ngOnDestroy(): void {
     this.value = '';
     this.controlValue = '';
+    this.inputSubscription.unsubscribe();
   }
 }

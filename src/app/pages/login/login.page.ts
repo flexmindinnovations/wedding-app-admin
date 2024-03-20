@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { delay, takeUntil, tap } from 'rxjs/operators';
 import { Subscription, of } from 'rxjs';
-import { COLOR_SCHEME } from 'src/util/util';
+import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -27,6 +27,10 @@ export class LoginPage implements OnInit, OnDestroy {
   alert = inject(AlertService);
   subs: Subscription[] = [];
   sharedService = inject(SharedService);
+  showPassword: boolean = false;
+  passwordToggleIcon = 'eye-outline';
+  invalidControl = ' border-red-700 bg-red-200';
+  validControl = ' border-gray-300 bg-gray-50';
 
   ngOnInit() {
     // this.isLoading = true;
@@ -57,7 +61,7 @@ export class LoginPage implements OnInit, OnDestroy {
   setCurrentClass() {
     const colorScheme = localStorage.getItem('color-scheme');
     this.colorScheme = colorScheme ? colorScheme : this.colorScheme;
-    // this.colorVarients = buttonThemeVariables[this.colorScheme][this.size];
+    this.colorVarients = inputThemeVariables[this.colorScheme];
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -70,7 +74,6 @@ export class LoginPage implements OnInit, OnDestroy {
     if (!this.formGroup.valid) return;
     this.subs.push(
       this.authService.loginUser(formInput)
-        .pipe(takeUntil(this.subs))
         .subscribe({
           next: (response: any) => {
             if (response) {
@@ -95,19 +98,27 @@ export class LoginPage implements OnInit, OnDestroy {
             const err = error?.error;
             this.alert.setAlertMessage(err?.message, AlertType.error);
             this.resetForm();
+          },
+          complete: () => {
+            this.resetForm();
           }
         })
     );
   }
 
   resetForm() {
+    this.formGroup.reset();
+    this.isLoading = false;
     setTimeout(() => {
-      this.isLoading = false;
-      this.sharedService.controlRest.next(true);
       this.subs.forEach((sub) => {
         sub.unsubscribe()
       });
-    }, 2000)
+    })
+  }
+
+  handlePasswordVisiblity() {
+    this.showPassword = !this.showPassword;
+    this.passwordToggleIcon = this.passwordToggleIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
   }
 
   ngOnDestroy(): void {
@@ -115,8 +126,6 @@ export class LoginPage implements OnInit, OnDestroy {
     this.isLoading = false;
     this.formGroup.reset();
     this.subs.forEach((sub) => {
-      console.log('sub: ', sub);
-
       sub.unsubscribe()
     });
   }

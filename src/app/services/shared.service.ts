@@ -16,7 +16,13 @@ export class SharedService {
   http = inject(HttpConfigService);
   httpAssests = inject(HttpClient);
 
+  showAlert = new Subject();
+
   controlRest = new Subject();
+
+  showAlertEvent() {
+    return this.showAlert.asObservable();
+  }
 
   resetControl() {
     return this.controlRest.asObservable();

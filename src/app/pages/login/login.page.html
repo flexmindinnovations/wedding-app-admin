@@ -1,24 +1,79 @@
 <div class="login-container main min-h-screen flex items-center justify-center bg-gradient-to-bl
 from-bo-300 from-20% via-br-400 via-40% to-red-300 backdrop-blur-2xl">
-  <app-alert [outside]="true" />
   @if(isLoggedIn) {
   <h1 class="m-0 text-lg text-br-500">Already logged in. Please wait, redirecting to dashboard...</h1>
   } @else {
   <div class="login-box w-3/4 h-3/4 min-h-40 min-w-40 shadow-md rounded-md">
     <div class="overlay rounded-md h-full backdrop-blur-sm w-full flex">
-      <div class="login-form p-5 min-w-96 rounded-s-lg backdrop-blur-md bg-gradient-to-br from-br-300 to-bo-300 flex flex-col items-start gap-5 justify-center">
-        <div class="header w-full flex flex-col items-start justify-start p-3">
-          <h1 class="m-0 text-2xl font-extrabold w-full text-left select-none">Welcome</h1>
-          <p class="font-thin text-base block w-full select-none text-gray-600">Enter your credentials to continue</p>
+      <div
+        class="login-form p-5 min-w-96 rounded-s-lg backdrop-blur-md bg-gradient-to-br from-br-200 to-bo-200 flex flex-col items-start gap-5 justify-start">
+        <div class="header w-full flex flex-col items-start justify-start p-3 gap-10">
+          <img src="/assets/icon/logo.png" class="h-12 w-auto" />
+          <div class="text">
+            <h1 class="m-0 text-4xl font-extrabold w-full text-left select-none
+          text-transparent bg-clip-text bg-gradient-to-r from-br-700 via-red-700 to-bo-700
+          ">Welcome back,</h1>
+            <p
+              class="font-thin text-sm indent-1 block w-full select-none text-transparent bg-clip-text bg-gradient-to-r from-br-700 via-red-700 via-50% to-bo-700">
+              Enter your credentials to continue</p>
+          </div>
         </div>
         <div class="form-cotnainer w-full p-3">
           <form [formGroup]="formGroup" class="flex flex-col items-center justify-center gap-5"
             (keydown.enter)="handleSignIn()">
-            <app-input label="Username" class="w-full" [control]="formGroupControl['userName']"
-              formControlName="userName" />
-
-            <app-input type="password" class="w-full" label="Password" [control]="formGroupControl['userPassword']"
-              formControlName="userPassword" />
+            <div class="userName w-full">
+              <div
+                class="input flex flex-col items-start backdrop-blur-md relative justify-start gap-0 dark:bg-gray-700">
+                <label class="mb-2" for="username">Username
+                </label>
+                <input type="text" formControlName="userName" name="userName" id="userName" class="p-2.5 h-12"
+                  [ngClass]="formGroupControl['userName'].touched && formGroupControl['userName'].invalid ? colorVarients + invalidControl : colorVarients + validControl"
+                  [value]="formGroupControl['userName'].value" placeholder="Enter username" required>
+                @if (formGroupControl['userName'].touched && formGroupControl['userName'].invalid) {
+                <div class="validation-errors px-2 bg-transparent dark:bg-gray-700 mt-[2px]">
+                  @if (formGroupControl['userName'].hasError('required')) { <span
+                    class="text-xs font-light dark:bg-gray-700 text-red-700">Username is
+                    required</span> }
+                  @if (formGroupControl['userName'].hasError('min') || formGroupControl['userName'].hasError('max')) {
+                  <span class="text-xs dark:bg-gray-700 font-light text-red-700">Please
+                    provide valid input</span> }
+                  @if (formGroupControl['userName'].hasError('email')) { <span
+                    class="text-xs dark:bg-gray-700 font-light text-red-700">Invalid
+                    email</span> }
+                  @if (formGroupControl['userName'].hasError('pattern')) { <span
+                    class="text-xs font-light text-red-700">Invalid
+                    Mobile number</span> }
+                </div>
+                }
+              </div>
+            </div>
+            <div class="userPassword w-full relative">
+              <div
+                class="input flex flex-col items-start backdrop-blur-md relative justify-start gap-0 dark:bg-gray-700">
+                <label class="mb-2" for="username">Password
+                </label>
+                <input [type]="showPassword ? 'text' : 'password'" name="userPassword" id="userPassword"
+                  class="p-2.5 h-12" formControlName="userPassword"
+                  [ngClass]="formGroup.get('userPassword')?.touched && formGroup.get('userPassword')?.invalid ? colorVarients + invalidControl : colorVarients + validControl"
+                  [value]="formGroup.get('userPassword')?.value" placeholder="Enter Password" required>
+                @if (formGroup.get('userPassword')?.value) {
+                <button type="button" (click)="handlePasswordVisiblity()" id="togglePassword"
+                  class="absolute top-11 right-4 focus:outline-none -ml-8">
+                  <ion-icon [name]="passwordToggleIcon"></ion-icon>
+                </button>
+                }
+                @if (formGroup.get('userPassword')?.touched && formGroup.get('userPassword')?.invalid) {
+                <div class="validation-errors px-2 bg-transparent dark:bg-gray-700 mt-[2px]">
+                  @if (formGroup.get('userPassword')?.hasError('required')) { <span
+                    class="text-xs font-light dark:bg-gray-700 text-red-700">userPassword is
+                    required</span> }
+                  @if (formGroup.get('userPassword')?.hasError('min') || formGroup.get('userPassword')?.hasError('max'))
+                  { <span class="text-xs dark:bg-gray-700 font-light text-red-700">Please
+                    provide valid input</span> }
+                </div>
+                }
+              </div>
+            </div>
 
             <div class="actions flex items-center w-full justify-center p-3">
               <button type="button"
