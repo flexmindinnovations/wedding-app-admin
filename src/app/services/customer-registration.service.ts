@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpConfigService } from './http-config.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerRegistrationService {
+
+  isRequestCompleted = new Subject();
 
   endpoint = environment.endpoint + '/api';
   http = inject(HttpConfigService);
@@ -63,5 +65,14 @@ export class CustomerRegistrationService {
   getCustomerPhotos(customerId: number): Observable<any> {
     return this.http.get(this.endpoint + `/CustomerImage/Get/${customerId}`);
   }
+
+  setRequestStatus(status: boolean, action: string) {
+    this.isRequestCompleted.next({ status, action });
+  }
+
+  getRequestStatus(): Observable<any> {
+    return this.isRequestCompleted.asObservable();
+  }
+
 
 }

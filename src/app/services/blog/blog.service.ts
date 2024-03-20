@@ -11,7 +11,6 @@ export class BlogService {
   endpoint = environment.endpoint + '/api/Blog';
   http = inject(HttpConfigService);
 
-  isRequest = new Subject<any>();
   isRequestCompleted = new Subject();
 
   getBlogList(): Observable<any> {
@@ -30,16 +29,13 @@ export class BlogService {
     return this.http.put(`${this.endpoint}/UpdateImageWithBlogData`, payload)
   }
 
-  setUpdate(isCompleted: boolean): void {
-    this.isRequest.next(isCompleted);
-  }
-
-  getUpdate(): Observable<any> {
-    return this.isRequest.asObservable();
-  }
-
   setRequestStatus(status: boolean, action: string) {
     this.isRequestCompleted.next({ status, action });
   }
+
+  getRequestStatus(): Observable<any> {
+    return this.isRequestCompleted.asObservable();
+  }
+
 
 }

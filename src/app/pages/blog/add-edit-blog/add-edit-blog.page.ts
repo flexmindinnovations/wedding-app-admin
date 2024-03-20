@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
@@ -14,12 +14,12 @@ import { COLOR_SCHEME, findInvalidControlsRecursive, themeVariables } from 'src/
   templateUrl: './add-edit-blog.page.html',
   styleUrls: ['./add-edit-blog.page.scss'],
 })
-export class AddEditBlogPage implements OnInit {
+export class AddEditBlogPage implements OnInit, AfterViewInit {
 
   formGroup!: FormGroup;
   isActive: boolean = true;
   isEditMode: boolean = false;
-  blogId = 0;
+  blogId: number = 0;
   blogDetails: any = null;
   isDataLoaded = false;
   router = inject(Router);
@@ -62,7 +62,7 @@ export class AddEditBlogPage implements OnInit {
   }
 
   handleSelectedImage(event: any) {
-    this.selectedImage = event?.file;
+    this.selectedImage = event?.target?.file[0];
   }
 
   getBlogDetails() {
@@ -97,12 +97,8 @@ export class AddEditBlogPage implements OnInit {
     this.formGroup = this.fb.group({
       blogTitle: ['', [Validators.required]],
       blogText: !['', Validators.required],
-      country: !['', [Validators.required]],
-      state: !['', [Validators.required]],
-      city: !['', [Validators.required]],
-      photo: ['', [Validators.required]],
       blogDate: ['', [Validators.required]],
-      isActive: ['', [Validators.required]]
+      isActive: !['', [Validators.required]]
     })
 
     this.formGroup.valueChanges.subscribe((value: any) => { })
@@ -123,10 +119,10 @@ export class AddEditBlogPage implements OnInit {
   }
 
   handleFormSubmit() {
-    if (this.formGroup.invalid) {
-      const invalidControls = findInvalidControlsRecursive(this.formGroup);
-      return;
-    }
+    // if (this.formGroup.invalid) {
+    //   const invalidControls = findInvalidControlsRecursive(this.formGroup);
+    //   return;
+    // }
     if (this.blogId === 0) this.saveNewBlog();
     else this.updateBlog();
   }
@@ -155,7 +151,7 @@ export class AddEditBlogPage implements OnInit {
     });
   }
   updateBlog() {
-    const blogId = this.blogDetails['id'];
+    const blogId = this.blogDetails['blogId'];
     const formVal = this.formGroup.value;
     const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format() }
     const formData = new FormData();
