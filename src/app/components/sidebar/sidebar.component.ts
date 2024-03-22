@@ -34,30 +34,34 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       jsonItems[0]
     ];
     this.sidebarItems = jsonItems;
-    // this.sharedService.getUserPermissions().subscribe((permissionList) => {
-    //   if (permissionList) {
-    //     this.sharedService.permissionListMap.set('permissionList', permissionList);
-    //     this.showTitles = this.isSidebarExpanded ? true : false;
-    //     permissionList.forEach((item: any) => {
-    //       jsonItems.forEach((menu: any) => {
-    //         if (menu.title === item?.moduleName) {
-    //           const menuItem = {
-    //             "id": item?.permissionId,
-    //             "title": item?.moduleName,
-    //             "route": menu?.route,
-    //             "isActive": false,
-    //             "icon": menu?.icon
-    //           }
-    //           menuItems.push(menuItem);
-    //         }
-    //       })
-    //     });
-    //     this.sidebarItems = menuItems;
-    //   } else {
-    //     console.log('permissionList else: ', permissionList);
-    //   }
-    // })
-    
+    this.sharedService.getUserPermissions().subscribe((permissionList) => {
+      if (permissionList) {
+        console.log('permissionList', permissionList);
+        this.sharedService.permissionListMap.set('permissionList', permissionList);
+        this.showTitles = this.isSidebarExpanded ? true : false;
+        const newList = permissionList.filter((item: any) => item.canView === true);
+        newList.forEach((item: any) => {
+          jsonItems.forEach((menu: any) => {
+            if (menu.title === item?.moduleName) {
+              const menuItem = {
+                "id": item?.permissionId,
+                "title": item?.moduleName,
+                "route": menu?.route,
+                "isActive": false,
+                "icon": menu?.icon
+              }
+              menuItems.push(menuItem);
+
+            }
+          })
+        });
+        this.sidebarItems = menuItems;
+
+      } else {
+        console.log('permissionList else: ', permissionList);
+      }
+    })
+
   }
 
   ngAfterViewInit(): void {
@@ -93,7 +97,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   handleSidebarItemClick(item: SideBarItem) {
     this.setActiveItem(item.route);
-    this.router.navigateByUrl(item.route, {state: item});
+    this.router.navigateByUrl(item.route, { state: item });
   }
 
   setActiveItem(param: number | string) {
