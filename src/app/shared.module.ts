@@ -7,7 +7,7 @@ import { SearchComponent } from "./components/search/search.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { UserMenuComponent } from "./components/user-menu/user-menu.component";
 import { SearchModalComponent } from "./modals/search-modal/search-modal.component";
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { IonicModule } from "@ionic/angular";
 import { CommonModule } from "@angular/common";
 import { AppComponent } from "./app.component";
@@ -15,12 +15,10 @@ import { ThemeDropdownComponent } from "./components/theme-dropdown/theme-dropdo
 import { InputComponent } from "./components/input/input.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AgGridAngular } from "ag-grid-angular";
-// import { AgGridModule } from 'ag-grid-angular-legacy';
 import { GridButtonsComponent } from "./components/grid-buttons/grid-buttons.component";
 import { DataGridComponent } from "./components/data-grid/data-grid.component";
 import { FormStepperComponent } from "./components/form-stepper/form-stepper.component";
 import { ImagePickerComponent } from "./components/image-picker/image-picker.component";
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NgHttpLoaderModule } from "ng-http-loader";
@@ -35,6 +33,7 @@ import { TimePickerComponent } from "./components/time-picker/time-picker.compon
 import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.component";
 import { AddEditHandycapComponent } from "./modals/add-edit-handycap/add-edit-handycap.component";
 import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.component";
+import { CustomHttpInterceptor } from "./interceptors/http.interceptor";
 
 @NgModule({
     declarations: [
@@ -119,7 +118,13 @@ import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.compo
         AddEditHandycapComponent,
         AddEditUserComponent
     ],
-    providers: []
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: CustomHttpInterceptor,
+            multi: true
+        }
+    ]
 })
 
 export class SharedModule { }

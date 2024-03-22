@@ -3,8 +3,11 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { NavigationStart, Router, RouterEvent } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SidebarItemsService } from './services/sidebar-items.service';
-import { COLOR_SCHEME } from 'src/util/util';
+import { AUTO_DISMISS_TIMER, COLOR_SCHEME } from 'src/util/util';
 import { Spinkit } from 'ng-http-loader';
+import { SharedService } from './services/shared.service';
+import { AlertService } from './services/alert/alert.service';
+import { AlertType } from './enums/alert-types';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -16,7 +19,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   router = inject(Router);
   titleCasePipe = inject(TitleCasePipe);
   sidebarItemService = inject(SidebarItemsService);
-  public spinkit = Spinkit; 
+  alertService = inject(AlertService);
+  alertData: any;
+  public spinkit = Spinkit;
   loaderTheme = (COLOR_SCHEME as 'br') ? '#1e9aff' : (COLOR_SCHEME as 'bo') ? '#ff7f0a' : '#3d51e6';
 
   menuClassess = {
@@ -24,6 +29,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     expanded: `delay-150 duration-300 ease-out md:w-[20%] lg:w-[15%] md:max-w-[25%] lg:max-w-[25%]`
   }
 
+  alertType: AlertType = 1;
+  alertMessage: string = '';
+  showAlert: boolean = false;
   constructor() { }
 
   ngOnInit(): void {
@@ -32,13 +40,20 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     initFlowbite();
+    this.alertService.getAlertMessage().subscribe((data: any) => {
+      this.showAlert = true;
+      this.alertMessage = data?.message;
+      this.alertType = data?.type;
+      this.alertData = data ? true : false;
+      setTimeout(() => {
+        this.showAlert = false;
+      }, AUTO_DISMISS_TIMER);
+    })
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {
           const url = event.url;
           const activeRoute = url.substring(url.lastIndexOf('/') + 1, url.length);
-          console.log('activeRoute: ', activeRoute);
-          
           this.sidebarItemService.setCurrentPage(this.titleCasePipe.transform(activeRoute));
         }
       }

@@ -1,4 +1,4 @@
-<div class="input flex flex-col items-start relative justify-start gap-0 dark:bg-gray-700">
+<div class="input flex flex-col items-start backdrop-blur-md relative justify-start gap-0 dark:bg-gray-700">
   <label class="mb-2" for="username">{{label}}
   </label>
   @if(isMultiline){
@@ -22,17 +22,17 @@
   } @else if(type === "text" && presentaion==="time"){
   <time-picker [value]="value" (selectedTime)="handleOnChange($event, 'time')" />
   } @else {
-  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)" class="p-2.5"
+  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)" class="p-2.5 h-12"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     [value]="value" [placeholder]="placeholder" [required]="isRequired">
-  @if (formControlName === 'userPassword') {
+  @if (formControlName === 'userPassword' && hasValue) {
   <button type="button" (click)="handlePasswordVisiblity()" id="togglePassword"
     class=" absolute top-10 right-4 focus:outline-none -ml-8">
     <ion-icon [name]="passwordToggleIcon"></ion-icon>
   </button>
   }
   @if (control.touched && control.invalid) {
-  <div class="validation-errors px-2 bg-white dark:bg-gray-700 mt-[2px]">
+  <div class="validation-errors px-2 bg-transparent dark:bg-gray-700 mt-[2px]">
     @if (control.hasError('required')) { <span class="text-xs font-light dark:bg-gray-700 text-red-700">{{label}} is
       required</span> }
     @if (control.hasError('min') || control.hasError('max')) { <span

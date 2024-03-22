@@ -1,5 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,7 +11,7 @@ declare var Datepicker: any;
   styleUrls: ['./input.component.scss']
 })
 
-export class InputComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class InputComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   @Input() label: string = '';
   @Input() type: 'text' | 'password' | 'email' | 'number' | 'date' = 'text';
@@ -25,8 +26,10 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   @Output() inputValue: EventEmitter<string> = new EventEmitter();
   value: any;
   pickerFormat: string = 'DD MM YYYY';
-
+  hasValue: boolean = false;
   cdr = inject(ChangeDetectorRef);
+
+  sharedService = inject(SharedService);
 
   onChange(value: any) { }
   onTouched() { }
@@ -38,8 +41,9 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   validControl = ' border-gray-300 bg-gray-50';
   datePicker: any;
   datePickerId = uuidv4();
-  showPassword: boolean = true;
-  passwordToggleIcon = 'eye-off-outline';
+  showPassword: boolean = false;
+  passwordToggleIcon = 'eye-outline';
+  inputSubscription: any;
 
   constructor(
     @Self()
@@ -61,9 +65,24 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
     this.cdr.detectChanges();
     const dtEl: any = document.getElementById(this.datePickerId);
     if (this.type === 'date') this.initDatePicker(dtEl);
+
+    this.inputSubscription = this.sharedService.resetControl().subscribe((reset: any) => {
+      console.log('reset: ', reset);
+      
+      this.inputValue.emit('');
+      this.control.reset();
+      // this.control.patchValue('');
+      // this.control.setValue('');
+      this.hasValue = false;
+
+      setTimeout(() => {
+        this.inputSubscription.unsubscribe();
+      }, 2000)
+    })
   }
 
   formatInputData(controlName: any) {
+    this.hasValue = true;
     if (this.type === 'date') {
       this.value = this.value ? new Date(this.value).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
     }
@@ -94,6 +113,7 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
   }
   handleOnChange(event: any, src?: string) {
     const value = src === 'time' ? event : event.target.value;
+    this.hasValue = !!value;
     const formattedValue = src === 'dt' ? new Date(value).toLocaleDateString('en-GB') : value;
     this.inputValue.emit(formattedValue);
     this.onChange(value);
@@ -101,7 +121,13 @@ export class InputComponent implements OnInit, AfterViewInit, ControlValueAccess
 
   handlePasswordVisiblity() {
     this.showPassword = !this.showPassword;
-    this.passwordToggleIcon = this.showPassword ? 'eye-outline' : 'eye-off-outline';
+    this.passwordToggleIcon = this.passwordToggleIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
     this.type = this.showPassword ? 'text' : 'password';
+  }
+
+  ngOnDestroy(): void {
+    this.value = '';
+    this.controlValue = '';
+    this.inputSubscription.unsubscribe();
   }
 }

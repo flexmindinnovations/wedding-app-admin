@@ -1,54 +1,56 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
-import { Dismiss } from "flowbite";
-import type { DismissOptions, DismissInterface } from "flowbite";
-import type { InstanceOptions } from 'flowbite';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { AUTO_DISMISS_TIMER } from 'src/util/util';
 import { IAlert } from 'src/app/interfaces/IAlert';
-import { Subscription } from 'rxjs';
+import { Subscription, delay, of, tap } from 'rxjs';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(100%)' }),
+        animate('0.3s ease-out', style({ opacity: 1, transform: 'translateX(0%)' }))
+      ]),
+      transition(':leave', [
+        style({ transform: 'translateX(0%)' }),
+        animate('0.3s ease-out', style({ transform: 'translateX(150%)' }))
+      ])
+    ])
+  ]
 })
-export class AlertComponent implements AfterViewInit, OnDestroy {
+export class AlertComponent implements OnDestroy {
 
   alertService = inject(AlertService);
-  alertType: AlertType = 1;
-  alertMessage: string = '';
-  alertMessages: string[] = [];
-  alertId: string = '';
-
-  alertSubscription: Subscription | null = null;
-
-
-  ngAfterViewInit() {
-    this.alertSubscription = this.alertService.getAlertMessage().subscribe((alert: IAlert) => {
-      const alertEl = document.getElementById('alertContainer');
-      alertEl?.classList.add('show');
-      this.alertType = alert?.type;
-      this.alertMessage = alert?.message;
-      this.alertId = `alert-${this.alertType}`;
-      this.autoHideAlert();
-    })
-  }
-
-  autoHideAlert() {
-    setTimeout(() => {
-      const alertEl = document.getElementById('alertContainer');
-      alertEl?.classList.remove('show');
-    }, AUTO_DISMISS_TIMER);
-  }
+  @Input() alertType: AlertType = 1;
+  @Input() alertMessage: string = '';
+  @Input() showAlert: boolean = true;
+  @Input() outside = false;
 
   handleHideAlert() {
-    const alertEl = document.getElementById('alertContainer');
-    alertEl?.classList.toggle('show');
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 3500);
   }
 
   ngOnDestroy(): void {
-    this.alertSubscription?.unsubscribe();
+    this.alertService.alertSubject.unsubscribe();
+  }
+
+  getAlertType() {
+    switch (this.alertType) {
+      case AlertType.success:
+        return 'success';
+      case AlertType.error:
+        return 'error';
+      case AlertType.warning:
+        return 'warning';
+    }
   }
 
 }
