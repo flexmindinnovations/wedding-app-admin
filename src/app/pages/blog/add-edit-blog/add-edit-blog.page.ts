@@ -62,7 +62,10 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   handleSelectedImage(event: any) {
-    this.selectedImage = event?.id;
+    console.log(event);
+    this.selectedImage = event.file;
+    console.log('selectedImage: ', this.selectedImage);
+
   }
 
   getBlogDetails() {
@@ -153,12 +156,17 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   updateBlog() {
     const blogId = this.blogDetails['blogId'];
     const formVal = this.formGroup.value;
-    const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format() }
+    const payload = { ...formVal, blogId, blogImagePath: "", blogDate: moment(formVal?.blogDate).format() }
     const formData = new FormData();
-    formData.append('blogModel', JSON.stringify(payload));
     if (this.selectedImage) {
       formData.append('file', this.selectedImage, this.selectedImage.name);
+    } else {
+      payload['blogImagePath'] = this.blogDetails['blogImagePath']
     }
+    formData.append('blogModel', JSON.stringify(payload));
+    console.log('changed image', this.selectedImage);
+    console.log('paylod', payload);
+
     this.blogService.updateBlog(formData).subscribe({
       next: (data: any) => {
         if (data) {

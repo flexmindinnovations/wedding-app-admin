@@ -40,7 +40,7 @@
           [required]="true" /> -->
       </div>
       <div class="w-full md:w-1/2 xl:w-1/2 p-4 flex justify-center lg:my-5 items-center">
-        <image-picker label="Add Image" [fileName]="imageName" [src]="imagePath"
+        <image-picker label="Add Image" [id]="branchId" [fileName]="imageName" [src]="imagePath"
           (selectedImage)="handleSelectedImage($event)" />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
@@ -16,7 +16,7 @@ import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/gri
   templateUrl: './blog.page.html',
   styleUrls: ['./blog.page.scss'],
 })
-export class BlogPage implements OnInit {
+export class BlogPage implements OnInit, AfterViewInit {
 
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
@@ -71,6 +71,12 @@ export class BlogPage implements OnInit {
 
   ngOnInit() {
     this.getBlogList();
+  }
+
+  ngAfterViewInit(): void {
+    this.blogService.getRequestStatus().subscribe(isCompleted => {
+      if (isCompleted) this.getBlogList();
+    })
   }
 
 

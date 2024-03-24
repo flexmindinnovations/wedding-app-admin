@@ -108,7 +108,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       physicalStatus: !['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
-      hobbies: !['', ![Validators.required]],
+      hobbies: ['', ![Validators.required]],
       bloodGroupId: !['', ![Validators.required]],
       foodPreferencesId: !['', ![Validators.required]]
     });
@@ -130,9 +130,9 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.showPatrika = this.personalData['isPatrika'];
     this.tithiList = this.tithiList.map((item: any) => {
       Object.keys(this.personalData).forEach((key: any) => {
-          if(item?.title.toLowerCase() === key) {
-            item.value = this.personalData[key];
-          }
+        if (item?.title.toLowerCase() === key) {
+          item.value = this.personalData[key];
+        }
       })
       return item;
     })

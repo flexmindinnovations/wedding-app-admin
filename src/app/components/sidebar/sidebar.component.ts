@@ -1,6 +1,10 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { Console } from 'console';
+import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { SIDEBAR_ITEMS } from 'src/util/sidebar-items';
@@ -15,6 +19,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   sharedService = inject(SharedService);
+  roleService = inject(RolesService);
+  alert = inject(AlertService);
   sidebarItems: SideBarItem[] = [];
   buttonHelp = 'Collapse Sidebar';
   isSidebarExpanded = true;
@@ -27,6 +33,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   cssClass: any;
 
   ngOnInit() {
+    console.log('ngOnInit: SidebarComponent called',);
+
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
     const jsonItems = SIDEBAR_ITEMS;
@@ -35,11 +43,13 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     ];
     this.sidebarItems = jsonItems;
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
+      console.log('permissionList: ', permissionList);
+
       if (permissionList) {
         console.log('permissionList', permissionList);
+        const newList = permissionList.filter((item: any) => item.canView === true);
         this.sharedService.permissionListMap.set('permissionList', permissionList);
         this.showTitles = this.isSidebarExpanded ? true : false;
-        const newList = permissionList.filter((item: any) => item.canView === true);
         newList.forEach((item: any) => {
           jsonItems.forEach((menu: any) => {
             if (menu.title === item?.moduleName) {
@@ -51,11 +61,11 @@ export class SidebarComponent implements OnInit, AfterViewInit {
                 "icon": menu?.icon
               }
               menuItems.push(menuItem);
-
             }
           })
         });
         this.sidebarItems = menuItems;
+        console.log("menuItems", menuItems);
 
       } else {
         console.log('permissionList else: ', permissionList);
@@ -71,6 +81,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       if (route) this.setActiveItem(route);
       else this.sidebarItems[0].isActive = true;
     })
+    this.getPermissionListByRoleId();
   }
 
 
@@ -125,5 +136,45 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       this.showTitles = !!this.isSidebarExpanded;
       this.sidebarToggleIcon = this.isSidebarExpanded ? 'back' : 'forward';
     }, 400)
+  }
+
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    const jsonItems = SIDEBAR_ITEMS;
+    const menuItems: any[] = [
+      jsonItems[0]
+    ];
+    this.sidebarItems = jsonItems;
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          console.log("per", permissionList);
+          const newList = permissionList.filter((item: any) => item.canView === true);
+          this.sharedService.permissionListMap.set('permissionList', permissionList);
+          this.showTitles = this.isSidebarExpanded ? true : false;
+          console.log("newList", newList);
+          newList.forEach((item: any) => {
+            jsonItems.forEach((menu: any) => {
+              if (menu.title === item?.moduleName) {
+                const menuItem = {
+                  "id": item?.permissionId,
+                  "title": item?.moduleName,
+                  "route": menu?.route,
+                  "isActive": false,
+                  "icon": menu?.icon
+                }
+                menuItems.push(menuItem);
+              }
+            })
+          });
+          this.sidebarItems = menuItems;
+          this.getSidebarItems();
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 }
