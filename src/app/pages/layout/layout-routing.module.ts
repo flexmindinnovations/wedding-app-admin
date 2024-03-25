@@ -34,7 +34,7 @@ const routes: Routes = [
           import('../../pages/blog/blog.module').then(m => m.BlogPageModule)
       },
       {
-        path: 'Other',
+        path: 'master',
         loadChildren: () =>
           import('../../pages/master/master.module').then(m => m.MasterPageModule)
       },

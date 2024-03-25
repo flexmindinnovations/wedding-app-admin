@@ -10,6 +10,7 @@ import { AlertType } from 'src/app/enums/alert-types';
 import * as moment from 'moment';
 import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
+import { RolesService } from 'src/app/services/role/roles.service';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class CustomersPage implements OnInit {
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
   rowData: any = [];
+  roleService = inject(RolesService);
+  isAddActive: boolean = false;
   colDefs: ColDef[] = [
     { field: "customerId", headerName: '#id', width: 100 },
     {
@@ -63,6 +66,28 @@ export class CustomersPage implements OnInit {
 
   ngOnInit() {
     this.getCustomerList();
+    this.getPermissionListByRoleId();
+  }
+
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          const newList = permissionList?.filter((item: any) => item?.moduleName === 'Customers')[0];
+          this.isAddActive = newList?.canAdd;
+          const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
+          this.rowData = this.rowData.map((item: any) => {
+            item['refData'] = refData;
+            return item;
+          })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   getCustomerList(): void {

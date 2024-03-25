@@ -1,9 +1,11 @@
 <div class="blog-content main ion-padding">
   <div class="header page-header">
     <div class="static"></div>
+    @if (isAddActive) {
     <div class="action">
       <mt-button size="md" [title]="'Add Blog'" [icon]="'add-outline'" (action)="handleClick()"></mt-button>
     </div>
+    }
   </div>
   <div class="data-grid">
     <app-data-grid gridSize="lg" [rowDefs]="rowData" [height]="500" [columnDefs]="colDefs" />

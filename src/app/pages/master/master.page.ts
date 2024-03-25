@@ -60,9 +60,38 @@ export class MasterPage implements OnInit {
   specializationMasterRowData: any = [];
   specializationMasterColumnDefs: ColDef[] = [];
   idColWidth = 80;
+  isRoleActive: boolean = false;
 
   ngOnInit() {
     this.setMasterData();
+    this.getPermissionListByRoleId();
+  }
+
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          const newList = permissionList?.filter((item: any) => item?.canView === true);
+          const module = newList.map((item: any) => item?.moduleName)
+          // console.log(module)
+          // if (module.includes('Roles')) this.isRoleActive = true;
+          // if (module.includes('Height')) this.isRoleActive = true;
+          // if (module.includes('Education')) this.isRoleActive = true;
+          // if (module.includes('cast')) this.isRoleActive = true;
+          // if (module.includes('Roles')) this.isRoleActive = true;
+          // const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
+          // this.rowData = this.rowData.map((item: any) => {
+          //   item['refData'] = refData;
+          //   return item;
+          // })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   setMasterData() {

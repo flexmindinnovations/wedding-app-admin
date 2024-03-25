@@ -1,7 +1,9 @@
 <div class="users-content main ion-padding grid grid-cols-2 gap-y-10 gap-x-5">
-
+  @if(isRoleActive){
   <master-data [title]="'Role'" (gridAction)="handleGridAddAction($event)" [rowData]="roleMasterRowData"
     [columnDefs]="roleMasterColumnDefs" />
+  }
+
 
   <master-data [title]="'Height'" (gridAction)="handleGridAddAction($event)" [rowData]="heightMasterRowData"
     [columnDefs]="heightMasterColumnDefs" />

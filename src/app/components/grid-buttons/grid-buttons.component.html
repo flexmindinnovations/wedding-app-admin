@@ -1,11 +1,13 @@
 <div class="grid-action-buttons flex items-center justify-start gap-1">
-  <button type="button" class="flex items-center justify-center min-h-7 min-w-7 rounded-full" title="Edit"
-    (click)="onClick(1)">
+  <button type="button" [disabled]="!actionAccess?.canEdit"
+    class="flex items-center justify-center min-h-7 min-w-7 rounded-full disabled:opacity-40 disabled:cursor-not-allowed disabled:select-none"
+    [title]="!actionAccess?.canEdit ? noAccessText : 'Edit'" (click)="onClick(1)">
     <ion-icon class="text-lg" size="medium" src="assets/icon/edit.svg"></ion-icon>
   </button>
-{{label}}
-  <button type="button" class="flex items-center justify-center min-h-7 min-w-7 rounded-full" title="Delete"
-    (click)="onClick(2)">
+  {{label}}
+  <button type="button" [disabled]="!actionAccess?.canDelete" class="flex items-center justify-center min-h-7 min-w-7 rounded-full 
+    disabled:opacity-40 disabled:cursor-not-allowed disabled:select-none"
+    [title]="!actionAccess?.canDelete ? noAccessText : 'Delete'" (click)="onClick(2)">
     <ion-icon class="text-lg" src="assets/icon/delete.svg"></ion-icon>
   </button>
 </div>

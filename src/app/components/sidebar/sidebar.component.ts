@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Console } from 'console';
 import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -33,8 +32,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   cssClass: any;
 
   ngOnInit() {
-    console.log('ngOnInit: SidebarComponent called',);
-
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
     const jsonItems = SIDEBAR_ITEMS;
@@ -44,9 +41,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.sidebarItems = jsonItems;
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
       console.log('permissionList: ', permissionList);
-
       if (permissionList) {
-        console.log('permissionList', permissionList);
         const newList = permissionList.filter((item: any) => item.canView === true);
         this.sharedService.permissionListMap.set('permissionList', permissionList);
         this.showTitles = this.isSidebarExpanded ? true : false;
@@ -65,10 +60,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           })
         });
         this.sidebarItems = menuItems;
-        console.log("menuItems", menuItems);
-
-      } else {
-        console.log('permissionList else: ', permissionList);
       }
     })
 
@@ -148,11 +139,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.roleService.getPermissionListById(roleId).subscribe({
       next: (permissionList: any) => {
         if (permissionList) {
-          console.log("per", permissionList);
           const newList = permissionList.filter((item: any) => item.canView === true);
           this.sharedService.permissionListMap.set('permissionList', permissionList);
           this.showTitles = this.isSidebarExpanded ? true : false;
-          console.log("newList", newList);
           newList.forEach((item: any) => {
             jsonItems.forEach((menu: any) => {
               if (menu.title === item?.moduleName) {

@@ -12,10 +12,21 @@ export class GridButtonsComponent implements OnInit, ICellRendererAngularComp {
   params: any;
   label: string = '';
 
+  actionAccess: any = {
+    canEdit: true,
+    canDelete: true
+  };
+
+  noAccessText = 'You are not authorized for this action';
+
   ngOnInit() { }
 
   agInit(params: ICellRendererParams<any, any, any>): void {
     this.params = params;
+    const accessData = params['data']['refData'];
+    if (accessData) {
+      this.actionAccess = accessData
+    }
     this.label = this.params.label || null;
   }
   refresh(params: ICellRendererParams<any, any, any>): boolean {
