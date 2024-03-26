@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
@@ -10,22 +10,25 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import * as moment from 'moment';
 import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
+import { RolesService } from 'src/app/services/role/roles.service';
 
 @Component({
   selector: 'app-blog',
   templateUrl: './blog.page.html',
   styleUrls: ['./blog.page.scss'],
 })
-export class BlogPage implements OnInit {
+export class BlogPage implements OnInit, AfterViewInit {
 
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   frameworkComponents: any;
   blogService = inject(BlogService);
   alertService = inject(AlertService);
+  roleService = inject(RolesService);
+  isAddActive: boolean = false;
 
   // Row Data: The data to be displayed.
-  rowData = [];
+  rowData: any[] = [];
 
   // Column Definitions: Defines & controls grid columns.
   colDefs: ColDef[] = [
@@ -71,6 +74,34 @@ export class BlogPage implements OnInit {
 
   ngOnInit() {
     this.getBlogList();
+    this.getPermissionListByRoleId();
+  }
+
+  ngAfterViewInit(): void {
+    this.blogService.getRequestStatus().subscribe(isCompleted => {
+      if (isCompleted) this.getBlogList();
+    })
+  }
+
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          const newList = permissionList?.filter((item: any) => item?.moduleName === 'Blogs')[0];
+          this.isAddActive = newList?.canAdd;
+          const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
+          this.rowData = this.rowData.map((item: any) => {
+            item['refData'] = refData;
+            return item;
+          })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
 
@@ -78,7 +109,6 @@ export class BlogPage implements OnInit {
     this.blogService.getBlogList().subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
           this.rowData = data?.map((blog: any) => {
             return {
               id: blog?.blogId,

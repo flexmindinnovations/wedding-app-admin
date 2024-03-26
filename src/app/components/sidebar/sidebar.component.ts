@@ -1,6 +1,9 @@
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
+import { AlertService } from 'src/app/services/alert/alert.service';
+import { RolesService } from 'src/app/services/role/roles.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
 import { SIDEBAR_ITEMS } from 'src/util/sidebar-items';
@@ -15,6 +18,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   sharedService = inject(SharedService);
+  roleService = inject(RolesService);
+  alert = inject(AlertService);
   sidebarItems: SideBarItem[] = [];
   buttonHelp = 'Collapse Sidebar';
   isSidebarExpanded = true;
@@ -30,43 +35,46 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
     const jsonItems = SIDEBAR_ITEMS;
-    const menuItems: any[] = [
+    let menuItems: any[] = [
       jsonItems[0]
     ];
     this.sidebarItems = jsonItems;
-    // this.sharedService.getUserPermissions().subscribe((permissionList) => {
-    //   if (permissionList) {
-    //     this.sharedService.permissionListMap.set('permissionList', permissionList);
-    //     this.showTitles = this.isSidebarExpanded ? true : false;
-    //     permissionList.forEach((item: any) => {
-    //       jsonItems.forEach((menu: any) => {
-    //         if (menu.title === item?.moduleName) {
-    //           const menuItem = {
-    //             "id": item?.permissionId,
-    //             "title": item?.moduleName,
-    //             "route": menu?.route,
-    //             "isActive": false,
-    //             "icon": menu?.icon
-    //           }
-    //           menuItems.push(menuItem);
-    //         }
-    //       })
-    //     });
-    //     this.sidebarItems = menuItems;
-    //   } else {
-    //     console.log('permissionList else: ', permissionList);
-    //   }
-    // })
-    
+    this.sharedService.getUserPermissions().subscribe((permissionList) => {
+      console.log('permissionList: ', permissionList);
+      if (permissionList) {
+        const newList = permissionList.filter((item: any) => item.canView === true);
+        this.sharedService.permissionListMap.set('permissionList', permissionList);
+        this.showTitles = this.isSidebarExpanded ? true : false;
+        // menuItems = []
+        newList.forEach((item: any) => {
+          jsonItems.forEach((menu: any) => {
+            if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
+              const menuItem = {
+                "id": item?.permissionId,
+                "title": item?.moduleName,
+                "route": menu?.route,
+                "isActive": false,
+                "icon": menu?.icon
+              }
+              menuItems.push(menuItem);
+            }
+          })
+        });
+        console.log(menuItems);
+        this.sidebarItems = menuItems;
+        this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+          this.sidebarItems.forEach(each => each.isActive = false);
+          if (route) this.setActiveItem(route);
+          else this.sidebarItems[0].isActive = true;
+        })
+      }
+    })
+
   }
 
   ngAfterViewInit(): void {
-    this.getSidebarItems();
-    this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-      this.sidebarItems.forEach(each => each.isActive = false);
-      if (route) this.setActiveItem(route);
-      else this.sidebarItems[0].isActive = true;
-    })
+    // this.getSidebarItems();
+    this.getPermissionListByRoleId();
   }
 
 
@@ -93,7 +101,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   handleSidebarItemClick(item: SideBarItem) {
     this.setActiveItem(item.route);
-    this.router.navigateByUrl(item.route, {state: item});
+    this.router.navigateByUrl(item.route, { state: item });
   }
 
   setActiveItem(param: number | string) {
@@ -121,5 +129,51 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       this.showTitles = !!this.isSidebarExpanded;
       this.sidebarToggleIcon = this.isSidebarExpanded ? 'back' : 'forward';
     }, 400)
+  }
+
+  getPermissionListByRoleId() {
+    // debugger;
+    const roleId = localStorage.getItem('role');
+    const jsonItems = SIDEBAR_ITEMS;
+    const menuItems: any[] = [
+      jsonItems[0]
+    ];
+    this.sidebarItems = jsonItems;
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          const newList = permissionList.filter((item: any) => item.canView === true);
+          console.log('permissionList: ', permissionList);
+
+          this.sharedService.permissionListMap.set('permissionList', permissionList);
+          this.showTitles = this.isSidebarExpanded ? true : false;
+          newList.forEach((item: any) => {
+            jsonItems.forEach((menu: any) => {
+              if (menu.title === item?.moduleName) {
+                const menuItem = {
+                  "id": item?.permissionId,
+                  "title": item?.moduleName,
+                  "route": menu?.route,
+                  "isActive": false,
+                  "icon": menu?.icon
+                }
+                menuItems.push(menuItem);
+              }
+            })
+          });
+          this.sidebarItems = menuItems;
+          // this.getSidebarItems();
+          this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+            this.sidebarItems.forEach(each => each.isActive = false);
+            if (route) this.setActiveItem(route);
+            else this.sidebarItems[0].isActive = true;
+          })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 }

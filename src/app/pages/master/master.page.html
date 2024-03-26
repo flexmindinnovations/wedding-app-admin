@@ -1,23 +1,28 @@
 <div class="users-content main ion-padding grid grid-cols-2 gap-y-10 gap-x-5">
-
-  <master-data [title]="'Role'" (gridAction)="handleGridAddAction($event)" [rowData]="roleMasterRowData"
-    [columnDefs]="roleMasterColumnDefs" />
-
-  <master-data [title]="'Height'" (gridAction)="handleGridAddAction($event)" [rowData]="heightMasterRowData"
-    [columnDefs]="heightMasterColumnDefs" />
-
-  <master-data [title]="'Education'" (gridAction)="handleGridAddAction($event)" [rowData]="educationMasterRowData"
-    [columnDefs]="educationMasterColumnDefs" />
-
-  <master-data [title]="'Cast'" (gridAction)="handleGridAddAction($event)" [rowData]="castMasterRowData"
-    [columnDefs]="castMasterColumnDefs" />
-
-  <master-data [title]="'Handycap'" (gridAction)="handleGridAddAction($event)" [rowData]="handycapMasterRowData"
-    [columnDefs]="handycapMasterColumnDefs" />
-
-  <master-data [title]="'User'" (gridAction)="handleGridAddAction($event)" [rowData]="userMasterRowData"
-    [columnDefs]="userMasterColumnDefs" />
-
+  @if (isRoleActive) {
+  <master-data [title]="'Role'" [canAdd]="canRoleAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="roleMasterRowData" [columnDefs]="roleMasterColumnDefs" />
+  }
+  @if (isHeightActive) {
+  <master-data [title]="'Height'" [canAdd]="canHeightAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="heightMasterRowData" [columnDefs]="heightMasterColumnDefs" />
+  }
+  @if (isEducationActive) {
+  <master-data [title]="'Education'" [canAdd]="canEducationAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="educationMasterRowData" [columnDefs]="educationMasterColumnDefs" />
+  }
+  @if (isCastActive) {
+  <master-data [title]="'Cast'" [canAdd]="canCastAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="castMasterRowData" [columnDefs]="castMasterColumnDefs" />
+  }
+  @if (isHandyCapActive) {
+  <master-data [title]="'Handycap'" [canAdd]="canHandycapAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="handycapMasterRowData" [columnDefs]="handycapMasterColumnDefs" />
+  }
+  @if (isUserActive) {
+  <master-data [title]="'User'" [canAdd]="canUserAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="userMasterRowData" [columnDefs]="userMasterColumnDefs" />
+  }
   <!-- 
   <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
     [columnDefs]="specializationMasterColumnDefs" /> -->

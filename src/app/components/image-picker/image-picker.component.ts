@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ImagePickerComponent implements OnInit {
 
   @Input() label: string = '';
-  @Input() id: string = '';
+  @Input() id: string | any = '';
   @Input() showPreview: boolean = true;
   @Input() src: string = '';
   @Input() fileName: string = '';

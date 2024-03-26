@@ -15,7 +15,7 @@ export class RolesService {
     return this.http.get(`${this.endpoint}/GetRoleList`);
   }
 
-  getPermissionListById(roleId: number): Observable<any> {
+  getPermissionListById(roleId: any): Observable<any> {
     return this.http.get(`${this.endpoint}/GetPermissionListByRoleId?roleId=${roleId}`)
   }
 

@@ -43,6 +43,8 @@
       email</span> }
     @if (type === 'number' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Invalid
       Mobile number</span> }
+    @if (type === 'password' && control.hasError('pattern')) { <span class="text-xs font-light text-red-700">Invalid
+      Password</span> }
   </div>
   }
   }

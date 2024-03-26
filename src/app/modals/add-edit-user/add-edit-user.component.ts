@@ -60,7 +60,7 @@ export class AddEditUserComponent implements OnInit {
       mobileNo: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       roleId: ['', [Validators.required]],
       userAddress: ['', [Validators.required]],
-      userPassword: ['', [Validators.required], Validators.pattern('^[a-zA-Z0-9]{3,15}$')]
+      userPassword: ['', [Validators.required, Validators.pattern(/^.{3,15}$/)]]
     })
   }
   get formGroupControl(): { [key: string]: FormControl } {

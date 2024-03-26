@@ -60,9 +60,94 @@ export class MasterPage implements OnInit {
   specializationMasterRowData: any = [];
   specializationMasterColumnDefs: ColDef[] = [];
   idColWidth = 80;
+  isRoleActive: boolean = false;
+  canRoleAdd: boolean = false;
+  isHeightActive: boolean = false;
+  canHeightAdd: boolean = false;
+  isEducationActive: boolean = false;
+  canEducationAdd: boolean = false;
+  isHandyCapActive: boolean = false;
+  canHandycapAdd: boolean = false;
+  isUserActive: boolean = false;
+  canUserAdd: boolean = false;
+  isCastActive: boolean = false;
+  canCastAdd: boolean = false;
 
   ngOnInit() {
     this.setMasterData();
+    this.getPermissionListByRoleId();
+  }
+
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          // console.log(permissionList)
+          const newList = permissionList?.filter((item: any) => item?.canView === true);
+          newList.forEach((list: any) => {
+            if (list?.moduleName === 'Roles') {
+              this.isRoleActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canRoleAdd = list?.canAdd;
+              this.roleMasterRowData = this.roleMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'Height') {
+              this.isHeightActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canHeightAdd = list?.canAdd;
+              this.heightMasterRowData = this.heightMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'User') {
+              this.isUserActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canUserAdd = list?.canAdd;
+              this.userMasterRowData = this.userMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'Handycap') {
+              this.isHandyCapActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canHandycapAdd = list?.canAdd;
+              this.handycapMasterRowData = this.handycapMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'Cast') {
+              this.isCastActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canCastAdd = list?.canAdd;
+              this.castMasterRowData = this.castMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'Education') {
+              this.isEducationActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canEducationAdd = list?.canAdd;
+              this.educationMasterRowData = this.educationMasterRowData.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   setMasterData() {
@@ -385,13 +470,13 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-
+    const refData = this.heightMasterRowData?.refData;
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
       componentProps: {
         data: {
           title: isEditMode ? 'Edit Height' : 'Add New Height',
-          data: { ...event, isEditMode }
+          data: { ...event, isEditMode, refData }
         }
       },
       cssClass: 'height-modal'

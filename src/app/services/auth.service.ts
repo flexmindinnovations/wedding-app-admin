@@ -31,11 +31,11 @@ export class AuthService {
         if (data) {
           const { user } = data;
           if (user) {
-            const { token, roleName, firstName, lastName, middleName, mobileNo, emailId, permissionList } = user;
+            const { token, roleName, roleId, firstName, lastName, middleName, mobileNo, emailId, permissionList } = user;
             const salt = getSalt(10);
             const profile = { firstName, lastName, middleName, mobileNo, emailId };
             localStorage.setItem('token', token);
-            localStorage.setItem('role', bcrypt.hashSync(roleName, salt));
+            localStorage.setItem('role', roleId);
             localStorage.setItem('profile', JSON.stringify(profile));
           } else {
             this.alert.setAlertMessage('Invalid username or password', AlertType.error);
@@ -49,7 +49,7 @@ export class AuthService {
     try {
       const { exp } = jwtDecode(token);
       return exp;
-    } catch(Error) {
+    } catch (Error) {
       return null;
     }
   }

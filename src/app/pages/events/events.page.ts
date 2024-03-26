@@ -10,6 +10,7 @@ import { AlertType } from 'src/app/enums/alert-types';
 import * as moment from 'moment';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
+import { RolesService } from 'src/app/services/role/roles.service';
 
 @Component({
   selector: 'app-events',
@@ -22,6 +23,9 @@ export class EventsPage implements OnInit, AfterViewInit {
   eventService = inject(EventService);
   alert = inject(AlertService);
   rowData: any[] = [];
+  roleService = inject(RolesService);
+  alertService = inject(AlertService);
+  isAddActive: boolean = false;
   colDefs: ColDef[] = [
     { field: "eventId", headerName: "#id", width: 100 },
     {
@@ -60,7 +64,28 @@ export class EventsPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
   }
-  
+  getPermissionListByRoleId() {
+    const roleId = localStorage.getItem('role');
+    this.roleService.getPermissionListById(roleId).subscribe({
+      next: (permissionList: any) => {
+        if (permissionList) {
+          const newList = permissionList?.filter((item: any) => item?.moduleName === 'Customers')[0];
+          this.isAddActive = newList?.canAdd;
+          const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
+          this.rowData = this.rowData.map((item: any) => {
+            item['refData'] = refData;
+            return item;
+          })
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
+  }
+
+
   ngAfterViewInit(): void {
     this.getEventList();
   }
