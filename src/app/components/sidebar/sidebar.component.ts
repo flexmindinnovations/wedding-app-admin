@@ -35,7 +35,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
     const jsonItems = SIDEBAR_ITEMS;
-    const menuItems: any[] = [
+    let menuItems: any[] = [
       jsonItems[0]
     ];
     this.sidebarItems = jsonItems;
@@ -45,9 +45,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         const newList = permissionList.filter((item: any) => item.canView === true);
         this.sharedService.permissionListMap.set('permissionList', permissionList);
         this.showTitles = this.isSidebarExpanded ? true : false;
+        // menuItems = []
         newList.forEach((item: any) => {
           jsonItems.forEach((menu: any) => {
-            if (menu.title === item?.moduleName) {
+            if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
               const menuItem = {
                 "id": item?.permissionId,
                 "title": item?.moduleName,
@@ -59,19 +60,20 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             }
           })
         });
+        console.log(menuItems);
         this.sidebarItems = menuItems;
+        this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+          this.sidebarItems.forEach(each => each.isActive = false);
+          if (route) this.setActiveItem(route);
+          else this.sidebarItems[0].isActive = true;
+        })
       }
     })
 
   }
 
   ngAfterViewInit(): void {
-    this.getSidebarItems();
-    this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-      this.sidebarItems.forEach(each => each.isActive = false);
-      if (route) this.setActiveItem(route);
-      else this.sidebarItems[0].isActive = true;
-    })
+    // this.getSidebarItems();
     this.getPermissionListByRoleId();
   }
 
@@ -130,6 +132,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   getPermissionListByRoleId() {
+    // debugger;
     const roleId = localStorage.getItem('role');
     const jsonItems = SIDEBAR_ITEMS;
     const menuItems: any[] = [
@@ -140,6 +143,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       next: (permissionList: any) => {
         if (permissionList) {
           const newList = permissionList.filter((item: any) => item.canView === true);
+          console.log('permissionList: ', permissionList);
+
           this.sharedService.permissionListMap.set('permissionList', permissionList);
           this.showTitles = this.isSidebarExpanded ? true : false;
           newList.forEach((item: any) => {
@@ -157,7 +162,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             })
           });
           this.sidebarItems = menuItems;
-          this.getSidebarItems();
+          // this.getSidebarItems();
+          this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+            this.sidebarItems.forEach(each => each.isActive = false);
+            if (route) this.setActiveItem(route);
+            else this.sidebarItems[0].isActive = true;
+          })
         }
       },
       error: (error) => {
