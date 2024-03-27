@@ -17,8 +17,19 @@
       <app-input label="Time Of Birth" presentaion="time" type="text" [control]="formGroupControl['timeOfBirth']"
         formControlName="timeOfBirth" (inputValue)="handleInputValue($event)" />
 
-      <app-input label="Occupation" type="text" [control]="formGroupControl['occupation']" formControlName="occupation"
-        [controlValue]="formGroup.get('occupation')?.value" />
+      <app-input label="Password" type="password" [control]="formGroupControl['customerPassword']"
+        formControlName="customerPassword" [controlValue]="formGroup.get('customerPassword')?.value" />
+
+      <app-dropdown label="Occupation" [control]="formGroupControl['occupationId']" formControlName="occupationId"
+        (onSelectionChange)="onSelectionChange($event, 'occupationId')"
+        [controlValue]="formGroup.get('occupationId')?.value" [options]="occupationListOptions" />
+
+      @if (hasChild && isOccupationDetailsDataAvailable) {
+      <app-dropdown label="Occupation Details" [control]="formGroupControl['occupationDetailId']"
+        [controlValue]="formGroup.get('occupationDetailId')?.value" formControlName="occupationDetailId"
+        (onSelectionChange)="onSelectionChange($event, 'occupationDetailId')" [options]="occupationDetailList" />
+      }
+
 
       <app-dropdown label="Gender" [control]="formGroupControl['gender']" formControlName="gender"
         (onSelectionChange)="onSelectionChange($event, 'gender')" [controlValue]="formGroup.get('gender')?.value"

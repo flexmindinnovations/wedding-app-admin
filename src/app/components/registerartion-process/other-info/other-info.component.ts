@@ -24,6 +24,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
   cdref = inject(ChangeDetectorRef);
+  motherTongueId = '';
+  motherTongueListOptions: any = [];
 
   constructor(
     private fb: FormBuilder
@@ -43,7 +45,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   initFormGroup() {
     this.formGroup = this.fb.group({
       expectations: ['', [Validators.required]],
-      extraInformation: ['', [Validators.required]]
+      extraInformation: ['', [Validators.required]],
+      motherTongueId: ['', [Validators.required]],
     })
   }
 
@@ -79,6 +82,11 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
         this.alert.setAlertMessage(item, AlertType.error);
       })
     }
+  }
+
+  onSelectionChange(event: any, src: string) {
+    const motherTongueId = event?.motherTongueId;
+    this.motherTongueId = motherTongueId;
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {

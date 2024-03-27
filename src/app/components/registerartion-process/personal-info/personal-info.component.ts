@@ -20,11 +20,13 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   formGroup!: FormGroup;
   genderOptions: any = [];
+  occupationListOptions: any = [];
   maritalStatusOptions: any = [];
   educationListOptions: any = [];
   heightListOptions: any = [];
   physicalStatusListOptions: any = [];
   specializationListOptions: any = [];
+  occupationDetailList: any = [];
   bloodGroupListOptions: any = [];
   foodPreferencesListOptions: any = [];
   @ViewChild('dropdownInput') dropdownInput: any;
@@ -44,11 +46,14 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   cdref = inject(ChangeDetectorRef);
 
   hasSpecialization: boolean = false;
+  hasChild: boolean = false;
   isOtherPhyicalCondition: boolean = false;
 
   specializationId = '';
+  occupationDetailId = '';
   isDataAvailable = false;
   isSpecializationDataAvailable = false;
+  isOccupationDetailsDataAvailable = false;
   tithiList: any[] = TITHI_LIST;
 
   colorScheme: any = COLOR_SCHEME;
@@ -96,15 +101,17 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       firstName: ['', [Validators.required]],
       middleName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
+      customerPassword: !['', [Validators.required]],
       locationOfBirth: ['', [Validators.required]],
       shakeDate: !['', [Validators.required]],
       gender: ['', [Validators.required]],
       heightId: ['', [Validators.required]],
       eduationId: ['', [Validators.required]],
       specializationId: !['', [Validators.required]],
+      occupationDetailId: !['', [Validators.required]],
       dateOfBirth: [new Date(), [Validators.required]],
       timeOfBirth: !['', [Validators.required]],
-      occupation: ['', [Validators.required]],
+      occupationId: ['', [Validators.required]],
       physicalStatus: !['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
@@ -146,6 +153,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   handleClickOnNext(src: string) {
     const formVal = this.formGroup.value;
     formVal['specializationId'] = this.specializationId ? this.specializationId : null;
+    formVal['occupationDetailId'] = this.occupationDetailId ? this.occupationDetailId : null;
     formVal['bloodGroupId'] = formVal['bloodGroupId'] ? formVal['bloodGroupId'] : null;
     formVal['physicalStatus'] = this.isPhysicallyAbled ? formVal['physicalStatus'] : null;
     formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";
@@ -168,7 +176,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    let payload = { ...formVal, personalInfoId: 0 };
+    let payload = { ...formVal, personalInfoId: 0, occupation: "" };
     this.tithiList.forEach((item: any) => {
       payload = { ...payload, [item.title]: item.value ? item.value : "" }
     });
@@ -203,7 +211,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   updateCustomerInfo(formVal: any, src: string): void {
     const customerId = this.customerData?.customerId;
-    let payload = { ...formVal, personalInfoId: this.personalData.personalInfoId };
+    let payload = { ...formVal, personalInfoId: this.personalData.personalInfoId, occupation: "" };
     this.tithiList.forEach((item: any) => {
       payload = { ...payload, [item.title]: item.value ? item.value : "" }
     });
@@ -242,11 +250,12 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     const handycap = this.sharedService.getHandyCapItemList();
     const bloodGroup = this.sharedService.getBloodGroupList();
     const foodPreferences = this.sharedService.getFoodPreferencesList();
-    forkJoin({ education, height, handycap, bloodGroup, foodPreferences })
+    const occupation = this.sharedService.getOccupationList();
+    forkJoin({ education, height, handycap, bloodGroup, foodPreferences, occupation })
       .subscribe({
         next: async (result) => {
           this.isDataAvailable = true;
-          const { education, height, handycap, bloodGroup, foodPreferences } = result;
+          const { education, height, handycap, bloodGroup, foodPreferences, occupation } = result;
           this.heightListOptions = height.map((item: any) => {
             return { id: item?.heightId, title: item?.heightName }
           });
@@ -267,6 +276,13 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
             return {
               id: item?.bloodGroupId,
               title: item?.bloodGroupName,
+            }
+          });
+          this.occupationListOptions = occupation.map((item: any) => {
+            return {
+              id: item?.occupationId,
+              title: item?.occupationName,
+              hasChild: item?.hasChild
             }
           });
           this.foodPreferencesListOptions = foodPreferences.map((item: any) => {
@@ -290,6 +306,14 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       case 'educationId':
         this.hasSpecialization = event?.hasSpecialization;
         if (this.hasSpecialization) this.getSpecialization(event?.id);
+        break;
+      case 'occupationId':
+        this.hasChild = event?.hasChild;
+        if (this.hasChild) this.getOccupationDetails(event?.id);
+        break;
+      case 'occupationDetailId':
+        const occupationDetailId = event?.occupationDetailId;
+        this.occupationDetailId = occupationDetailId;
         break;
       case 'specializationId':
         const specializationId = event?.specializationId;
@@ -355,5 +379,27 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       }
     })
   }
+  getOccupationDetails(occupationId: number) {
+    this.sharedService.getOccupationById(occupationId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          console.log(data);
+          this.occupationDetailList = data?.occupationDetailList?.map((item: any) => {
+            return {
+              id: item?.occupationDetailId,
+              title: item?.occupationDetailName,
+              occupationId,
+              occupationDetailId: item?.occupationDetailId
+            }
+          });
+          this.isOccupationDetailsDataAvailable = true;
+        }
+      },
+      error: (error) => {
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
+  }
+
 
 }

@@ -63,5 +63,12 @@ export class SharedService {
     return this.http.get(`${this.endpoint}/FoodPreferences/getFoodPreferencesList`);
   }
 
+  getOccupationList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/Occupation/getOccupationList`);
+  }
+  getOccupationById(occupationId: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/Occupation/getOccupationById?occupationId=${occupationId}`);
+  }
+
 
 }

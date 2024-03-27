@@ -143,8 +143,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       next: (permissionList: any) => {
         if (permissionList) {
           const newList = permissionList.filter((item: any) => item.canView === true);
-          console.log('permissionList: ', permissionList);
-
+          // console.log('permissionList: ', permissionList);
           this.sharedService.permissionListMap.set('permissionList', permissionList);
           this.showTitles = this.isSidebarExpanded ? true : false;
           newList.forEach((item: any) => {
