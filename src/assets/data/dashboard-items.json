@@ -2,6 +2,7 @@
     {
         "id": 1,
         "title": "Total Customers",
+        "label": "Customers",
         "count": 0,
         "isLink": true,
         "hasRoute": true,
@@ -16,6 +17,7 @@
     {
         "id": 3,
         "title": "Total Branches",
+        "label": "Branches",
         "count": 0,
         "isLink": true,
         "hasRoute": true,

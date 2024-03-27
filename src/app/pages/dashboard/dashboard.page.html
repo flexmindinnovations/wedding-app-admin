@@ -1,14 +1,15 @@
-<div class="dashboard-content main ion-padding">
-  <ul class="flex items-start gap-4">
+<div class="dashboard-content main ion-padding flex items-start justify-start gap-5">
+  <ul *ngIf="dashboardItems?.length" class="flex items-start gap-4 p-4 ">
     @for (item of dashboardItems; track item.id) {
     <!-- <li
       class="block cursor-pointer max-w-sm p-6 bg-blue-500 shadow-lg shadow-blue-500  border-blue-600  hover:bg-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <p class="font-normal text-white dark:text-gray-400">{{item?.title}}</p>
       <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h5>
     </li> -->
-    <li class="block cursor-pointer p-4 min-w-48 min-h-36 shadow-lg border rounded-lg" (click)="handleOnItemClick(item)" [ngClass]="cssClass">
-      <p class="font-normal text-center text-white dark:text-gray-400">{{item?.title}}</p>
-      <h5 class="mb-2 text-center text-4xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h5>
+    <li class="block cursor-pointer p-4 min-w-32 min-h-32 shadow-lg border rounded-lg" (click)="handleOnItemClick(item)"
+      [ngClass]="cssClass">
+      <p class="font-normal text-sm text-center text-white dark:text-gray-400">{{item?.title}}</p>
+      <h5 class="mb-2 text-center text-2xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h5>
       @if (item?.isLink) {
       <div class="icon-container flex items-center justify-end">
         <ion-icon class="rotate-90" [name]="item?.icon"></ion-icon>
@@ -17,4 +18,45 @@
     </li>
     }
   </ul>
+
+  <div class="profile-info flex-grow border-b border-b-gray-100 px-4 py-4">
+    <div class="profile-toggle w-full flex items-center justify-end">
+      <p class="flex items-center justify-start gap-3">
+        <span (click)="showProfileSelector.click()" class="text-xs mt-[2px] cursor-pointer ml-2 select-none">
+          Show Profile Details</span>
+        <input #showProfileSelector type="checkbox" id="react-option" [checked]="showProfile"
+          (change)="handleShowProfileStateChange($event)"
+          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
+      </p>
+    </div>
+    @if (showProfile) {
+    <div class="header flex items-center justify-between ">
+      <h2 class="text-sm font-semibold">Profile Details</h2>
+      <p class="select-none text-blue-500 text-xs cursor-pointer hover:bg-blue-200 px-2 py-1 rounded-md">Update Profile
+      </p>
+    </div>
+    <div class="info grid grid-cols-3 gap-5 p-3">
+      <p class="flex flex-col items-start justify-start gap-1 text-xs select-none">
+        <span class="text-gray-600">First Name</span>
+        <span>{{profileDetails?.firstName}}</span>
+      </p>
+      <p class="flex flex-col items-start justify-start gap-1 text-xs select-none">
+        <span class="text-gray-600">Middle Name</span>
+        <span>{{profileDetails?.middleName}}</span>
+      </p>
+      <p class="flex flex-col items-start justify-start gap-1 text-xs select-none">
+        <span class="text-gray-600">Last Name</span>
+        <span>{{profileDetails?.lastName}}</span>
+      </p>
+      <p class="flex flex-col items-start justify-start gap-1 text-xs select-none">
+        <span class="text-gray-600">Email Id</span>
+        <span>{{profileDetails?.emailId}}</span>
+      </p>
+      <p class="flex flex-col items-start justify-start gap-1 text-xs select-none">
+        <span class="text-gray-600">Mobile Number</span>
+        <span>{{profileDetails?.mobileNo}}</span>
+      </p>
+    </div>
+    }
+  </div>
 </div>

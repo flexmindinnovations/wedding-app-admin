@@ -20,6 +20,12 @@ export class SharedService {
 
   controlRest = new Subject();
 
+  logoutCall = new Subject();
+
+  getLogoutEvent() {
+    return this.logoutCall.asObservable();
+  }
+
   showAlertEvent() {
     return this.showAlert.asObservable();
   }
