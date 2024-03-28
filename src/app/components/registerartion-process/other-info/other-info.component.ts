@@ -4,6 +4,7 @@ import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
@@ -24,8 +25,9 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
   cdref = inject(ChangeDetectorRef);
-  motherTongueId = '';
   motherTongueListOptions: any = [];
+  motherTongueId: any = ''
+  sharedService = inject(SharedService);
 
   constructor(
     private fb: FormBuilder
@@ -34,10 +36,12 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getMotherTongueList();
   }
 
   ngAfterViewInit(): void {
     this.otherData = this.customerData['otherInfoModel'];
+    console.log(this.otherData);
     this.isEditMode = this.customerData['isOtherInfoFill'];
     if (this.isEditMode) this.patchFormData();
   }
@@ -48,6 +52,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       extraInformation: ['', [Validators.required]],
       motherTongueId: ['', [Validators.required]],
     })
+
+    this.formGroup.valueChanges.subscribe((value: any) => { })
   }
 
   patchFormData() {
@@ -73,6 +79,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
+    formVal['motherTongueId'] = this.motherTongueId ? this.motherTongueId : null;
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
@@ -85,8 +92,10 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   }
 
   onSelectionChange(event: any, src: string) {
-    const motherTongueId = event?.motherTongueId;
-    this.motherTongueId = motherTongueId;
+    if (src) {
+      const motherTongueId = event?.motherTongueId;
+      this.motherTongueId = motherTongueId;
+    }
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
@@ -161,6 +170,23 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       error: (error: any) => {
         console.log('error: ', error);
         this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+  getMotherTongueList() {
+    this.sharedService.getMotherTongueList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.motherTongueListOptions = data?.map((item: any) => {
+            return {
+              id: item?.motherTongueId,
+              title: item?.motherTongueName,
+            }
+          });
+        }
+      },
+      error: (error) => {
+        this.alert.setAlertMessage(error?.message, AlertType.error);
       }
     })
   }

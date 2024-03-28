@@ -55,6 +55,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   isSpecializationDataAvailable = false;
   isOccupationDetailsDataAvailable = false;
   tithiList: any[] = TITHI_LIST;
+  passwordActive: boolean = true;
 
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
@@ -93,6 +94,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
+    if (this.isEditMode) this.passwordActive = false;
     this.cdref.detectChanges();
   }
 
@@ -154,6 +156,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     const formVal = this.formGroup.value;
     formVal['specializationId'] = this.specializationId ? this.specializationId : null;
     formVal['occupationDetailId'] = this.occupationDetailId ? this.occupationDetailId : null;
+    formVal['customerPassword'] = formVal['customerPassword'] ? formVal['customerPassword'] : "";
     formVal['bloodGroupId'] = formVal['bloodGroupId'] ? formVal['bloodGroupId'] : null;
     formVal['physicalStatus'] = this.isPhysicallyAbled ? formVal['physicalStatus'] : null;
     formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";

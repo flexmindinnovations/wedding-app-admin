@@ -1,9 +1,11 @@
 <div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
+      @if(motherTongueListOptions.length){
       <app-dropdown label="Mother Tongue" [control]="formGroupControl['motherTongueId']"
         formControlName="motherTongueId" (onSelectionChange)="onSelectionChange($event, 'motherTongueId')"
         [controlValue]="formGroup.get('motherTongueId')?.value" [options]="motherTongueListOptions" />
+      }
       <app-input label="Expectations" class="flex-grow-1 col-span-3" type="text"
         [controlValue]="formGroup.get('expectations')?.value" [control]="formGroupControl['expectations']"
         formControlName="expectations" [isMultiline]=true />

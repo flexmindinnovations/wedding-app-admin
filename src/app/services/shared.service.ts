@@ -69,6 +69,8 @@ export class SharedService {
   getOccupationById(occupationId: any): Observable<any> {
     return this.http.get(`${this.endpoint}/Occupation/getOccupationById?occupationId=${occupationId}`);
   }
-
+  getMotherTongueList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/MotherTongue/getMotherTongueList`);
+  }
 
 }
