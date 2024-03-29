@@ -31,11 +31,13 @@ export class AddEditUserComponent implements OnInit {
     this.initFormGroup();
     this.getRoleData();
     const data = this.data?.data;
+    console.log(this.data)
     this.isEditMode = data?.isEditMode;
   }
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
+    console.log(modalData)
     this.userId = modalData?.id;
     const props = {
       firstName: modalData?.firstName,
@@ -47,6 +49,7 @@ export class AddEditUserComponent implements OnInit {
       userAddress: modalData.userAddress,
       userPassword: modalData?.userPassword
     }
+
     this.roleId = modalData['roleId'];
     this.formGroup.patchValue(props);
   }

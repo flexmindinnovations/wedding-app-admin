@@ -437,6 +437,7 @@ export class MasterPage implements OnInit {
   /** Modals handling */
 
   async openAddEditRoleModal(event?: any) {
+    console.log(event);
     this.canShowModal = true;
 
     let isEditMode = false;

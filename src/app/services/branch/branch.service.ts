@@ -11,6 +11,7 @@ export class BranchService {
   endpoint = environment.endpoint + '/api/Branch';
   http = inject(HttpConfigService);
 
+  isRequestCompleted = new Subject<any>();
   isRequest = new Subject<any>();
 
   addBranch(payload: any): Observable<any> {
@@ -19,6 +20,14 @@ export class BranchService {
 
   getBranchList(): Observable<IBranch[]> {
     return this.http.get(`${this.endpoint}/GetBranchList`);
+  }
+
+  setRequestStatus(status: boolean, action: string) {
+    this.isRequestCompleted.next({ status, action });
+  }
+
+  getRequestStatus(): Observable<any> {
+    return this.isRequestCompleted.asObservable();
   }
 
 

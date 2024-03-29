@@ -80,7 +80,7 @@ export class LoginPage implements OnInit, OnDestroy {
               this.alert.setAlertMessage('User authenticated successfully', AlertType.success);
               const { user } = response;
               of(true).pipe(
-                delay(2000),
+                delay(500),
                 tap(() => {
                   this.router.navigateByUrl('/');
                   if (user) {

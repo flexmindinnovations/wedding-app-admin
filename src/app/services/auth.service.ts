@@ -31,10 +31,11 @@ export class AuthService {
         if (data) {
           const { user } = data;
           if (user) {
-            const { token, roleName, roleId, firstName, lastName, middleName, mobileNo, emailId, permissionList } = user;
+            const { token, roleName, roleId, firstName, lastName, middleName, mobileNo, emailId, permissionList, userId } = user;
             const salt = getSalt(10);
             const profile = { firstName, lastName, middleName, mobileNo, emailId };
             localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
             localStorage.setItem('role', roleId);
             localStorage.setItem('profile', JSON.stringify(profile));
           } else {

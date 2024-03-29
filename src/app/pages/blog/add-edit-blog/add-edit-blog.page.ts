@@ -62,17 +62,14 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   handleSelectedImage(event: any) {
-    console.log(event);
     this.selectedImage = event.file;
-    console.log('selectedImage: ', this.selectedImage);
-
   }
 
   getBlogDetails() {
     this.blogService.getBlogById(this.blogId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
+          console.log('main', data);
           this.blogDetails = data;
           this.imagePath = environment.endpoint + '/' + data?.blogImagePath;
           const imageNameIndex = data?.blogImagePath.lastIndexOf('/') + 1;
@@ -122,10 +119,9 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   handleFormSubmit() {
-    // if (this.formGroup.invalid) {
-    //   const invalidControls = findInvalidControlsRecursive(this.formGroup);
-    //   return;
-    // }
+    if (this.formGroup.invalid) {
+      return;
+    }
     if (this.blogId === 0) this.saveNewBlog();
     else this.updateBlog();
   }
@@ -156,17 +152,13 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   updateBlog() {
     const blogId = this.blogDetails['blogId'];
     const formVal = this.formGroup.value;
-    const payload = { ...formVal, blogId, blogImagePath: "", blogDate: moment(formVal?.blogDate).format() }
+    const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format() }
+    console.log("payload", payload);
     const formData = new FormData();
+    formData.append('blogModel', JSON.stringify(payload));
     if (this.selectedImage) {
       formData.append('file', this.selectedImage, this.selectedImage.name);
-    } else {
-      payload['blogImagePath'] = this.blogDetails['blogImagePath']
     }
-    formData.append('blogModel', JSON.stringify(payload));
-    console.log('changed image', this.selectedImage);
-    console.log('paylod', payload);
-
     this.blogService.updateBlog(formData).subscribe({
       next: (data: any) => {
         if (data) {

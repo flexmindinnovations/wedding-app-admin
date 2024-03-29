@@ -79,7 +79,6 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
-    formVal['motherTongueId'] = this.motherTongueId ? this.motherTongueId : null;
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);

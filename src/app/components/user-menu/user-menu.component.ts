@@ -1,3 +1,4 @@
+import { SharedService } from 'src/app/services/shared.service';
 import { AfterContentInit, Component, OnInit, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -18,6 +19,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   menuId: any = uuidv4();
   buttonId = uuidv4();
   dropdown: any;
+  sharedService = inject(SharedService);
 
   dropdownOptions: any = {
     placement: 'bottom',
@@ -60,5 +62,6 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
     this.router.navigateByUrl('login');
+    this.sharedService.logoutCall.next(true);
   }
 }

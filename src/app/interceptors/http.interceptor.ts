@@ -14,11 +14,11 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if (!req.url.includes('login') || !req.url.includes('createToken') || !req.url.includes('register')) {
             const authToken = localStorage.getItem('token');
             if (authToken) {
-                // req = req.clone({
-                //     setHeaders: {
-                //         Authorization: `Bearer ${authToken}`
-                //     }
-                // });
+                req = req.clone({
+                    setHeaders: {
+                        Authorization: `Bearer ${authToken}`
+                    }
+                });
             }
         }
         return next.handle(req).pipe(

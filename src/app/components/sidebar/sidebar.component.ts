@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
@@ -14,7 +14,7 @@ import { COLOR_SCHEME, nestedRoutes, themeVariables } from 'src/util/util';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, AfterViewInit {
+export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
   sharedService = inject(SharedService);
@@ -39,30 +39,27 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       jsonItems[0]
     ];
     this.sidebarItems = jsonItems;
+    const menuItemsMap = new Map<number, any>();
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
-      console.log('permissionList: ', permissionList);
       if (permissionList) {
         const newList = permissionList.filter((item: any) => item.canView === true);
         this.sharedService.permissionListMap.set('permissionList', permissionList);
         this.showTitles = this.isSidebarExpanded ? true : false;
-        // menuItems = []
         newList.forEach((item: any) => {
           jsonItems.forEach((menu: any) => {
             if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
-              const menuItem = {
-                "id": item?.permissionId,
-                "title": item?.moduleName,
-                "route": menu?.route,
-                "isActive": false,
-                "icon": menu?.icon
-              }
-              menuItems.push(menuItem);
+              menuItemsMap.set(item.moduleId, {
+                id: item?.moduleId,
+                title: item?.moduleName,
+                route: menu?.route,
+                isActive: false,
+                icon: menu?.icon
+              })
             }
           })
         });
-        console.log(menuItems);
-        this.sidebarItems = menuItems;
-        this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+        const menuItemsMapValues = Array.from(menuItemsMap.values());
+        this.sidebarItems = [jsonItems[0], ...menuItemsMapValues]; this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
           this.sidebarItems.forEach(each => each.isActive = false);
           if (route) this.setActiveItem(route);
           else this.sidebarItems[0].isActive = true;
@@ -73,8 +70,19 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.getSidebarItems();
+    this.getSidebarItems();
+    this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+      this.sidebarItems.forEach(each => each.isActive = false);
+      if (route) this.setActiveItem(route);
+      else this.sidebarItems[0].isActive = true;
+    })
     this.getPermissionListByRoleId();
+
+    this.sharedService.getLogoutEvent().subscribe((event: any) => {
+      if (event) {
+        this.sidebarItems = [];
+      }
+    })
   }
 
 
@@ -139,6 +147,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       jsonItems[0]
     ];
     this.sidebarItems = jsonItems;
+    const menuItemsMap = new Map<number, any>();
     this.roleService.getPermissionListById(roleId).subscribe({
       next: (permissionList: any) => {
         if (permissionList) {
@@ -148,19 +157,19 @@ export class SidebarComponent implements OnInit, AfterViewInit {
           this.showTitles = this.isSidebarExpanded ? true : false;
           newList.forEach((item: any) => {
             jsonItems.forEach((menu: any) => {
-              if (menu.title === item?.moduleName) {
-                const menuItem = {
-                  "id": item?.permissionId,
-                  "title": item?.moduleName,
-                  "route": menu?.route,
-                  "isActive": false,
-                  "icon": menu?.icon
-                }
-                menuItems.push(menuItem);
+              if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
+                menuItemsMap.set(item.moduleId, {
+                  id: item?.moduleId,
+                  title: item?.moduleName,
+                  route: menu?.route,
+                  isActive: false,
+                  icon: menu?.icon
+                })
               }
             })
           });
-          this.sidebarItems = menuItems;
+          const menuItemsMapValues = Array.from(menuItemsMap.values());
+          this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
           // this.getSidebarItems();
           this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
             this.sidebarItems.forEach(each => each.isActive = false);
@@ -174,5 +183,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         this.alert.setAlertMessage(error?.message, AlertType.error);
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.sidebarItems = [];
   }
 }

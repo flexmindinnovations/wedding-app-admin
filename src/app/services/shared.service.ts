@@ -20,6 +20,12 @@ export class SharedService {
 
   controlRest = new Subject();
 
+  logoutCall = new Subject();
+
+  getLogoutEvent() {
+    return this.logoutCall.asObservable();
+  }
+
   showAlertEvent() {
     return this.showAlert.asObservable();
   }
@@ -72,5 +78,15 @@ export class SharedService {
   getMotherTongueList(): Observable<any> {
     return this.http.get(`${this.endpoint}/MotherTongue/getMotherTongueList`);
   }
+
+  getUserByUserId(userId: any): Observable<any> {
+    return this.http.get(`${this.endpoint}/User/getUserByUserId?userId=${userId}`);
+  }
+
+
+  getDashboardCountList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/Dashboard/getCountData`);
+  }
+
 
 }
