@@ -386,7 +386,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.sharedService.getOccupationById(occupationId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
           this.occupationDetailList = data?.occupationDetailList?.map((item: any) => {
             return {
               id: item?.occupationDetailId,

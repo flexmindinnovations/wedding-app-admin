@@ -1,11 +1,12 @@
 <div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form class="ion-padding w-full flex-grow">
     <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4">
-        <image-picker [src]="thumbnailImage" (selectedImage)="handleSelectedImage($event, 'thumbnail')" label="Thumbnail" />
+      <image-picker [src]="thumbnailImage" (selectedImage)="handleSelectedImage($event, 'thumbnail')"
+        label="Thumbnail" />
 
-        <image-picker [src]="photo1" (selectedImage)="handleSelectedImage($event, 'photo')" label="Photo 1" />
+      <image-picker [src]="photo1" (selectedImage)="handleSelectedImage($event, 'photo')" label="Photo 1" />
 
-        <!-- <image-picker label="Photo 2" />
+      <!-- <image-picker label="Photo 2" />
 
         <image-picker label="Photo 3" /> -->
     </div>

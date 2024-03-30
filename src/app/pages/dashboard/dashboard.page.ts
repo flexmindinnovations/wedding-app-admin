@@ -33,10 +33,10 @@ export class DashboardPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.setCssClasses();
-    this.getDashboardItems();
   }
 
   ngAfterViewInit(): void {
+    this.getDashboardItems();
     const jsonItems = SIDEBAR_ITEMS;
     this.profileDetails = JSON.parse(localStorage.getItem('profile') || '{}');
     const menuItemsMap = new Map<number, any>();
@@ -57,6 +57,7 @@ export class DashboardPage implements OnInit, AfterViewInit {
             }
           })
         })
+        this.getDashboardItems();
       }
     });
 
@@ -73,9 +74,10 @@ export class DashboardPage implements OnInit, AfterViewInit {
   onProfileClicked() {
     const userId = localStorage.getItem('userId');
     this.sharedService.getUserByUserId(userId).subscribe({
-      next: (data: any[]) => {
+      next: (data: any) => {
         if (data) {
-          this.openAddEditUserModal(null, data);
+          const rowData = { ...data, id: data.userId }
+          this.openAddEditUserModal(null, rowData);
         }
       },
       error: (error) => {
@@ -100,11 +102,17 @@ export class DashboardPage implements OnInit, AfterViewInit {
     });
     await modal.present();
     const data = await modal.onWillDismiss();
-    const actionEvents = ['save', 'update'];
-    const eventType = data?.data?.event;
-    if (actionEvents.includes(eventType)) {
-      // this.getHeightList();
+    if (data?.data?.event) {
+      const modalData = data?.data;
+      if (modalData.hasOwnProperty('profileInfo')) {
+        const profileInfo = modalData?.profileInfo;
+        const { firstName, lastName, middleName, mobileNo, emailId } = profileInfo;
+        const profile = { firstName, lastName, middleName, mobileNo, emailId };
+        localStorage.setItem('profile', JSON.stringify(profile));
+        this.profileDetails = JSON.parse(localStorage.getItem('profile') || '{}');
+      }
     }
+
   }
 
 
@@ -119,7 +127,6 @@ export class DashboardPage implements OnInit, AfterViewInit {
   getDashboardItems(): void {
     this.sharedService.getDashboardItems().subscribe((items: any) => {
       this.dashboardItems = items;
-      console.log('items', items)
       this.sharedService.getDashboardCountList().subscribe({
         next: (data: any[]) => {
           if (data) {

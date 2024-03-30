@@ -37,7 +37,7 @@ export class AddEditUserComponent implements OnInit {
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
-    console.log(modalData)
+    console.log(this.userId)
     this.userId = modalData?.id;
     const props = {
       firstName: modalData?.firstName,
@@ -139,7 +139,7 @@ export class AddEditUserComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'update' });
+          this.modalControllerService.dismiss({ event: 'update', profileInfo: formVal });
         }
       },
       error: (error) => {

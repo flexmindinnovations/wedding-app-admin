@@ -41,7 +41,6 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.otherData = this.customerData['otherInfoModel'];
-    console.log(this.otherData);
     this.isEditMode = this.customerData['isOtherInfoFill'];
     if (this.isEditMode) this.patchFormData();
   }
