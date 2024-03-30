@@ -178,7 +178,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   }
 
   addNewRole(rolePayload: any) {
-    if (this.alreadyRoleList.includes(rolePayload.roleName)) {
+    if (this.alreadyRoleList.includes(rolePayload.roleName.toLowerCase().trim())) {
       this.alert.setAlertMessage(`${rolePayload.roleName} Already exists`, AlertType.warning);
     } else {
       this.roleService.saveRole(rolePayload).subscribe({

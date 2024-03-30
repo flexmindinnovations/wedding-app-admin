@@ -444,7 +444,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    const alreadyRolesList = [...this.roleMasterRowData.map((role: any) => role.roleName)]
+    const alreadyRolesList = [...this.roleMasterRowData.map((role: any) => role.roleName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditRoleComponent,
       componentProps: {
@@ -471,13 +471,14 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    let alreadyHeightList = [...this.heightMasterRowData.map((handy: any) => handy.heightName)]
     const refData = this.heightMasterRowData?.refData;
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
       componentProps: {
         data: {
           title: isEditMode ? 'Edit Height' : 'Add New Height',
-          data: { ...event, isEditMode, refData }
+          data: { ...event, isEditMode, refData, alreadyHeightList }
         }
       },
       cssClass: 'height-modal'
@@ -498,7 +499,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName)]
+    let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditHandycapComponent,
       componentProps: {
@@ -550,13 +551,14 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    let alreadyUserList = [...this.userMasterRowData.map((user: any) => user.mobileNo)];
     const modal = await this.modalCtrl.create({
       component: AddEditUserComponent,
       cssClass: 'user-modal',
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: User ' : 'Add New User',
-          data: { ...event, isEditMode }
+          data: { ...event, isEditMode, alreadyUserList }
         }
       }
     });
@@ -575,13 +577,14 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    const alreadyCastList = [...this.castMasterRowData.map((cast: any) => cast.castName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditCastComponent,
       cssClass: 'cast-modal',
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: Cast ' : 'Add New Cast',
-          data: { ...event, isEditMode }
+          data: { ...event, isEditMode, alreadyCastList }
         }
       }
     });

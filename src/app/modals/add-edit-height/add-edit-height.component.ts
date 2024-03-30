@@ -16,6 +16,7 @@ export class AddEditHeightComponent implements OnInit {
   formGroup: any;
   modalControllerService = inject(ModalController);
   accessHeightDataService = inject(HeightService);
+  alreadyHeightList: any;
   alert = inject(AlertService);
   heightId = 0;
   constructor(
@@ -27,6 +28,8 @@ export class AddEditHeightComponent implements OnInit {
     this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
+    this.alreadyHeightList = data?.alreadyHeightList;
+    console.log(this.alreadyHeightList);
     if (this.isEditMode) this.patchFormData();
   }
 
@@ -69,19 +72,25 @@ export class AddEditHeightComponent implements OnInit {
 
   addNewHeight() {
     let formVal = this.formGroup.value;
-    formVal = { heightId: 0, heightName: `${formVal.feet} feet ${formVal.inch} inch` }
-    this.accessHeightDataService.saveHeight(formVal).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+    formVal = { heightId: 0, heightName: `${formVal.feet.trim()} feet ${formVal.inch.trim()} inch` }
+    if (this.alreadyHeightList.includes(formVal.heightName)) {
+      this.alert.setAlertMessage(`${formVal.heightName} Already exists`, AlertType.warning);
+    }
+    else {
+      this.accessHeightDataService.saveHeight(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
+
   }
 
   updateHeight() {

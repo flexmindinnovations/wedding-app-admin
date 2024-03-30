@@ -25,6 +25,7 @@ export class AddEditCastComponent implements OnInit {
   subCastList: any[] = [
     { id: 1, name: "Sub Cast", subCastName: '' },
   ];
+  alreadyCastList: any;
 
   constructor(
     private fb: FormBuilder
@@ -35,9 +36,9 @@ export class AddEditCastComponent implements OnInit {
     this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
+    this.alreadyCastList = data?.alreadyCastList;
     if (this.isEditMode) this.patchFormData();
   }
-
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
@@ -123,18 +124,22 @@ export class AddEditCastComponent implements OnInit {
       }
       return obj;
     });
-
-    this.castService.addNewCast(formVal).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+    if (this.alreadyCastList.includes(formVal.castName.toLowerCase().trim())) {
+      this.alert.setAlertMessage(`${formVal.castName} Already exists`, AlertType.warning);
+    }
+    else {
+      this.castService.addNewCast(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error) => {
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
   }
 
   updateCast() {

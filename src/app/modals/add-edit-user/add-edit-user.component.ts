@@ -21,6 +21,7 @@ export class AddEditUserComponent implements OnInit {
   alert = inject(AlertService);
   userId = 0;
   roleId = 0;
+  alreadyUserList: any;
   roleList: any = [];
   constructor(
     private fb: FormBuilder
@@ -31,13 +32,12 @@ export class AddEditUserComponent implements OnInit {
     this.initFormGroup();
     this.getRoleData();
     const data = this.data?.data;
-    console.log(this.data)
+    this.alreadyUserList = data?.alreadyUserList;
     this.isEditMode = data?.isEditMode;
   }
 
   patchFormData() {
     const modalData = this.data?.data?.rowData;
-    console.log(this.userId)
     this.userId = modalData?.id;
     const props = {
       firstName: modalData?.firstName,
@@ -111,18 +111,23 @@ export class AddEditUserComponent implements OnInit {
       roleId: this.roleId,
       "isActive": true
     }
-    this.accessUserDataService.saveUser(formVal).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+    if (this.alreadyUserList.includes(formVal.mobileNo)) {
+      this.alert.setAlertMessage("User Already exists", AlertType.warning);
+    } else {
+      this.accessUserDataService.saveUser(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
+
   }
 
   updateUser() {

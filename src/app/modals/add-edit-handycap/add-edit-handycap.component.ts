@@ -71,7 +71,7 @@ export class AddEditHandycapComponent implements OnInit {
   addNewHandycap() {
     let formVal = this.formGroup.value;
     formVal = { handycapId: 0, handycapName: formVal.disablity };
-    if (this.alreadyHandycapList.includes(formVal.handycapName)) {
+    if (this.alreadyHandycapList.includes(formVal.handycapName.toLowerCase().trim())) {
       this.alert.setAlertMessage(`${formVal.handycapName} Already exists`, AlertType.warning);
     }
     else {
@@ -94,23 +94,18 @@ export class AddEditHandycapComponent implements OnInit {
   updateHandycap() {
     let formVal = this.formGroup.value;
     formVal = { handycapId: this.handycapId, handycapName: formVal.disablity };
-    if (this.alreadyHandycapList.includes(formVal.handycapName)) {
-      this.alert.setAlertMessage(`${formVal.handycapName} Already exists`, AlertType.warning);
-    }
-    else {
-      this.accessHandycapDataService.updateHandycap(this.handycapId, formVal).subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-            this.modalControllerService.dismiss({ event: 'update' });
-          }
-        },
-        error: (error) => {
-          console.log('error: ', error);
-          this.alert.setAlertMessage(error?.message, AlertType.error);
+    this.accessHandycapDataService.updateHandycap(this.handycapId, formVal).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalControllerService.dismiss({ event: 'update' });
         }
-      })
-    }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   handleClickOnNext(src: string) {
