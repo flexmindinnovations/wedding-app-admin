@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-buttons.component';
 import { GridActions } from 'src/app/enums/grid-actions';
@@ -18,7 +18,7 @@ import { RolesService } from 'src/app/services/role/roles.service';
   templateUrl: './customers.page.html',
   styleUrls: ['./customers.page.scss'],
 })
-export class CustomersPage implements OnInit {
+export class CustomersPage implements OnInit, AfterViewInit {
 
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
@@ -27,6 +27,7 @@ export class CustomersPage implements OnInit {
   rowData: any = [];
   roleService = inject(RolesService);
   isAddActive: boolean = false;
+  customerRegistrationService = inject(CustomerRegistrationService);
   colDefs: ColDef[] = [
     { field: "customerId", headerName: '#id', width: 100 },
     {
@@ -67,6 +68,12 @@ export class CustomersPage implements OnInit {
   ngOnInit() {
     this.getCustomerList();
     this.getPermissionListByRoleId();
+  }
+
+  ngAfterViewInit(): void {
+    this.customerRegistrationService.getRequestStatus().subscribe(isCompleted => {
+      if (isCompleted) this.getCustomerList();
+    })
   }
 
   getPermissionListByRoleId() {

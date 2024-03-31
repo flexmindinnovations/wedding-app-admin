@@ -6,7 +6,7 @@
     class="p-2.5" [value]="controlValue" [ngClass]="colorVarients" [placeholder]="placeholder"
     resize="false"></textarea>
   } @else if(type === 'date') {
-  <div class="picker-container relative w-full"
+  <div class="picker-container relative w-full h-12"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     (click)="datePicker.showPicker()">
     <input type="date" #datePicker [id]="datePickerId" (focus)="'showPicker'"
@@ -22,7 +22,8 @@
   } @else if(type === "text" && presentaion==="time"){
   <time-picker [value]="value" (selectedTime)="handleOnChange($event, 'time')" />
   } @else {
-  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)" class="p-2.5 h-12"
+  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)"
+    class="p-2.5 h-12"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     [value]="value" [placeholder]="placeholder" [required]="isRequired">
   @if (formControlName === 'userPassword' && hasValue) {

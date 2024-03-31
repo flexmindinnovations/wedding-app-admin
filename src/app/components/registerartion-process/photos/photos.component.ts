@@ -27,7 +27,6 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   thumbnailImage = '';
   photo1 = '';
   imageName: string = '';
-  customerId: number = 0;
   router = inject(Router);
 
   ngOnChanges(changes: SimpleChanges | any): void {
@@ -37,6 +36,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() { }
 
   ngAfterViewInit(): void {
+    console.log(this.completedStep);
     this.isEditMode = this.customerData['isImagesAdded'];
     if (this.isEditMode) this.getCustomerImages();
   }
@@ -44,10 +44,10 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   getCustomerImages() {
     const imageInfoModel = this.customerData['imageInfoModel'];
     this.thumbnailImage = `${environment.endpoint}/${imageInfoModel?.imagePath1}`;
-    this.photo1 = `${environment.endpoint}/${imageInfoModel?.imagePath2}`;
     const imageNameIndex = imageInfoModel?.imagePath1.lastIndexOf('/') + 1;
     this.imageName = imageInfoModel?.imagePath1.substring(imageNameIndex, imageInfoModel?.imagePath1.length);
     console.log(this.imageName);
+    this.photo1 = `${environment.endpoint}/${imageInfoModel?.imagePath2}`;
     this.cdref.detectChanges();
   }
 
@@ -81,7 +81,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
 
 
   saveNewCustomerInfo(src: string): void {
-    const customerId: any = this.customerId;
+    const customerId: any = this.completedStep?.data?.customerId;
     const formData: FormData = new FormData();
     formData.append('customerId', customerId);
     this.selectedFiles.forEach((file: any) => {

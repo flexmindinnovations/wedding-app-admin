@@ -93,6 +93,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    console.log(this.customerData);
     this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
     if (this.isEditMode) this.passwordActive = false;
     this.cdref.detectChanges();
@@ -103,7 +104,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       firstName: ['', [Validators.required]],
       middleName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      customerPassword: !['', [Validators.required]],
+      customerPassword: ['', ![Validators.required]],
       locationOfBirth: ['', [Validators.required]],
       shakeDate: !['', [Validators.required]],
       gender: ['', [Validators.required]],

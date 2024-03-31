@@ -52,6 +52,9 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
       if (this.eventId > 0) this.getEventDetails();
       else this.isDataLoaded = true;
     })
+    this.eventService.getRequestStatus().subscribe(isCompleted => {
+      if (isCompleted) this.getEventDetails();
+    })
   }
 
   getEventDetails() {

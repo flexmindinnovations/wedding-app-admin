@@ -26,7 +26,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   hasSpecializationToggle = false;
   educationId = 0;
   specializationFormGroup!: FormArray;
-
+  alreadyEducationList: any;
   specializationList: any[] = [
     { id: 1, name: 'Specialization Name', specializationName: '' }
   ];
@@ -40,6 +40,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
     this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
+    this.alreadyEducationList = data?.alreadyEducationList;
     if (this.isEditMode) this.patchFormData();
   }
 
@@ -125,18 +126,23 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
       }
       return obj;
     });
-
-    this.educationService.addNewCourse(formVal).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+    if (this.alreadyEducationList.includes(formVal.educationName.toLowerCase().trim())) {
+      this.alert.setAlertMessage(`${formVal.educationName} Already exists`, AlertType.warning);
+    }
+    else {
+      this.educationService.addNewCourse(formVal).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error) => {
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
+
   }
 
   updateCourseDetails() {

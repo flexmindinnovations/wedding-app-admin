@@ -22,8 +22,8 @@
             [controlValue]="formGroup.get('blogDate')?.value" formControlName="blogDate"
             (inputValue)="handleInputChange($event)" />
           <div class="text-editor min-h-[16rem] w-full col-span-4">
-            <quill-editor class="content-editor w-full h-[16rem]" [formControl]="formGroupControl['blogText']"
-              [modules]="quillConfiguration" theme="snow"> </quill-editor>
+            <quill-editor id="quillEditor" class="content-editor w-full h-[16rem]"
+              [formControl]="formGroupControl['blogText']" [modules]="quillConfiguration" theme="snow"> </quill-editor>
           </div>
           <image-picker [fileName]="imageName" [src]="imagePath" label="Add Image"
             (selectedImage)="handleSelectedImage($event)" />

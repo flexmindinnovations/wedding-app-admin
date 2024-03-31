@@ -444,7 +444,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    const alreadyRolesList = [...this.roleMasterRowData.map((role: any) => role.roleName.toLowerCase())]
+    const alreadyRolesList = [...this.roleMasterRowData?.map((role: any) => role?.roleName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditRoleComponent,
       componentProps: {
@@ -471,7 +471,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    let alreadyHeightList = [...this.heightMasterRowData.map((handy: any) => handy.heightName)]
+    let alreadyHeightList = [...this.heightMasterRowData?.map((handy: any) => handy?.heightName)]
     const refData = this.heightMasterRowData?.refData;
     const modal = await this.modalCtrl.create({
       component: AddEditHeightComponent,
@@ -499,7 +499,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    let alreadyHandicapList = [...this.handycapMasterRowData.map((handy: any) => handy.handycapName.toLowerCase())]
+    let alreadyHandicapList = [...this.handycapMasterRowData?.map((handy: any) => handy?.handycapName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditHandycapComponent,
       componentProps: {
@@ -525,13 +525,14 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
+    const alreadyEducationList = [...this.educationMasterRowData?.map((edu: any) => edu?.educationName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditEducationComponent,
       cssClass: 'education-modal',
       componentProps: {
         data: {
           title: isEditMode ? 'Edit: ' + event?.rowData?.educationName : 'Add New Course',
-          data: { ...event, isEditMode }
+          data: { ...event, isEditMode, alreadyEducationList }
         }
       }
     });
@@ -551,7 +552,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    let alreadyUserList = [...this.userMasterRowData.map((user: any) => user.mobileNo)];
+    let alreadyUserList = [...this.userMasterRowData?.map((user: any) => user?.mobileNo)];
     const modal = await this.modalCtrl.create({
       component: AddEditUserComponent,
       cssClass: 'user-modal',
@@ -577,7 +578,7 @@ export class MasterPage implements OnInit {
     if (event?.src === GridActions.edit) {
       isEditMode = true;
     }
-    const alreadyCastList = [...this.castMasterRowData.map((cast: any) => cast.castName.toLowerCase())]
+    const alreadyCastList = [...this.castMasterRowData?.map((cast: any) => cast?.castName.toLowerCase())]
     const modal = await this.modalCtrl.create({
       component: AddEditCastComponent,
       cssClass: 'cast-modal',

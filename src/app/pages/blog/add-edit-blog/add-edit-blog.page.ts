@@ -100,8 +100,6 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
       blogDate: ['', [Validators.required]],
       isActive: !['', [Validators.required]]
     })
-
-    this.formGroup.valueChanges.subscribe((value: any) => { })
   }
 
   handleInputChange(event: any) {
@@ -120,6 +118,7 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
 
   handleFormSubmit() {
     if (this.formGroup.invalid) {
+      const invalidControls = findInvalidControlsRecursive(this.formGroup);
       return;
     }
     if (this.blogId === 0) this.saveNewBlog();

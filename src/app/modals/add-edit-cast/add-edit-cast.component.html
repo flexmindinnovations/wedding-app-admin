@@ -19,8 +19,8 @@
         @if (hasSubCastToggle) {
         <div class="specialization-list w-full flex flex-col items-start justify-start">
           <div class="add-specialization w-full px-3 py-2 flex items-center justify-between">
-            <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 5 items can be added)</span></p>
-            <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 5" [iconOnly]="true" [isCancel]="true"
+            <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 10 items can be added)</span></p>
+            <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 10" [iconOnly]="true" [isCancel]="true"
               [icon]="'add-outline'" [size]="'lg'" (action)="handleAddRowClick($event)" />
           </div>
           <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="subCastList">

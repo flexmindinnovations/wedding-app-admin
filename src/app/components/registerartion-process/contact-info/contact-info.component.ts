@@ -58,8 +58,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   initFormGroup() {
     this.formGroup = this.fb.group({
       // contactOf: ['', [Validators.required]],
-      contactNumber: ['', [Validators.required]],
-      whatsUpNumber: ['', [Validators.required]],
+      contactNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      whatsUpNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       emailId: ['', [Validators.required]],
       homeAddress: ['', [Validators.required]],
       countryId: ['', [Validators.required]],

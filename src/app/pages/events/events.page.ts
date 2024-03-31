@@ -63,13 +63,14 @@ export class EventsPage implements OnInit, AfterViewInit {
   ];
 
   ngOnInit() {
+    this.getEventList();
   }
   getPermissionListByRoleId() {
     const roleId = localStorage.getItem('role');
     this.roleService.getPermissionListById(roleId).subscribe({
       next: (permissionList: any) => {
         if (permissionList) {
-          const newList = permissionList?.filter((item: any) => item?.moduleName === 'Customers')[0];
+          const newList = permissionList?.filter((item: any) => item?.moduleName === 'Events')[0];
           this.isAddActive = newList?.canAdd;
           const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
           this.rowData = this.rowData.map((item: any) => {
@@ -87,7 +88,10 @@ export class EventsPage implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.getEventList();
+    this.eventService.getRequestStatus().subscribe(isCompleted => {
+      if (isCompleted) this.getEventList();
+    })
+
   }
 
   getEventList() {
@@ -104,6 +108,7 @@ export class EventsPage implements OnInit, AfterViewInit {
               eventDate: moment(event?.eventDate).format("DD/MM/YYYY")
             }
           })
+          this.getPermissionListByRoleId();
         }
       },
       error: (error) => {
