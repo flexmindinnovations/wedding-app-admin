@@ -88,5 +88,9 @@ export class SharedService {
     return this.http.get(`${this.endpoint}/Dashboard/getCountData`);
   }
 
+  getReligionList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/Religion/getReligionList`);
+  }
+
 
 }

@@ -90,7 +90,7 @@ export class MasterPage implements OnInit {
               this.isRoleActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canRoleAdd = list?.canAdd;
-              this.roleMasterRowData = this.roleMasterRowData.map((item: any) => {
+              this.roleMasterRowData = this.roleMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -99,7 +99,7 @@ export class MasterPage implements OnInit {
               this.isHeightActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canHeightAdd = list?.canAdd;
-              this.heightMasterRowData = this.heightMasterRowData.map((item: any) => {
+              this.heightMasterRowData = this.heightMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -108,7 +108,7 @@ export class MasterPage implements OnInit {
               this.isUserActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canUserAdd = list?.canAdd;
-              this.userMasterRowData = this.userMasterRowData.map((item: any) => {
+              this.userMasterRowData = this.userMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -117,7 +117,7 @@ export class MasterPage implements OnInit {
               this.isHandyCapActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canHandycapAdd = list?.canAdd;
-              this.handycapMasterRowData = this.handycapMasterRowData.map((item: any) => {
+              this.handycapMasterRowData = this.handycapMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -126,7 +126,7 @@ export class MasterPage implements OnInit {
               this.isCastActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canCastAdd = list?.canAdd;
-              this.castMasterRowData = this.castMasterRowData.map((item: any) => {
+              this.castMasterRowData = this.castMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -135,7 +135,7 @@ export class MasterPage implements OnInit {
               this.isEducationActive = true;
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canEducationAdd = list?.canAdd;
-              this.educationMasterRowData = this.educationMasterRowData.map((item: any) => {
+              this.educationMasterRowData = this.educationMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })

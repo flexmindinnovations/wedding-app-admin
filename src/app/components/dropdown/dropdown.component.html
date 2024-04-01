@@ -1,7 +1,6 @@
 <div class="dropdown-container flex flex-col gap-2">
   <label>{{label}}</label>
-  <button #triggerButton [id]="buttonId" [attr.data-dropdown-toggle]="menuId"
-    data-dropdown-placement="bottom"
+  <button #triggerButton [id]="buttonId" [attr.data-dropdown-toggle]="menuId" data-dropdown-placement="bottom"
     class="dropdown-button flex items-center justify-between w-full gap-3 border-gray-300"
     (click)="handleDropdownToggle()"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"

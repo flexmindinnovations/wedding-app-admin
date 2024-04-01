@@ -27,6 +27,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   thumbnailImage = '';
   photo1 = '';
   imageName: string = '';
+  photoName: string = '';
   router = inject(Router);
 
   ngOnChanges(changes: SimpleChanges | any): void {
@@ -44,10 +45,12 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   getCustomerImages() {
     const imageInfoModel = this.customerData['imageInfoModel'];
     this.thumbnailImage = `${environment.endpoint}/${imageInfoModel?.imagePath1}`;
-    const imageNameIndex = imageInfoModel?.imagePath1.lastIndexOf('/') + 1;
-    this.imageName = imageInfoModel?.imagePath1.substring(imageNameIndex, imageInfoModel?.imagePath1.length);
-    console.log(this.imageName);
+    const imageNameIndex = imageInfoModel?.imagePath1?.lastIndexOf('/') + 1;
+    this.imageName = imageInfoModel?.imagePath1?.substring(imageNameIndex, imageInfoModel?.imagePath1.length);
     this.photo1 = `${environment.endpoint}/${imageInfoModel?.imagePath2}`;
+    const photo1NameIndex = imageInfoModel?.imagePath2?.lastIndexOf('/') + 1;
+    this.photoName = imageInfoModel?.imagePath2?.substring(photo1NameIndex, imageInfoModel?.imagePath2.length);
+    console.log('photos', this.imageName, this.photoName);
     this.cdref.detectChanges();
   }
 

@@ -20,37 +20,40 @@
       <app-input label="Password" type="password" [control]="formGroupControl['customerPassword']"
         formControlName="customerPassword" [controlValue]="formGroup.get('customerPassword')?.value" />
       }
-      <app-dropdown label="Occupation" [control]="formGroupControl['occupationId']" formControlName="occupationId"
-        (onSelectionChange)="onSelectionChange($event, 'occupationId')"
+      <app-dropdown *ngIf="occupationListOptions.length" label="Occupation" [control]="formGroupControl['occupationId']"
+        formControlName="occupationId" (onSelectionChange)="onSelectionChange($event, 'occupationId')"
         [controlValue]="formGroup.get('occupationId')?.value" [options]="occupationListOptions" />
 
       @if (hasChild && isOccupationDetailsDataAvailable) {
-      <app-dropdown label="Occupation Details" [control]="formGroupControl['occupationDetailId']"
-        [controlValue]="formGroup.get('occupationDetailId')?.value" formControlName="occupationDetailId"
-        (onSelectionChange)="onSelectionChange($event, 'occupationDetailId')" [options]="occupationDetailList" />
+      <app-dropdown *ngIf="occupationDetailList.length" label="Occupation Details"
+        [control]="formGroupControl['occupationDetailId']" [controlValue]="formGroup.get('occupationDetailId')?.value"
+        formControlName="occupationDetailId" (onSelectionChange)="onSelectionChange($event, 'occupationDetailId')"
+        [options]="occupationDetailList" />
       }
 
 
-      <app-dropdown label="Gender" [control]="formGroupControl['gender']" formControlName="gender"
-        (onSelectionChange)="onSelectionChange($event, 'gender')" [controlValue]="formGroup.get('gender')?.value"
-        [options]="genderOptions" />
+      <app-dropdown *ngIf="genderOptions.length" label="Gender" [control]="formGroupControl['gender']"
+        formControlName="gender" (onSelectionChange)="onSelectionChange($event, 'gender')"
+        [controlValue]="formGroup.get('gender')?.value" [options]="genderOptions" />
 
-      <app-dropdown label="Marital Status" [control]="formGroupControl['maritalStatus']" formControlName="maritalStatus"
-        [options]="maritalStatusOptions" [controlValue]="formGroup.get('maritalStatus')?.value"
+      <app-dropdown *ngIf="maritalStatusOptions.length" label="Marital Status"
+        [control]="formGroupControl['maritalStatus']" formControlName="maritalStatus" [options]="maritalStatusOptions"
+        [controlValue]="formGroup.get('maritalStatus')?.value"
         (onSelectionChange)="onSelectionChange($event, 'maritalStatus')" />
 
-      <app-dropdown label="Height" [control]="formGroupControl['heightId']" formControlName="heightId"
-        [controlValue]="formGroup.get('heightId')?.value" (onSelectionChange)="onSelectionChange($event, 'heightId')"
-        [options]="heightListOptions" />
+      <app-dropdown *ngIf="heightListOptions.length" label="Height" [control]="formGroupControl['heightId']"
+        formControlName="heightId" [controlValue]="formGroup.get('heightId')?.value"
+        (onSelectionChange)="onSelectionChange($event, 'heightId')" [options]="heightListOptions" />
 
-      <app-dropdown label="Education" [control]="formGroupControl['eduationId']" formControlName="eduationId"
-        [controlValue]="formGroup.get('eduationId')?.value"
+      <app-dropdown *ngIf="educationListOptions.length" label="Education" [control]="formGroupControl['eduationId']"
+        formControlName="eduationId" [controlValue]="formGroup.get('eduationId')?.value"
         (onSelectionChange)="onSelectionChange($event, 'educationId')" [options]="educationListOptions" />
 
       @if (hasSpecialization && isSpecializationDataAvailable) {
-      <app-dropdown label="Specialization" [control]="formGroupControl['specializationId']"
-        [controlValue]="formGroup.get('specializationId')?.value" formControlName="specializationId"
-        (onSelectionChange)="onSelectionChange($event, 'specializationId')" [options]="specializationListOptions" />
+      <app-dropdown *ngIf="specializationListOptions.length" label="Specialization"
+        [control]="formGroupControl['specializationId']" [controlValue]="formGroup.get('specializationId')?.value"
+        formControlName="specializationId" (onSelectionChange)="onSelectionChange($event, 'specializationId')"
+        [options]="specializationListOptions" />
       }
 
       <!--Optional-->
@@ -95,20 +98,23 @@
       </p>
 
       @if (isPhysicallyAbled) {
-      <app-dropdown label="Physical Status" [control]="formGroupControl['physicalStatus']"
-        [controlValue]="formGroup.get('physicalStatus')?.value" formControlName="physicalStatus"
-        (onSelectionChange)="onSelectionChange($event, 'physicalStatus')" [options]="physicalStatusListOptions" />
+      <app-dropdown *ngIf="physicalStatusListOptions.length" label="Physical Status"
+        [control]="formGroupControl['physicalStatus']" [controlValue]="formGroup.get('physicalStatus')?.value"
+        formControlName="physicalStatus" (onSelectionChange)="onSelectionChange($event, 'physicalStatus')"
+        [options]="physicalStatusListOptions" />
       @if (isOtherPhyicalCondition) {
       <app-input label="Physical Condition" type="text" [control]="formGroupControl['otherPhysicalCondition']"
         formControlName="otherPhysicalCondition" [controlValue]="formGroup.get('otherPhysicalCondition')?.value" />
       }
       }
 
-      <app-dropdown label="Food Preferences" [control]="formGroupControl['foodPreferencesId']"
-        formControlName="foodPreferencesId" (onSelectionChange)="onSelectionChange($event, 'foodPreferencesId')"
+      <app-dropdown *ngIf="foodPreferencesListOptions.length" label="Food Preferences"
+        [control]="formGroupControl['foodPreferencesId']" formControlName="foodPreferencesId"
+        (onSelectionChange)="onSelectionChange($event, 'foodPreferencesId')"
         [controlValue]="formGroup.get('foodPreferencesId')?.value" [options]="foodPreferencesListOptions" />
 
-      <app-dropdown label="Blood Group" [control]="formGroupControl['bloodGroupId']" formControlName="bloodGroupId"
+      <app-dropdown *ngIf="bloodGroupListOptions.length" label="Blood Group"
+        [control]="formGroupControl['bloodGroupId']" formControlName="bloodGroupId"
         (onSelectionChange)="onSelectionChange($event, 'bloodGroupId')"
         [controlValue]="formGroup.get('bloodGroupId')?.value" [options]="bloodGroupListOptions" />
 

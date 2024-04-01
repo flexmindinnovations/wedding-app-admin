@@ -60,7 +60,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       // contactOf: ['', [Validators.required]],
       contactNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       whatsUpNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-      emailId: ['', [Validators.required]],
+      emailId: ['', [Validators.required, Validators.email]],
       homeAddress: ['', [Validators.required]],
       countryId: ['', [Validators.required]],
       stateId: ['', [Validators.required]],

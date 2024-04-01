@@ -4,7 +4,8 @@
       <image-picker [src]="thumbnailImage" [fileName]="imageName"
         (selectedImage)="handleSelectedImage($event, 'thumbnail')" label="Thumbnail" />
 
-      <image-picker [src]="photo1" (selectedImage)="handleSelectedImage($event, 'photo')" label="Photo 1" />
+      <image-picker [src]="photo1" [fileName]="photoName" (selectedImage)="handleSelectedImage($event, 'photo')"
+        label="Photo 1" />
 
       <!-- <image-picker label="Photo 2" />
 
@@ -13,6 +14,7 @@
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
     <!-- <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('photos')" /> -->
-    <mt-button [size]="'md'" title="Complete Registration" [textOnly]="true" (action)="handleClickOnNext('photos')" />
+    <mt-button [disabled]="selectedFiles.length !== 2" [size]="'md'" title="Complete Registration" [textOnly]="true"
+      (action)="handleClickOnNext('photos')" />
   </div>
 </div>

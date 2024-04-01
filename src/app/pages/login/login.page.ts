@@ -114,6 +114,7 @@ export class LoginPage implements OnInit, OnDestroy {
         sub.unsubscribe()
       });
     })
+    window.location.reload();
   }
 
   handlePasswordVisiblity() {

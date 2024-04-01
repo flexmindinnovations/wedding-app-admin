@@ -91,7 +91,7 @@ export class BlogPage implements OnInit, AfterViewInit {
           const newList = permissionList?.filter((item: any) => item?.moduleName === 'Blogs')[0];
           this.isAddActive = newList?.canAdd;
           const refData = { canEdit: newList?.canEdit, canDelete: newList?.canDelete };
-          this.rowData = this.rowData.map((item: any) => {
+          this.rowData = this.rowData?.map((item: any) => {
             item['refData'] = refData;
             return item;
           })

@@ -75,6 +75,7 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleClickOnNext(data: FormStep) {
+    // debugger;
     this.completedStep = data;
     if (data.action === ActionValue.next) {
       if (this.completedStep.formId === 5) {
