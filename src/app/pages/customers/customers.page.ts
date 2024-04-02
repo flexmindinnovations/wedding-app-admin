@@ -11,6 +11,8 @@ import * as moment from 'moment';
 import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { RolesService } from 'src/app/services/role/roles.service';
+import { RegisterCustomerComponent } from 'src/app/modals/register-customer/register-customer.component';
+import { ModalController } from '@ionic/angular';
 
 
 @Component({
@@ -28,6 +30,8 @@ export class CustomersPage implements OnInit, AfterViewInit {
   roleService = inject(RolesService);
   isAddActive: boolean = false;
   customerRegistrationService = inject(CustomerRegistrationService);
+  canShowModal: boolean = false;
+  modalCtrl = inject(ModalController);
   colDefs: ColDef[] = [
     { field: "customerId", headerName: '#id', width: 100 },
     {
@@ -117,8 +121,29 @@ export class CustomersPage implements OnInit, AfterViewInit {
   }
 
   handleClick() {
-    this.sidebarItemService.setCurrentPage('Add Customer');
-    this.router.navigateByUrl('customers/add', { state: { route: 'add', pageName: 'Add Customer', title: 'Add Customer' } });
+    // this.sidebarItemService.setCurrentPage('Add Customer');
+    // this.router.navigateByUrl('customers/add', { state: { route: 'add', pageName: 'Add Customer', title: 'Add Customer' } });
+    this.openRegisterCustomerModal();
+  }
+  async openRegisterCustomerModal(event?: any) {
+    this.canShowModal = true;
+    const modal = await this.modalCtrl.create({
+      component: RegisterCustomerComponent,
+      cssClass: 'register-customer-modal',
+      componentProps: {
+        data: {
+          title: 'Register Customer',
+          data: { ...event }
+        }
+      }
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getCustomerList();
+    }
   }
 
   handleGridActionButtonClick(event: any) {

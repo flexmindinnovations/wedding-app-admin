@@ -18,6 +18,10 @@ export class CustomerRegistrationService {
     return this.http.get(this.endpoint + '/Customer/GetCustomerList');
   }
 
+  signUpCustomer(payload: any): Observable<any> {
+    return this.http.post(this.endpoint + '/Customer/signUp', payload);
+  }
+
   getCustomerDetailsById(customerId: number): Observable<any> {
     return this.http.get(this.endpoint + `/Customer/GetCustomerById/${customerId}`);
   }

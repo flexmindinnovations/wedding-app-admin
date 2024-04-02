@@ -29,7 +29,8 @@
               [formControl]="formGroupControl['eventDescription']" [modules]="quillConfiguration" theme="snow">
             </quill-editor>
           </div>
-          <image-picker [fileName]="imageName" [src]="imagePath" label="Add Image" (selectedImage)="handleSelectedImage($event)" />
+          <image-picker [fileName]="imageName" [src]="imagePath" label="Add Image"
+            (selectedImage)="handleSelectedImage($event)" />
         </div>
       </form>
 

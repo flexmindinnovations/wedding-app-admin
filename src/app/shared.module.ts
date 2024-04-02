@@ -34,6 +34,7 @@ import { AddEditCastComponent } from "./modals/add-edit-cast/add-edit-cast.compo
 import { AddEditHandycapComponent } from "./modals/add-edit-handycap/add-edit-handycap.component";
 import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.component";
 import { CustomHttpInterceptor } from "./interceptors/http.interceptor";
+import { RegisterCustomerComponent } from "./modals/register-customer/register-customer.component";
 
 @NgModule({
     declarations: [
@@ -64,7 +65,8 @@ import { CustomHttpInterceptor } from "./interceptors/http.interceptor";
         DeleteConfirmComponent,
         TimePickerComponent,
         AddEditHandycapComponent,
-        AddEditUserComponent
+        AddEditUserComponent,
+        RegisterCustomerComponent
     ],
     imports: [
         CommonModule,
@@ -116,7 +118,8 @@ import { CustomHttpInterceptor } from "./interceptors/http.interceptor";
         DeleteConfirmComponent,
         TimePickerComponent,
         AddEditHandycapComponent,
-        AddEditUserComponent
+        AddEditUserComponent,
+        RegisterCustomerComponent
     ],
     providers: [
         {

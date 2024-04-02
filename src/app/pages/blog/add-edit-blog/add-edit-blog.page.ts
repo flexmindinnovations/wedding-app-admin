@@ -152,7 +152,6 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
     const blogId = this.blogDetails['blogId'];
     const formVal = this.formGroup.value;
     const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format() }
-    console.log("payload", payload);
     const formData = new FormData();
     formData.append('blogModel', JSON.stringify(payload));
     if (this.selectedImage) {

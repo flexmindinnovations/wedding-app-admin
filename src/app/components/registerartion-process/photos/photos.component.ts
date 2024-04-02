@@ -23,7 +23,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   alert = inject(AlertService);
   cdref = inject(ChangeDetectorRef);
   selectedFiles: any[] = [];
-
+  photoNext: boolean = true;
   thumbnailImage = '';
   photo1 = '';
   imageName: string = '';
@@ -34,12 +34,18 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.selectedFiles.length === 2) {
+      this.photoNext = false;
+    }
+  }
 
   ngAfterViewInit(): void {
-    console.log(this.completedStep);
     this.isEditMode = this.customerData['isImagesAdded'];
-    if (this.isEditMode) this.getCustomerImages();
+    console.log(this.isEditMode)
+    if (this.isEditMode) {
+      this.getCustomerImages();
+    }
   }
 
   getCustomerImages() {
@@ -77,7 +83,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   handleClickOnNext(src: string) {
-    console.log(this.customerData?.customerId);
+    this.cdref.detectChanges();
     if (this.isEditMode) this.updateCustomerInfo(src);
     else this.saveNewCustomerInfo(src);
   }
