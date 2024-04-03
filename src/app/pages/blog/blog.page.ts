@@ -138,7 +138,7 @@ export class BlogPage implements OnInit, AfterViewInit {
     if (action === GridActions.edit) {
       this.router.navigateByUrl(`blog/edit/${data?.id}`, { state: { route: 'edit', pageName: 'Edit Blog', title: 'Edit Blog' } })
     } else {
-      console.log('>>>>> event delete: ', event);
+      // console.log('>>>>> event delete: ', event);
     }
   }
 }

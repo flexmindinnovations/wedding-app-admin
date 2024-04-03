@@ -62,7 +62,7 @@ export class AddEditCastComponent implements OnInit {
           }
           this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
-            console.log('subCast: ', subCast);
+            // console.log('subCast: ', subCast);
 
             subCastList.push(
               this.fb.group({

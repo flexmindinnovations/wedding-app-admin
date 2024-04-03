@@ -18,6 +18,7 @@ export class RegisterCustomerComponent implements OnInit {
   alert = inject(AlertService);
   customerRegistrationService = inject(CustomerRegistrationService);
   isDisabled: boolean = true;
+  userNameList: any;
   constructor(
     private fb: FormBuilder
   ) {
@@ -26,6 +27,7 @@ export class RegisterCustomerComponent implements OnInit {
   ngOnInit() {
     this.initFormGroup();
     const data = this.data?.data;
+    this.userNameList = data?.userNameList;
   }
 
   initFormGroup() {
@@ -64,19 +66,23 @@ export class RegisterCustomerComponent implements OnInit {
       customerUserName: formVal.mobileNo,
       customerPassword: formVal.password
     };
-    this.customerRegistrationService.signUpCustomer(payload).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.modalControllerService.dismiss({ event: 'add' });
+    if (this.userNameList.includes(formVal.mobileNo)) {
+      this.alert.setAlertMessage(`UserName Already exists`, AlertType.warning);
+    }
+    else {
+      this.customerRegistrationService.signUpCustomer(payload).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+            this.modalControllerService.dismiss({ event: 'add' });
+          }
+        },
+        error: (error: any) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
         }
-      },
-      error: (error: any) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
-      }
-    })
-
+      })
+    }
   }
 
   handleClickOnNext(src: string) {

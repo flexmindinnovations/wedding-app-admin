@@ -23,26 +23,25 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   alert = inject(AlertService);
   cdref = inject(ChangeDetectorRef);
   selectedFiles: any[] = [];
-  photoNext: boolean = true;
+  photoNext: boolean = false;
   thumbnailImage = '';
   photo1 = '';
   imageName: string = '';
   photoName: string = '';
   router = inject(Router);
+  imageData: any[] = [];
 
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
   }
 
   ngOnInit() {
-    if (this.selectedFiles.length === 2) {
-      this.photoNext = false;
-    }
+
   }
 
   ngAfterViewInit(): void {
     this.isEditMode = this.customerData['isImagesAdded'];
-    console.log(this.isEditMode)
+    // console.log(this.isEditMode)
     if (this.isEditMode) {
       this.getCustomerImages();
     }
@@ -56,11 +55,20 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     this.photo1 = `${environment.endpoint}/${imageInfoModel?.imagePath2}`;
     const photo1NameIndex = imageInfoModel?.imagePath2?.lastIndexOf('/') + 1;
     this.photoName = imageInfoModel?.imagePath2?.substring(photo1NameIndex, imageInfoModel?.imagePath2.length);
-    console.log('photos', this.imageName, this.photoName);
+    if (this.thumbnailImage && this.photo1) {
+      this.imageData.push(this.thumbnailImage);
+      this.imageData.push(this.photo1);
+    }
+    if (this.selectedFiles.length === 2 || this.imageData.length === 2) {
+      this.photoNext = true;
+    }
+    // console.log('photos', this.imageName, this.photoName);
+
     this.cdref.detectChanges();
   }
 
   handleSelectedImage(event: any, src: string) {
+    // console.log(event, src)
     switch (src) {
       case 'thumbnail':
         this.selectedFiles.push(event.file);
@@ -93,6 +101,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     const customerId: any = this.completedStep?.data?.customerId;
     const formData: FormData = new FormData();
     formData.append('customerId', customerId);
+    // console.log(this.selectedFiles);
     this.selectedFiles.forEach((file: any) => {
       formData.append('file', file, file.name);
     })
@@ -131,6 +140,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     const customerId = this.customerData?.customerId;
     const formData: FormData = new FormData();
     formData.append('customerId', customerId);
+    // console.log(this.selectedFiles);
     this.selectedFiles.forEach((file: any) => {
       formData.append('file', file, file.name);
     })

@@ -73,8 +73,8 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   handleOnStepperClick(step: StepperFormItem) {
-    console.log('step: ', step);
-    
+    // console.log('step: ', step);
+
   }
 
   ngOnDestroy(): void {

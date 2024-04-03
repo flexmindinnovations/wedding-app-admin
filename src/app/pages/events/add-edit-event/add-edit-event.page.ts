@@ -123,9 +123,10 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
   }
 
   saveNewEvent() {
+    const userId = localStorage.getItem('userId');
     let eventDate = this.formGroup.get('eventDate')?.value;
     eventDate = eventDate ? moment(eventDate).format() : moment().format()
-    const formVal = { ...this.formGroup.value, eventImagePath: '', isActive: this.isActive, eventDate };
+    const formVal = { ...this.formGroup.value, eventImagePath: '', isActive: this.isActive, eventDate, createdBy: Number(userId) };
     const formData = new FormData();
     formData.append('eventModel', JSON.stringify(formVal));
     if (this.selectedImage) {
@@ -147,9 +148,10 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
   }
 
   updateEvent() {
+    const userId = localStorage.getItem('userId');
     const eventId = this.eventDetails['eventId'];
     const formVal = this.formGroup.value;
-    const payload = { ...formVal, eventId, eventImagePath: this.eventDetails['eventImagePath'], eventDate: moment(formVal?.eventDate).format() }
+    const payload = { ...formVal, eventId, eventImagePath: this.eventDetails['eventImagePath'], eventDate: moment(formVal?.eventDate).format(), createdBy: Number(userId) }
     const formData = new FormData();
     formData.append('eventModel', JSON.stringify(payload));
     if (this.selectedImage) {

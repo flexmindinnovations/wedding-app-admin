@@ -85,7 +85,7 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
         this.currentForm = this.completedStep.formId + 1;
       }
     } else {
-      console.log('data: ', data);
+      // console.log('data: ', data);
       if (data.formId === 1) {
         this.currentForm = this.completedStep.formId;
         return;

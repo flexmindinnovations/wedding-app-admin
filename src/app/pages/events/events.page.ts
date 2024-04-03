@@ -130,7 +130,7 @@ export class EventsPage implements OnInit, AfterViewInit {
       this.sidebarItemService.setCurrentPage('Edit Event');
       this.router.navigateByUrl(`events/edit/${data?.eventId}`, { state: { route: 'edit', pageName: 'Edit Event', title: 'Edit Event' } })
     } else {
-      console.log('>>>>> event delete: ', event);
+      // console.log('>>>>> event delete: ', event);
     }
   }
 

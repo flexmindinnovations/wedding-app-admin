@@ -21,12 +21,12 @@ export class SearchComponent implements OnInit {
       component: SearchModalComponent,
       cssClass: 'search-modal'
     });
-    console.log('>>>>> modal : ', modal);
+    // console.log('>>>>> modal : ', modal);
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
-    console.log('data: ', data);
-    console.log('role: ', role);
+    // console.log('data: ', data);
+    // console.log('role: ', role);
   }
 
 

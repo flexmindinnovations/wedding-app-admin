@@ -69,7 +69,6 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
     this.blogService.getBlogById(this.blogId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('main', data);
           this.blogDetails = data;
           this.imagePath = environment.endpoint + '/' + data?.blogImagePath;
           const imageNameIndex = data?.blogImagePath.lastIndexOf('/') + 1;
@@ -117,6 +116,7 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   handleFormSubmit() {
+    // console.log(this.formGroup.invalid)
     if (this.formGroup.invalid) {
       const invalidControls = findInvalidControlsRecursive(this.formGroup);
       return;
@@ -126,9 +126,10 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
   }
 
   saveNewBlog() {
+    const userId = localStorage.getItem('userId');
     let blogDate = this.formGroup.get('blogDate')?.value;
-    blogDate = blogDate ? moment(blogDate).format() : moment().format()
-    const formVal = { ...this.formGroup.value, blogImagePath: '', isActive: this.isActive, blogDate };
+    blogDate = blogDate ? moment(blogDate).format() : moment().format();
+    const formVal = { ...this.formGroup.value, blogImagePath: '', isActive: this.isActive, blogDate, createdBy: Number(userId) };
     const formData = new FormData();
     formData.append('blogModel', JSON.stringify(formVal));
     if (this.selectedImage) {
@@ -149,9 +150,10 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
     });
   }
   updateBlog() {
+    const userId = localStorage.getItem('userId');
     const blogId = this.blogDetails['blogId'];
     const formVal = this.formGroup.value;
-    const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format() }
+    const payload = { ...formVal, blogId, blogImagePath: this.blogDetails['blogImagePath'], blogDate: moment(formVal?.blogDate).format(), updatedBy: Number(userId) }
     const formData = new FormData();
     formData.append('blogModel', JSON.stringify(payload));
     if (this.selectedImage) {

@@ -16,10 +16,10 @@
 
       <app-input label="Time Of Birth" presentaion="time" type="text" [control]="formGroupControl['timeOfBirth']"
         formControlName="timeOfBirth" (inputValue)="handleInputValue($event)" />
-      @if(passwordActive){
+      <!-- @if(passwordActive){
       <app-input label="Password" type="password" [control]="formGroupControl['customerPassword']"
         formControlName="customerPassword" [controlValue]="formGroup.get('customerPassword')?.value" />
-      }
+      } -->
       <app-dropdown *ngIf="occupationListOptions.length" label="Occupation" [control]="formGroupControl['occupationId']"
         formControlName="occupationId" (onSelectionChange)="onSelectionChange($event, 'occupationId')"
         [controlValue]="formGroup.get('occupationId')?.value" [options]="occupationListOptions" />

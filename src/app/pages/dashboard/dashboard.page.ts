@@ -117,7 +117,7 @@ export class DashboardPage implements OnInit, AfterViewInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes)
+    // console.log(changes)
   }
 
   setCssClasses(): void {

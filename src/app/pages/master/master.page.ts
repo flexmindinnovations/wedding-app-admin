@@ -427,7 +427,7 @@ export class MasterPage implements OnInit {
   }
 
   openDeleteConfirmationModal(data: any) {
-    console.log('data: ', data);
+    // console.log('data: ', data);
 
   }
 

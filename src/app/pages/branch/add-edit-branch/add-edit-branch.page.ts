@@ -63,7 +63,7 @@ export class AddEditBranchPage implements OnInit {
     this.branchService.getBranchByBranchId(this.branchId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log('branchdata', data);
+          // console.log('branchdata', data);
           this.branchDetails = data;
           this.imagePath = environment.endpoint + '/' + data?.branchImagePath;
           const imageNameIndex = data?.branchImagePath.lastIndexOf('/') + 1;

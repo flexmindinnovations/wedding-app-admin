@@ -29,7 +29,7 @@ export class AddEditHeightComponent implements OnInit {
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyHeightList = data?.alreadyHeightList;
-    console.log(this.alreadyHeightList);
+    // console.log(this.alreadyHeightList);
     if (this.isEditMode) this.patchFormData();
   }
 

@@ -1,7 +1,6 @@
 <div>
-  <ag-grid-angular [className]="themeName" [rowData]="rowDefs" class="ag-theme-material" [columnDefs]="columnDefs" [pagination]="true"
-    [style]="{'height': gridSize === 'sm' ? '300px' : '600px'}"
-    [rowHeight]="35"
+  <ag-grid-angular [className]="themeName" [rowData]="rowDefs" class="ag-theme-material" [columnDefs]="columnDefs"
+    [pagination]="true" [style]="{'height': gridSize === 'sm' ? '300px' : '500px'}" [rowHeight]="35"
     (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 </div>

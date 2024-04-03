@@ -116,13 +116,13 @@ export class BranchPage implements OnInit {
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
     const data = event?.rowData;
-    console.log('data: ', data);
+    // console.log('data: ', data);
 
     if (action === GridActions.edit) {
       this.sidebarItemService.setCurrentPage('Edit Branch');
       this.router.navigateByUrl(`branch/edit/${data?.branchId}`, { state: { route: 'edit', pageName: 'Edit Branch', title: 'Edit Branch' } })
     } else {
-      console.log('>>>>> event delete: ', event);
+      // console.log('>>>>> event delete: ', event);
     }
   }
 

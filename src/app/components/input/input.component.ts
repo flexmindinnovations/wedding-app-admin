@@ -67,8 +67,8 @@ export class InputComponent implements OnInit, AfterViewInit, OnDestroy, Control
     if (this.type === 'date') this.initDatePicker(dtEl);
 
     this.inputSubscription = this.sharedService.resetControl().subscribe((reset: any) => {
-      console.log('reset: ', reset);
-      
+      // console.log('reset: ', reset);
+
       this.inputValue.emit('');
       this.control.reset();
       // this.control.patchValue('');
