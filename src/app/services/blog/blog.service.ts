@@ -36,6 +36,9 @@ export class BlogService {
   getRequestStatus(): Observable<any> {
     return this.isRequestCompleted.asObservable();
   }
+  deleteBlog(blogId: number): Observable<any> {
+    return this.http.delete(`${this.endpoint}/Delete/${blogId}`)
+  }
 
 
 }

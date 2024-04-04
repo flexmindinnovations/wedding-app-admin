@@ -39,6 +39,6 @@ export class EventService {
   }
 
   deleteEvent(eventId: number): Observable<any> {
-    return this.http.delete(`${this.endpoint}/Delete/` + eventId);
+    return this.http.delete(`${this.endpoint}/Event/DeleteEvent/${eventId}`);
   }
 }

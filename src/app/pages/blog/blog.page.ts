@@ -11,6 +11,8 @@ import * as moment from 'moment';
 import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { RolesService } from 'src/app/services/role/roles.service';
+import { ModalController } from '@ionic/angular';
+import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
 
 @Component({
   selector: 'app-blog',
@@ -26,6 +28,8 @@ export class BlogPage implements OnInit, AfterViewInit {
   alertService = inject(AlertService);
   roleService = inject(RolesService);
   isAddActive: boolean = false;
+  canShowModal: boolean = false;
+  modalCtrl = inject(ModalController);
 
   // Row Data: The data to be displayed.
   rowData: any[] = [];
@@ -138,7 +142,42 @@ export class BlogPage implements OnInit, AfterViewInit {
     if (action === GridActions.edit) {
       this.router.navigateByUrl(`blog/edit/${data?.id}`, { state: { route: 'edit', pageName: 'Edit Blog', title: 'Edit Blog' } })
     } else {
-      // console.log('>>>>> event delete: ', event);
+      this.openDeleteModal(data);
     }
   }
+  async openDeleteModal(event?: any) {
+    console.log('open')
+    this.canShowModal = true;
+    const modal = await this.modalCtrl.create({
+      component: DeleteConfirmComponent,
+      componentProps: {
+        data: {
+          title: 'Are you sure you want to Delete?',
+          data: { ...event }
+        }
+      },
+      cssClass: 'delete-modal'
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['delete'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      const blogId = event?.id;
+      this.blogService.deleteBlog(blogId).subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.alertService.setAlertMessage(data?.message, AlertType.error);
+            this.getBlogList();
+          }
+        },
+        error: (error) => {
+          console.log('error: ', error);
+          this.alertService.setAlertMessage(error?.message, AlertType.error);
+        }
+      })
+
+    }
+  }
+
 }

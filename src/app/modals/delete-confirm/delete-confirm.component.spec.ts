@@ -9,7 +9,7 @@ describe('DeleteConfirmComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeleteConfirmComponent ],
+      declarations: [DeleteConfirmComponent],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 

@@ -1,3 +1,12 @@
-<p>
-  delete-confirm works!
-</p>
+<div class="delete-modal flex flex-col h-full">
+  <div class="header px-3 py-2 border-b border-b-gray-200 min-h-16 flex items-center justify-start">
+    <div class="modal-title">
+      <h1 class="m-0 text-base">{{data?.title}}</h1>
+    </div>
+  </div>
+  <div class="actions flex items-center h-16 justify-end p-3 gap-4">
+    <mt-button [title]="'Cancel'" size="md" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
+    <mt-button size="md" [title]="'Delete'" [isDelete]="true" [icon]="'save-outline'"
+      (action)="handleButtonClick($event)" />
+  </div>
+</div>

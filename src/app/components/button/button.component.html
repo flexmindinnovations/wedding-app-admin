@@ -1,5 +1,5 @@
-<button type="button" class="!m-0" [disabled]="isDisabled" [ngClass]="isCancel ? cancelButtonStyle : colorVarients"
-  (click)="handleButtonClick()">
+<button type="button" class="!m-0" [disabled]="isDisabled"
+  [ngClass]="(isCancel || isDelete) ? buttonStyle : colorVarients" (click)="handleButtonClick()">
   <div class="flex items-center justify-center gap-1 min-w-14"
     [ngClass]="iconSlot === 'start' ? 'flex-row' : 'flex-row-reverse'">
     @if (!textOnly) {
