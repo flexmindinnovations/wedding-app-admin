@@ -4,28 +4,27 @@
       <!-- <app-dropdown label="Contact Of" class="" [control]="formGroupControl['contactOf']" formControlName="contactOf"
         [options]="[]" /> -->
 
-      <app-input label="Contact Number" [controlValue]="formGroup.get('contactNumber')?.value" class="flex-grow"
-        type="number" [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
+      <app-input label="Contact Number" [disabled]="formGroup.get('contactNumber')?.value"
+        [controlValue]="formGroup.get('contactNumber')?.value" class="flex-grow" type="number"
+        [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
 
       <app-input label="WhatsApp Number" class="flex-grow" type="number"
         [controlValue]="formGroup.get('whatsUpNumber')?.value" [control]="formGroupControl['whatsUpNumber']"
         formControlName="whatsUpNumber" />
 
-        <app-input label="Email" class="flex-grow" type="email"
-        [controlValue]="formGroup.get('emailId')?.value" [control]="formGroupControl['emailId']"
-        formControlName="emailId" />
+      <app-input label="Email" class="flex-grow" type="email" [controlValue]="formGroup.get('emailId')?.value"
+        [control]="formGroupControl['emailId']" formControlName="emailId" />
 
       @if (countryList.length) {
       <app-dropdown label="Country" class="" [control]="formGroupControl['countryId']"
-        [controlValue]="formGroup.get('countryId')?.value"
-        (onSelectionChange)="onSelectionChange($event, 'countryId')" formControlName="countryId"
-        [options]="countryList" />
+        [controlValue]="formGroup.get('countryId')?.value" (onSelectionChange)="onSelectionChange($event, 'countryId')"
+        formControlName="countryId" [options]="countryList" />
       }
 
       @if (stateList.length) {
       <app-dropdown label="State" class="" [control]="formGroupControl['stateId']" formControlName="stateId"
-        [controlValue]="formGroup.get('stateId')?.value"
-        (onSelectionChange)="onSelectionChange($event, 'stateId')" [options]="stateList" />
+        [controlValue]="formGroup.get('stateId')?.value" (onSelectionChange)="onSelectionChange($event, 'stateId')"
+        [options]="stateList" />
       }
 
       @if (cityList.length) {
@@ -34,7 +33,7 @@
         [options]="cityList" />
       }
 
-      <app-input label="Home Address"  class="col-span-3 lg:col-span-4" type="text"
+      <app-input label="Home Address" class="col-span-3 lg:col-span-4" type="text"
         [control]="formGroupControl['homeAddress']" [controlValue]="formGroup.get('homeAddress')?.value"
         formControlName="homeAddress" [isMultiline]=true />
     </div>
@@ -42,6 +41,7 @@
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
     <!-- <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'"
       (action)="handleClickOnPrevious('contact')" /> -->
-    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'" (action)="handleClickOnNext('personal')" />
+    <mt-button [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'"
+      (action)="handleClickOnNext('personal')" />
   </div>
 </div>

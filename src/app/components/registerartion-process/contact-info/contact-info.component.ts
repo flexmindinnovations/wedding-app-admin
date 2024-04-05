@@ -30,7 +30,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   customerRegistrationService = inject(CustomerRegistrationService);
   sharedService = inject(SharedService);
   cdref = inject(ChangeDetectorRef);
-
   countryList: any = [];
   stateList: any = [];
   cityList: any = [];
@@ -49,6 +48,12 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.customerData) {
+      const props = {
+        contactNumber: this.customerData?.customerUserName
+      }
+      this.formGroup.patchValue(props);
+    }
     this.isEditMode = this.customerData['isContactInfoFill'];
     if (this.contactData) {
       if (this.isEditMode) this.patchFormData();

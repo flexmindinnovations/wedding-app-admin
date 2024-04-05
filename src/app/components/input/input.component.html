@@ -22,8 +22,8 @@
   } @else if(type === "text" && presentaion==="time"){
   <time-picker [value]="value" (selectedTime)="handleOnChange($event, 'time')" />
   } @else {
-  <input [type]="type" [name]="label" [id]="label" (blur)="onTouched()" (keyup)="handleOnChange($event)"
-    class="p-2.5 h-12"
+  <input [type]="type" [disabled]="isDisabled" [name]="label" [id]="label" (blur)="onTouched()"
+    (keyup)="handleOnChange($event)" class="p-2.5 h-12"
     [ngClass]="control.touched && control.invalid ? colorVarients + invalidControl : colorVarients + validControl"
     [value]="value" [placeholder]="placeholder" [required]="isRequired">
   @if (formControlName === 'userPassword' && hasValue) {

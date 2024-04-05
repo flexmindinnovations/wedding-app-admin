@@ -50,7 +50,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     { field: "emailId", width: 205 },
     { field: "registrationDate", headerName: 'Registered On', width: 120 },
     {
-      field: "isActive",
+      field: "isActiive",
       width: 100,
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
@@ -108,6 +108,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
           this.rowData = data.map((item: any) => {
             return {
               ...item,
+              isActive: item['customerStatus'],
               registrationDate: moment(item['registrationDate']).format('DD/MM/YYYY')
             }
           });
