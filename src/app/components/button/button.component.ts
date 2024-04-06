@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, buttonThemeVariables, iconSize, themeVariables } from 'src/util/util';
 
 @Component({
@@ -23,10 +24,16 @@ export class ButtonComponent implements OnInit {
   iconSize: string = '';
 
   @Output() action = new EventEmitter();
-  constructor() { }
+  constructor(
+    private sharedService: SharedService
+  ) { }
 
   ngOnInit() {
     this.setCurrentClass();
+
+    this.sharedService.getImagesSelected().subscribe((isSelected: any) => {
+      this.isDisabled = !isSelected;
+    })
   }
 
   setCurrentClass() {

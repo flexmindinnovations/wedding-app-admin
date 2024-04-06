@@ -4,9 +4,8 @@
       <!-- <app-dropdown label="Contact Of" class="" [control]="formGroupControl['contactOf']" formControlName="contactOf"
         [options]="[]" /> -->
 
-      <app-input label="Contact Number" [disabled]="formGroup.get('contactNumber')?.value"
-        [controlValue]="formGroup.get('contactNumber')?.value" class="flex-grow" type="number"
-        [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
+      <app-input label="Contact Number" [controlValue]="formGroup.get('contactNumber')?.value" class="flex-grow"
+        type="number" [control]="formGroupControl['contactNumber']" formControlName="contactNumber" />
 
       <app-input label="WhatsApp Number" class="flex-grow" type="number"
         [controlValue]="formGroup.get('whatsUpNumber')?.value" [control]="formGroupControl['whatsUpNumber']"

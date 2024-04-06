@@ -22,6 +22,12 @@ export class SharedService {
 
   logoutCall = new Subject();
 
+  imagesSelected = new Subject();
+
+  getImagesSelected(): Observable<any> {
+    return this.imagesSelected.asObservable();
+  }
+
   getLogoutEvent() {
     return this.logoutCall.asObservable();
   }

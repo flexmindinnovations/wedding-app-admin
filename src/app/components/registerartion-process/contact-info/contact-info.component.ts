@@ -20,6 +20,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   @Input() customerData: any = null;
   isEditMode: boolean = false;
   contactData: any;
+  @Input() control!: FormControl | any;
   @Output() contactInfoData = new EventEmitter();
 
   isCountryListAvailable = false;
@@ -48,16 +49,11 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.customerData) {
-      const props = {
-        contactNumber: this.customerData?.customerUserName
-      }
-      this.formGroup.patchValue(props);
-    }
     this.isEditMode = this.customerData['isContactInfoFill'];
     if (this.contactData) {
       if (this.isEditMode) this.patchFormData();
     }
+    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -71,13 +67,14 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
     })
-
+    this.formGroup.get('contactNumber')?.disable();
     this.getCountryList();
 
   }
 
   patchFormData() {
-    this.formGroup.patchValue(this.contactData)
+    const contactData = { ...this.contactData, contactNumber: this.customerData['customerUserName'] };
+    this.formGroup.patchValue(contactData);
     this.cdref.detectChanges();
   }
 

@@ -5,6 +5,7 @@ import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -22,8 +23,9 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   customerRegistrationService = inject(CustomerRegistrationService);
   alert = inject(AlertService);
   cdref = inject(ChangeDetectorRef);
+  sharedService = inject(SharedService);
   selectedFiles: any[] = [];
-  photoNext: boolean = false;
+  // photoNext: boolean = false;
   thumbnailImage = '';
   photo1 = '';
   imageName: string = '';
@@ -59,11 +61,11 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       this.imageData.push(this.thumbnailImage);
       this.imageData.push(this.photo1);
     }
-    if (this.selectedFiles.length === 2 || this.imageData.length === 2) {
-      this.photoNext = true;
-    }
+    // if (this.selectedFiles.length === 2 || this.imageData.length === 2) {
+    //   this.photoNext = true;
+    // }
     // console.log('photos', this.imageName, this.photoName);
-
+    if (this.imageData.length === 2) this.sharedService.imagesSelected.next(true);
     this.cdref.detectChanges();
   }
 
@@ -77,6 +79,10 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
         this.selectedFiles.push(event.file);
         break;
     }
+
+    if (this.selectedFiles.length === 2) this.sharedService.imagesSelected.next(true);
+    this.cdref.detectChanges();
+    // console.log(this.selectedFiles)
   }
 
   handleClickOnPrevious(src: string) {
