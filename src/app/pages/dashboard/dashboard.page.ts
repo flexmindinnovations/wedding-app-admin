@@ -33,6 +33,10 @@ export class DashboardPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.setCssClasses();
+
+    this.sharedService.getIsLoggedIn().subscribe((loggedIn: any) => {
+      if(loggedIn) this.router.navigateByUrl('/');
+    })
   }
 
   ngAfterViewInit(): void {

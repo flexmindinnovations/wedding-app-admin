@@ -15,14 +15,16 @@ export class SharedService {
   userPermissions = new Subject();
   http = inject(HttpConfigService);
   httpAssests = inject(HttpClient);
-
   showAlert = new Subject();
-
   controlRest = new Subject();
-
   logoutCall = new Subject();
-
   imagesSelected = new Subject();
+
+  isLoggedIn = new Subject();
+
+  getIsLoggedIn(): Observable<any> {
+    return this.isLoggedIn.asObservable();
+  }
 
   getImagesSelected(): Observable<any> {
     return this.imagesSelected.asObservable();
