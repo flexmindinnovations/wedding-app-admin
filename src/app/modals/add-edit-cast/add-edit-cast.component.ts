@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CastService } from 'src/app/services/cast/cast.service';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-add-edit-cast',
@@ -21,6 +22,10 @@ export class AddEditCastComponent implements OnInit {
   castId = 0;
   castName: string = '';
   subCastFormGroup!: FormArray;
+  sharedService = inject(SharedService)
+  cdref = inject(ChangeDetectorRef);
+  religionListOptions: any[] = [];
+  religionId: any;
 
   subCastList: any[] = [
     { id: 1, name: "Sub Cast", subCastName: '' },
@@ -34,6 +39,7 @@ export class AddEditCastComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getReligionList();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
@@ -48,8 +54,10 @@ export class AddEditCastComponent implements OnInit {
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
+          console.log(data);
           this.hasSubCastToggle = data?.hasSubcast;
           this.castName = data?.castName;
+          this.religionId = data?.religionId;
           this.subCastList = data.subCastList.map((item: any) => {
             item['name'] = 'Sub Cast';
             item['castId'] = this.castId;
@@ -59,6 +67,7 @@ export class AddEditCastComponent implements OnInit {
           const props = {
             hasSubCast: this.hasSubCastToggle,
             castName: this.castName,
+            religionId: this.religionId
           }
           this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
@@ -80,6 +89,7 @@ export class AddEditCastComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
+      religionId: ['', [Validators.required]],
       castName: ['', [Validators.required]],
       hasSubCast: !['', [Validators.required]],
       subCastList: this.fb.array([]),
@@ -115,7 +125,7 @@ export class AddEditCastComponent implements OnInit {
   }
 
   addNewCast() {
-    let formVal: any = { ...this.formGroup.value, castId: 0 };
+    let formVal: any = { ...this.formGroup.value, castId: 0, religionId: this.religionId };
     formVal['subCastList'] = this.subCastList.map((item: any) => {
       const obj = {
         subCastId: 0,
@@ -128,6 +138,7 @@ export class AddEditCastComponent implements OnInit {
       this.alert.setAlertMessage(`${formVal.castName} Already exists`, AlertType.warning);
     }
     else {
+      console.log(formVal)
       this.castService.addNewCast(formVal).subscribe({
         next: (data: any) => {
           if (data) {
@@ -143,7 +154,7 @@ export class AddEditCastComponent implements OnInit {
   }
 
   updateCast() {
-    let formVal: any = { ...this.formGroup.value, castId: this.castId };
+    let formVal: any = { ...this.formGroup.value, castId: this.castId, religionId: this.religionId };
     formVal['subCastList'] = this.subCastList.map((item: any) => {
       return {
         subCastId: item.subCastId ? item.subCastId : 0,
@@ -151,6 +162,7 @@ export class AddEditCastComponent implements OnInit {
         subCastName: item?.subCastName
       }
     });
+    console.log(formVal)
     this.castService.updateNewCast(formVal, this.castId).subscribe({
       next: (data: any) => {
         if (data) {
@@ -167,6 +179,11 @@ export class AddEditCastComponent implements OnInit {
 
   handleClickOnNext(src: string) {
     throw new Error('Method not implemented.');
+  }
+
+  onSelectionChange(event: any, src: string) {
+    const religionId = event?.id;
+    this.religionId = religionId
   }
 
   handleSubCastStateChange(event: any) {
@@ -199,6 +216,22 @@ export class AddEditCastComponent implements OnInit {
     if (control) control.setValue(event);
     this.subCastList[index].subCastName = event;
   }
-
+  getReligionList() {
+    this.sharedService.getReligionList().subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.religionListOptions = response?.map((item: any) => {
+            return {
+              id: item?.religionId,
+              title: item?.religionName,
+            }
+          })
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
+  }
 
 }

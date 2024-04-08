@@ -96,7 +96,7 @@ export class AddEditBlogPage implements OnInit, AfterViewInit {
     this.formGroup = this.fb.group({
       blogTitle: ['', [Validators.required]],
       blogText: !['', Validators.required],
-      blogDate: ['', [Validators.required]],
+      blogDate: !['', [Validators.required]],
       isActive: !['', [Validators.required]]
     })
   }

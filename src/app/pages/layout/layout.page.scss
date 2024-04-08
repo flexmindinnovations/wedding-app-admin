@@ -11,10 +11,11 @@
 
 ::ng-deep ion-modal {
   --width: 42%;
+  --height: 100px;
 }
 
 ::ng-deep timeout-container::part(content) {
-  height: 22%;
+  height: 10%;
   @apply rounded-lg;
 }
 

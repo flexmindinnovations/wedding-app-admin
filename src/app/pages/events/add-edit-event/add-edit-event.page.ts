@@ -92,7 +92,7 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
       eventName: ['', [Validators.required]],
       eventDescription: !['', Validators.required],
       location: ['', [Validators.required]],
-      eventDate: ['', [Validators.required]],
+      eventDate: !['', [Validators.required]],
       isActive: !['', [Validators.required]]
     })
 

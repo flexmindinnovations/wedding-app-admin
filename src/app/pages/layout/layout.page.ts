@@ -38,31 +38,7 @@ export class LayoutPage implements OnInit, AfterViewInit {
     private cdref: ChangeDetectorRef,
     private modalController: ModalController
   ) {
-    idle.setIdle(5000);
-    idle.setTimeout(5);
-    idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
-    idle.onIdleStart.subscribe(() => {
-      this.idleState = "IDLE";
-      this.isTimeOut = true;
-    });
-    idle.onIdleEnd.subscribe(() => {
-      this.idleState = "NOT_IDLE";
-      this.countdown = null;
-      cdref.detectChanges();
-    });
-    idle.onTimeout.subscribe(() => {
-      this.idleState = "TIMED_OUT";
-      this.authService.logoutUser();
-      setTimeout(() => {
-        this.isTimeOut = false;
-        cdref.detectChanges();
-        this.modalController.dismiss();
-        setTimeout(() => { this.router.navigateByUrl('login'); }, 100)
-      }, 1000)
-    });
-    idle.onTimeoutWarning.subscribe(seconds => this.countdown = seconds);
-    keepalive.interval(15);
-    keepalive.onPing.subscribe(() => this.lastPing = new Date());
+
   }
 
   ngOnInit(): void {
@@ -70,8 +46,13 @@ export class LayoutPage implements OnInit, AfterViewInit {
     const exp = this.authService.decodeToken(token);
     if (exp && exp * 1000 < Date.now()) {
       this.idleState = "TIMED_OUT";
-      this.isTimeOut = true;
       this.authService.logoutUser();
+      setTimeout(() => {
+        this.isTimeOut = false;
+        this.cdref.detectChanges();
+        this.modalController.dismiss();
+        setTimeout(() => { this.router.navigateByUrl('login'); }, 100)
+      }, 1000)
     }
     this.reset();
     this.router.events.subscribe((event: any) => {
@@ -83,6 +64,34 @@ export class LayoutPage implements OnInit, AfterViewInit {
         }
       }
     })
+
+    this.idle.setIdle(5000);
+    this.idle.setTimeout(5);
+    this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
+    this.idle.onIdleStart.subscribe(() => {
+      console.log('idle: ', this.idle);
+
+      this.idleState = "IDLE";
+      this.isTimeOut = true;
+    });
+    this.idle.onIdleEnd.subscribe(() => {
+      this.idleState = "NOT_IDLE";
+      this.countdown = null;
+      this.cdref.detectChanges();
+    });
+    this.idle.onTimeout.subscribe(() => {
+      this.idleState = "TIMED_OUT";
+      this.authService.logoutUser();
+      setTimeout(() => {
+        this.isTimeOut = false;
+        this.cdref.detectChanges();
+        this.modalController.dismiss();
+        setTimeout(() => { this.router.navigateByUrl('login'); }, 100)
+      }, 1000)
+    });
+    this.idle.onTimeoutWarning.subscribe(seconds => this.countdown = seconds);
+    this.keepalive.interval(3);
+    this.keepalive.onPing.subscribe(() => this.lastPing = new Date());
   }
 
   reset() {
