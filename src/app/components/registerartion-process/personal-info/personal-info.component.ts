@@ -114,6 +114,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       dateOfBirth: [new Date(), [Validators.required]],
       timeOfBirth: !['', [Validators.required]],
       occupationId: ['', [Validators.required]],
+      handycapId: !['', [Validators.required]],
       physicalStatus: !['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
@@ -137,6 +138,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     });
     this.spectacles = this.personalData['spectacles'];
     this.showPatrika = this.personalData['isPatrika'];
+    this.isPhysicallyAbled = this.personalData['isPhysicallyAbled'];
     this.tithiList = this.tithiList.map((item: any) => {
       Object.keys(this.personalData).forEach((key: any) => {
         if (item?.title.toLowerCase() === key) {
@@ -158,7 +160,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     formVal['occupationDetailId'] = this.occupationDetailId ? this.occupationDetailId : null;
     // formVal['customerPassword'] = formVal['customerPassword'] ? formVal['customerPassword'] : "";
     formVal['bloodGroupId'] = formVal['bloodGroupId'] ? formVal['bloodGroupId'] : null;
-    formVal['physicalStatus'] = this.isPhysicallyAbled ? formVal['physicalStatus'] : null;
+    formVal['handycapId'] = this.isPhysicallyAbled ? formVal['handycapId'] : null;
     formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";
     formVal['dateOfBirth'] = moment(formVal['dateOfBirth']).format();
     formVal['shakeDate'] = formVal['shakeDate'] ? moment(formVal['shakeDate']).format() : null;
@@ -308,7 +310,12 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     switch (src) {
       case 'educationId':
         this.hasSpecialization = event?.hasSpecialization;
+        console.log(this.hasSpecialization);
         if (this.hasSpecialization) this.getSpecialization(event?.id);
+        break;
+      case 'specializationId':
+        const specializationId = event?.specializationId;
+        this.specializationId = specializationId;
         break;
       case 'occupationId':
         this.hasChild = event?.hasChild;
@@ -318,18 +325,13 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
         const occupationDetailId = event?.occupationDetailId;
         this.occupationDetailId = occupationDetailId;
         break;
-      case 'specializationId':
-        const specializationId = event?.specializationId;
-        this.specializationId = specializationId;
-        break;
       case 'gender':
         break;
       case 'maritalStatus':
         break;
       case 'height':
-
         break;
-      case 'physicalStatus':
+      case 'handycapId':
         this.isOtherPhyicalCondition = event?.id === 7;
         break;
 
@@ -366,9 +368,10 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.educationService.getSpecializationListByEducationId(educationId).subscribe({
       next: (data: any) => {
         if (data) {
+          console.log(data);
           this.specializationListOptions = data.map((item: any) => {
             return {
-              id: item?.educationId,
+              id: item?.specializationId,
               title: item?.specializationName,
               educationId,
               specializationId: item?.specializationId

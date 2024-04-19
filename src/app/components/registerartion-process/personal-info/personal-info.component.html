@@ -99,8 +99,8 @@
 
       @if (isPhysicallyAbled) {
       <app-dropdown *ngIf="physicalStatusListOptions.length" label="Physical Status"
-        [control]="formGroupControl['physicalStatus']" [controlValue]="formGroup.get('physicalStatus')?.value"
-        formControlName="physicalStatus" (onSelectionChange)="onSelectionChange($event, 'physicalStatus')"
+        [control]="formGroupControl['handycapId']" [controlValue]="formGroup.get('handycapId')?.value"
+        formControlName="handycapId" (onSelectionChange)="onSelectionChange($event, 'handycapId')"
         [options]="physicalStatusListOptions" />
       @if (isOtherPhyicalCondition) {
       <app-input label="Physical Condition" type="text" [control]="formGroupControl['otherPhysicalCondition']"

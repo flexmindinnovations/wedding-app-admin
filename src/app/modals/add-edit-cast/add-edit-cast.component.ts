@@ -138,7 +138,6 @@ export class AddEditCastComponent implements OnInit {
       this.alert.setAlertMessage(`${formVal.castName} Already exists`, AlertType.warning);
     }
     else {
-      console.log(formVal)
       this.castService.addNewCast(formVal).subscribe({
         next: (data: any) => {
           if (data) {
@@ -162,7 +161,6 @@ export class AddEditCastComponent implements OnInit {
         subCastName: item?.subCastName
       }
     });
-    console.log(formVal)
     this.castService.updateNewCast(formVal, this.castId).subscribe({
       next: (data: any) => {
         if (data) {
@@ -183,7 +181,7 @@ export class AddEditCastComponent implements OnInit {
 
   onSelectionChange(event: any, src: string) {
     const religionId = event?.id;
-    this.religionId = religionId
+    this.religionId = religionId;
   }
 
   handleSubCastStateChange(event: any) {

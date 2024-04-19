@@ -7,11 +7,9 @@
   <div class="body ion-padding border-b border-b-gray-200 flex-grow overflow-auto max-h-96">
     <form [formGroup]="formGroup">
       <div class="flex flex-col gap-3 p-2">
-        @if (religionListOptions.length) {
-        <app-dropdown label="Religion" [control]="formGroupControl['religionId']" formControlName="religionId"
-          [controlValue]="formGroup.get('religionId')?.value"
-          (onSelectionChange)="onSelectionChange($event, 'religionId')" [options]="religionListOptions" />
-        }
+        <app-dropdown *ngIf="religionListOptions.length" label="Religion" [control]="formGroupControl['religionId']"
+          formControlName="religionId" (onSelectionChange)="onSelectionChange($event, 'religionId')"
+          [controlValue]="formGroup.get('religionId')?.value" [options]="religionListOptions" />
         <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
           [control]="formGroupControl['castName']" formControlName="castName" />
         <p class="flex items-center justify-start gap-3">
