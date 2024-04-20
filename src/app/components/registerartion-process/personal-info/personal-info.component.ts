@@ -115,6 +115,8 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       timeOfBirth: !['', [Validators.required]],
       occupationId: ['', [Validators.required]],
       physicalStatus: !['', [Validators.required]],
+      spectacles: !['', [Validators.required]],
+      isPatrika: !['', [Validators.required]],
       otherPhysicalCondition: ['', ![Validators.required]],
       maritalStatus: ['', [Validators.required]],
       hobbies: ['', ![Validators.required]],
@@ -337,19 +339,19 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   handleSpectacleStateChange(event: any) {
-    const value = event?.currentTarget.checked;
-    this.spectacles = value;
+    // const value = event?.currentTarget.checked;
+    this.spectacles = event;
   }
 
   isPhysicallyAbledStateChange(event: any) {
-    const value = event?.currentTarget.checked;
-    this.isPhysicallyAbled = value;
+    // const value = event?.currentTarget.checked;
+    this.isPhysicallyAbled = event;
   }
 
   handlePatrikaStateChange(event: any) {
     this.tithiList.forEach((row: any) => row.tithi = false);
-    const value = event?.currentTarget.checked;
-    this.showPatrika = value;
+    // const value = event?.currentTarget.checked;
+    this.showPatrika = event;
   }
 
   handleTithiStateChange(event: any, item: any) {

@@ -36,12 +36,96 @@
 // @import "ag-grid-community/styles/ag-theme-balham-dark.css";
 // @import 'ag-grid-community/styles/ag-theme-quartz-dark.css';
 
+@import "tailwindcss/base" layer(tailwindcss);
+@import "tailwindcss/components" layer(tailwindcss);
+@import "tailwindcss/utilities" layer(tailwindcss);
+
+@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+@import "../node_modules/primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+
+/* Core Grid CSS */
+@import "ag-grid-community/styles/ag-grid.css";
+/* Quartz Theme Specific CSS */
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+@import "ag-grid-community/styles/ag-theme-balham.css";
+// @import "ag-grid-community/styles/ag-theme-balham-dark.css";
+// @import 'ag-grid-community/styles/ag-theme-quartz-dark.css';
+
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+p,
+span:not(ag-icon) {
+  // font-family: "Ubuntu", sans-serif;
+  font-family: "Overpass", sans-serif !important;
+  font-optical-sizing: auto;
+  margin: 0;
+}
+
+.header {
+  @apply flex items-center justify-start;
+
+  .modal-title {
+    @apply flex w-full h-full items-center min-h-12 px-2  justify-start;
+
+    h1 {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+
+span,
+label,
+p {
+  @apply font-normal text-sm;
+}
+
+.p-dialog {
+  .p-dialog-header {
+    .p-dialog-title {
+      @apply text-lg font-semibold;
+    }
+  }
+}
+
+::ng-deep .p-dialog-header {
+  .p-dialog-title {
+    @apply text-lg font-semibold;
+  }
+}
+
+
+.pi {
+  font-family: 'primeicons' !important;
+}
+
 border-top {
   @apply border-t border-t-gray-100;
 }
 
 border-right {
   @apply border-r border-r-gray-100;
+}
+
+.ag-theme-balham .ag-icon {
+  font-family: "agGridBalham" !important;
 }
 
 .main {
@@ -52,11 +136,45 @@ border-right {
   }
 }
 
-label,
-.input {
-  @apply dark:bg-gray-700 dark:text-white;
+::ng-deep p-checkbox {
+  @apply flex items-center justify-start gap-2;
 }
 
-.dropdown-button {
-  @apply dark:bg-gray-700 dark:text-white dark:border dark:border-gray-600 dark:hover:bg-gray-200;
+
+
+
+.h1-gradient {
+  font-family: "Overpass", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  @apply text-lg md:lg:text-3xl xl:text-4xl m-0;
+  background: rgb(247, 0, 104);
+  background: -moz-linear-gradient(to left, rgba(247, 0, 104, 1) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  background: -webkit-linear-gradient(to left, rgba(247, 0, 104, 1) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  background: linear-gradient(to left, rgba(247, 0, 104) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F70068', endColorstr='#441066', GradientType=1);
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.p-gradient {
+  font-family: "Overpass", sans-serif;
+  font-optical-sizing: auto;
+  position: relative;
+  display: block;
+  font-size: 16px;
+  line-height: 1em;
+  color: #ff8a01;
+  font-weight: 500;
+  background: rgb(247, 0, 104);
+  background: -moz-linear-gradient(to left, rgba(247, 0, 104, 1) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  background: -webkit-linear-gradient(to left, rgba(247, 0, 104, 1) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  background: linear-gradient(to left, rgba(247, 0, 104) 0%, rgba(68, 16, 102, 1) 25%, rgba(247, 0, 104, 1) 75%, rgba(68, 16, 102, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F70068', endColorstr='#441066', GradientType=1);
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 5px;
 }

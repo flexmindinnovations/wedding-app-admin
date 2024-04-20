@@ -4,7 +4,7 @@
       <p class="text-sm font-bold">{{gridTitle}}</p>
     </div>
     @if (canAddItem) {
-    <mt-button [title]="gridTitle" [icon]="'add-outline'" [size]="'sm'"
+    <mt-button [title]="gridTitle" [hybrid]="true" [icon]="'pi pi-plus'" [size]="'small'"
       (action)="handleActionClick($event)"></mt-button>
     }
   </div>

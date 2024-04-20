@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { InstanceOptions, Modal, ModalInterface, ModalOptions } from 'flowbite';
 import { SearchModalComponent } from 'src/app/modals/search-modal/search-modal.component';
 
 @Component({

@@ -1,12 +1,2 @@
-<button type="button" class="!m-0" [disabled]="isDisabled"
-  [ngClass]="(isCancel || isDelete) ? buttonStyle : colorVarients" (click)="handleButtonClick()">
-  <div class="flex items-center justify-center gap-1 min-w-14"
-    [ngClass]="iconSlot === 'start' ? 'flex-row' : 'flex-row-reverse'">
-    @if (!textOnly) {
-    <ion-icon slot="end" [ngClass]="iconSize" [name]="icon"></ion-icon>
-    }
-    @if (!iconOnly) {
-    <p class="m-0 text-sm">{{title}}</p>
-    }
-  </div>
-</button>
+
+<p-button [label]="title" class="text-sm font-thin" (onClick)="handleButtonClick()" [disabled]="isDisabled" [severity]="isCancel ? 'secondary' : isDelete ? 'danger' : severity" [icon]="icon" [size]="size" [ngClass]="size" [iconPos]="iconPos" [ngClass]="hybrid ? 'hybrid' : '' "></p-button>

@@ -1,13 +1,13 @@
 import { TitleCasePipe } from '@angular/common';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { NavigationStart, Router, RouterEvent } from '@angular/router';
-import { initFlowbite } from 'flowbite';
 import { SidebarItemsService } from './services/sidebar-items.service';
 import { AUTO_DISMISS_TIMER, COLOR_SCHEME } from 'src/util/util';
 import { Spinkit } from 'ng-http-loader';
 import { SharedService } from './services/shared.service';
 import { AlertService } from './services/alert/alert.service';
 import { AlertType } from './enums/alert-types';
+import { CustomLoaderComponent } from './components/custom-loader/custom-loader.component';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -32,6 +32,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   alertType: AlertType = 1;
   alertMessage: string = '';
   showAlert: boolean = false;
+
+  loaderComponent = CustomLoaderComponent;
   constructor() { }
 
   ngOnInit(): void {
@@ -39,7 +41,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    initFlowbite();
     this.alertService.getAlertMessage().subscribe((data: any) => {
       this.showAlert = true;
       this.alertMessage = data?.message;

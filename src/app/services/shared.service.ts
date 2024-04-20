@@ -21,6 +21,12 @@ export class SharedService {
   imagesSelected = new Subject();
 
   isLoggedIn = new Subject();
+  isReadOnlyMode = new Subject();
+
+
+  getIsReadOnlyMode(): Observable<any> {
+    return this.isReadOnlyMode.asObservable();
+  }
 
   getIsLoggedIn(): Observable<any> {
     return this.isLoggedIn.asObservable();

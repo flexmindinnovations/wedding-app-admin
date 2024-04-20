@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { delay, takeUntil, tap } from 'rxjs/operators';
 import { Subscription, of } from 'rxjs';
-import { COLOR_SCHEME, inputThemeVariables } from 'src/util/util';
+import { COLOR_SCHEME, DOMAIN, findInvalidControlsRecursive, inputThemeVariables } from 'src/util/util';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -19,7 +19,7 @@ export class LoginPage implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
-
+  domain = DOMAIN;
   formGroup!: FormGroup;
   fb = inject(FormBuilder);
   authService = inject(AuthService);
@@ -71,7 +71,11 @@ export class LoginPage implements OnInit, OnDestroy {
   handleSignIn() {
     this.isLoading = true;
     const formInput = this.formGroup.value;
-    if (!this.formGroup.valid) return;
+    if (this.formGroup.invalid) {
+      this.validateFormGroup();
+      this.alert.setAlertMessage("One or more fields are empty", AlertType.error);
+      return;
+    };
     this.subs.push(
       this.authService.loginUser(formInput)
         .subscribe({
@@ -106,6 +110,10 @@ export class LoginPage implements OnInit, OnDestroy {
     );
   }
 
+  validateFormGroup() {
+    const invalidControls = findInvalidControlsRecursive(this.formGroup);
+  }
+
   resetForm() {
     this.formGroup.reset();
     this.isLoading = false;
@@ -117,9 +125,28 @@ export class LoginPage implements OnInit, OnDestroy {
     this.sharedService.isLoggedIn.next(true);
   }
 
-  handlePasswordVisiblity() {
-    this.showPassword = !this.showPassword;
-    this.passwordToggleIcon = this.passwordToggleIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
+  getSeverity() {
+    let severity = '';
+    if (this.isLoading) {
+      severity = 'secondary';
+    } else if (this.isLoggedIn) {
+      severity = 'success';
+    } else {
+      severity = '';
+    }
+    return severity;
+  }
+
+  getIcon() {
+    let icon = '';
+    if (this.isLoading) {
+      icon = 'pi pi-spin pi-spinner';
+    } else if (this.isLoggedIn) {
+      icon = 'pi pi-check';
+    } else {
+      icon = 'pi pi-lock';
+    }
+    return icon;
   }
 
   ngOnDestroy(): void {

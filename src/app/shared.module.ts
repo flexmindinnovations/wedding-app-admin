@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { ButtonComponent } from "./components/button/button.component";
 import { DarkModeComponent } from "./components/dark-mode/dark-mode.component";
 import { DropdownComponent } from "./components/dropdown/dropdown.component";
@@ -36,6 +36,80 @@ import { AddEditUserComponent } from "./modals/add-edit-user/add-edit-user.compo
 import { CustomHttpInterceptor } from "./interceptors/http.interceptor";
 import { RegisterCustomerComponent } from "./modals/register-customer/register-customer.component";
 
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { CarouselModule } from 'primeng/carousel';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MessagesModule } from 'primeng/messages';
+import { MenuModule } from 'primeng/menu';
+import { MenubarModule } from 'primeng/menubar';
+import { AvatarModule } from 'primeng/avatar';
+import { DialogModule } from 'primeng/dialog';
+import { PasswordModule } from 'primeng/password';
+import { SplitterModule } from 'primeng/splitter';
+import { ListboxModule } from 'primeng/listbox';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ScrollTopModule } from 'primeng/scrolltop';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { BadgeModule } from 'primeng/badge';
+import { ImageModule } from 'primeng/image';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { SidebarModule } from 'primeng/sidebar';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FieldsetModule } from 'primeng/fieldset';
+import { AnimateOnScrollModule } from 'primeng/animateonscroll';
+import { ToolbarModule } from 'primeng/toolbar';
+import { DividerModule } from 'primeng/divider';
+import { TableModule } from 'primeng/table';
+import { CustomLoaderComponent } from "./components/custom-loader/custom-loader.component";
+import { CheckboxComponent } from "./components/checkbox/checkbox.component";
+
+
+
+const modules: any = [
+    InputTextModule,
+    DropdownModule,
+    ButtonModule,
+    CarouselModule,
+    CheckboxModule,
+    MessagesModule,
+    MenuModule,
+    MenubarModule,
+    AvatarModule,
+    DialogModule,
+    PasswordModule,
+    SplitterModule,
+    ListboxModule,
+    CalendarModule,
+    InputTextareaModule,
+    SelectButtonModule,
+    ToggleButtonModule,
+    ScrollTopModule,
+    ConfirmPopupModule,
+    OverlayPanelModule,
+    BadgeModule,
+    ImageModule,
+    ToastModule,
+    SidebarModule,
+    DynamicDialogModule,
+    FieldsetModule,
+    TableModule,
+    ToolbarModule,
+    AnimateOnScrollModule,
+    DividerModule,
+    NgHttpLoaderModule.forRoot(),
+    // for Router use:
+    LoadingBarRouterModule,
+    // for Core use:
+    LoadingBarModule,
+];
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -66,7 +140,9 @@ import { RegisterCustomerComponent } from "./modals/register-customer/register-c
         TimePickerComponent,
         AddEditHandycapComponent,
         AddEditUserComponent,
-        RegisterCustomerComponent
+        RegisterCustomerComponent,
+        CustomLoaderComponent,
+        CheckboxComponent
     ],
     imports: [
         CommonModule,
@@ -82,7 +158,8 @@ import { RegisterCustomerComponent } from "./modals/register-customer/register-c
         // for Router use:
         LoadingBarRouterModule,
         // for Core use:
-        LoadingBarModule
+        LoadingBarModule,
+        ...modules
         // AgGridModule.withComponents([ButtonRendererComponent])
     ],
     exports: [
@@ -119,15 +196,22 @@ import { RegisterCustomerComponent } from "./modals/register-customer/register-c
         TimePickerComponent,
         AddEditHandycapComponent,
         AddEditUserComponent,
-        RegisterCustomerComponent
+        RegisterCustomerComponent,
+        CustomLoaderComponent,
+        CheckboxComponent,
+        ...modules
     ],
     providers: [
+        MessageService,
+        DialogService,
+        DynamicDialogRef,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: CustomHttpInterceptor,
             multi: true
         }
-    ]
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class SharedModule { }

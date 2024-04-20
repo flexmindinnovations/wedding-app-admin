@@ -81,11 +81,14 @@ export class AddEditBranchPage implements OnInit {
     })
   }
 
-
-
   setCurrentClass() {
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
     this.cssClass = themeVariables[this.colorScheme];
+  }
+
+  getBackgroundColor() {
+    const classes = `bg-${this.colorScheme}-500 rounded-full active`;
+    return classes;
   }
 
   initFormGroup() {
@@ -207,6 +210,8 @@ export class AddEditBranchPage implements OnInit {
   }
   getStateByCountry(countryId: number) {
     if (countryId) {
+      this.stateList = [];
+      this.cityList = [];
       this.sharedService.getStatByCountry(countryId).subscribe({
         next: (data: any[]) => {
           this.stateList = data?.map((item: any) => {
@@ -227,6 +232,7 @@ export class AddEditBranchPage implements OnInit {
   }
   getCityByState(stateId: number) {
     if (stateId) {
+      this.cityList = [];
       this.sharedService.getCityByState(stateId).subscribe({
         next: (data: any[]) => {
           this.cityList = data?.map((item: any) => {

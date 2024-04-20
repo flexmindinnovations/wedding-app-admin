@@ -9,3 +9,19 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
+.active {
+    @apply rounded-full;
+    /* Add any other styles for the active state */
+}
+
+::ng-deep .toggle-button {
+    .active {
+        .p-button {
+            @apply h-full bg-transparent rounded-full text-white;
+        }
+    }
+    .p-button {
+        @apply h-full bg-transparent rounded-full text-black;
+    }
+}

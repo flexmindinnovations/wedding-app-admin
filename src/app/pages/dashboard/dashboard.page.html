@@ -6,10 +6,10 @@
       <p class="font-normal text-white dark:text-gray-400">{{item?.title}}</p>
       <h5 class="mb-2 text-2xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h5>
     </li> -->
-    <li class="block cursor-pointer p-4 min-w-32 min-h-32 shadow-lg border rounded-lg" (click)="handleOnItemClick(item)"
+    <li class="cursor-pointer p-4 min-w-32 min-h-32 shadow-lg border rounded-lg flex flex-col items-center justify-evenly" (click)="handleOnItemClick(item)"
       [ngClass]="cssClass">
       <p class="font-normal text-sm text-center text-white dark:text-gray-400">{{item?.title}}</p>
-      <h5 class="mb-2 text-center text-2xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h5>
+      <h1 class="mb-2 text-center text-2xl font-bold tracking-tight text-white dark:text-white">{{item?.count}}</h1>
       @if (item?.isLink) {
       <div class="icon-container flex items-center justify-end">
         <ion-icon class="rotate-90" [name]="item?.icon"></ion-icon>
@@ -21,13 +21,9 @@
 
   <div class="profile-info flex-grow border-b border-b-gray-100 px-4 py-4">
     <div class="profile-toggle w-full flex items-center justify-end">
-      <p class="flex items-center justify-start gap-3">
-        <span (click)="showProfileSelector.click()" class="text-xs mt-[2px] cursor-pointer ml-2 select-none">
-          Show Profile Details</span>
-        <input #showProfileSelector type="checkbox" id="react-option" [checked]="showProfile"
-          (change)="handleShowProfileStateChange($event)"
-          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
-      </p>
+      <p-checkbox label="Show Profile Details" class="flex flex-row-reverse items-center justify-start cursor-pointer gap-2" binary="true"
+        [(ngModel)]="showProfile" (ngModelChange)="handleShowProfileStateChange($event)"
+        name="showProfile"></p-checkbox>
     </div>
     @if (showProfile) {
     <div class="header flex items-center justify-between ">

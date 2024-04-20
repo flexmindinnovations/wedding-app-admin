@@ -11,11 +11,15 @@ import { COLOR_SCHEME, buttonThemeVariables, iconSize, themeVariables } from 'sr
 export class ButtonComponent implements OnInit {
   @Input() title: string = '';
   @Input() icon: string = '';
+  @Input() severity: string = '';
+  @Input() iconPos: ButtonIconPosition = 'left';
   @Input() textOnly = false;
+  @Input() hybrid = false;
   @Input() iconOnly = false;
+  @Input() buttonType: ButtonTypes = 'default';
   @Input('iconSlot') iconSlot: 'start' | 'end' = 'start';
   @Input('disabled') isDisabled = false;
-  @Input() size: 'sm' | 'md' | 'lg' = 'lg';
+  @Input() size: ButtonSize = 'small';
   @Input() isCancel: boolean = false;
   @Input() isDelete: boolean = false;
   colorScheme: any = COLOR_SCHEME;
@@ -49,3 +53,6 @@ export class ButtonComponent implements OnInit {
     this.action.emit({ isCancel: this.isCancel });
   }
 }
+export type ButtonSize = 'small' | 'large';
+export type ButtonTypes = 'normal' | 'default' | 'danger' | 'success';
+type ButtonIconPosition = 'left' | 'right' | 'top' | 'bottom';

@@ -168,8 +168,7 @@ export class AddEditEducationComponent implements OnInit, OnDestroy {
   }
 
   handleEducationStateChange(event: any) {
-    const value = event?.currentTarget.checked;
-    this.hasSpecializationToggle = value;
+    this.hasSpecializationToggle = event;
   }
 
   handleAddRowClick(event: any) {

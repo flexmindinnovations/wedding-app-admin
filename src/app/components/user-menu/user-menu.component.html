@@ -1,4 +1,4 @@
-<button [id]="buttonId" [attr.data-dropdown-toggle]="menuId" (click)="openUserMenu()"
+<!-- <button [id]="buttonId" [attr.data-dropdown-toggle]="menuId" (click)="openUserMenu()"
   class="flex text-sm bg-gray-100 w-8 h-8 p-2 hover:bg-gray-300 rounded-full md:me-0 focus:ring-4 focus:ring-gray-400 dark:focus:ring-gray-600"
   type="button">
   <span class="sr-only">Open user menu</span>
@@ -18,17 +18,9 @@
       }
     </div>
     <div class="font-extralight opacity-80 truncate select-none text-sm">{{profileInfo?.emailId}}</div>
-  </div>
-  <!-- <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUserAvatarButton">
-    <li>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Profile</a>
-    </li>
-    <li>
+  </div> -->
 
-    </li>
-  </ul> -->
-  <div (click)="handleUserSignOut()" class="py-2 cursor-pointer">
-    <a
-      class="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
-  </div>
-</div>
+<p-menu #menu [model]="profileItems" [popup]="true" appendTo="body"></p-menu>
+<p-avatar (click)="menu.toggle($event)" class="flex items-end cursor-pointer"
+  [image]="iconSrc" styleClass="mr-2"
+  shape="circle"></p-avatar>

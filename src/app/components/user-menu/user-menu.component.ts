@@ -1,9 +1,10 @@
 import { SharedService } from 'src/app/services/shared.service';
-import { AfterContentInit, Component, OnInit, inject } from '@angular/core';
+import { AfterContentInit, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Dropdown } from 'flowbite';
 import { v4 as uuidv4 } from 'uuid';
+import { MenuItem } from 'primeng/api';
+import { Menu } from 'primeng/menu';
 
 
 @Component({
@@ -15,23 +16,36 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   iconSrc = '/assets/icon/user.png';
   router = inject(Router);
   profileInfo: any = {};
-  isOpen = false;
-  menuId: any = uuidv4();
-  buttonId = uuidv4();
-  dropdown: any;
   sharedService = inject(SharedService);
+  @ViewChild('menu', {static: true}) menuEl!: Menu;
 
-  dropdownOptions: any = {
-    placement: 'bottom',
-    triggerType: 'click',
-    offsetSkidding: 0,
-    offsetDistance: 10,
-    delay: 300,
-    ignoreClickOutsideClass: false,
-    onHide: () => { this.isOpen = false; },
-    onShow: () => { },
-    onToggle: () => { },
-  }
+
+  profileItems: MenuItem[] = [
+    {
+      items: [
+        // {
+        //   label: 'Profile',
+        //   icon: 'pi pi-user',
+        //   focus: false,
+        //   command: () => {
+        //     // this.router.navigateByUrl('profile/personal');
+        //   }
+        // },
+        // {
+        //   separator: true
+        // },
+        {
+          label: 'Logout',
+          styleClass: 'logout-option',
+          icon: 'pi pi-sign-out',
+          command: () => {
+            this.menuEl.hide();
+            this.handleUserSignOut();
+          }
+        }
+      ]
+    }
+  ];
 
   constructor() { }
 
@@ -45,18 +59,6 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   handleImageLoadError(event: ErrorEvent) {
   }
 
-  openUserMenu() {
-    const targetEl = document.getElementById(this.menuId);
-    const triggerEl = document.getElementById(this.buttonId);
-    const instanceOptions = {
-      id: this.menuId,
-      override: false
-    };
-    this.dropdown = new Dropdown(targetEl, triggerEl, this.dropdownOptions, instanceOptions);
-    if (this.isOpen) this.dropdown.hide();
-    else this.dropdown.show();
-    this.isOpen = !this.isOpen;
-  }
 
   handleUserSignOut() {
     localStorage.removeItem('token');
