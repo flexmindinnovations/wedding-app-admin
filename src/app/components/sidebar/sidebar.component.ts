@@ -104,7 +104,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     let activeRoute: any;
     if (isNestedRoute) activeRoute = currentRoute.split('/')[1];
     else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
-    console.log('activeRoute: ', activeRoute);
+    // console.log('activeRoute: ', activeRoute);
     
     this.sidebarItems.forEach(each => each.isActive = false);
     if (activeRoute) this.setActiveItem(activeRoute);
