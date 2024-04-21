@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
@@ -19,13 +20,32 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   currentStepData!: FormStep;
   themesParams = stepperThemeVariables['lastItem'];
 
+  stepperRoutes = ['personal', 'family', 'contact', 'other', 'photos'];
+
   colorVarients: any;
-  constructor() {
+  constructor(
+    private router: Router
+  ) {
     this.setCurrentClass();
   }
 
+  @Input() template: any;
+  active: number = 0;
+
   ngOnInit() {
     this.getFormStepperItems();
+
+    this.router.events.subscribe((events: any) => {
+      const currentUrl = this.router.url;
+      const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
+      if (activeRoute && this.stepperRoutes.includes(activeRoute)) this.setActiveStep(activeRoute);
+    })
+  }
+
+  setActiveStep(activeRoute: string) {
+    this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
+    const activeItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.route === activeRoute);
+    if (activeItemIndex > -1) this.registrationSteps[activeItemIndex].isActive = true;
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {

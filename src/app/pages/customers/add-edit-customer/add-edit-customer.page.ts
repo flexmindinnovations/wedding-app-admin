@@ -1,10 +1,13 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
+import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
+import { FormStepperService } from 'src/app/services/form-stepper.service';
 
 @Component({
   selector: 'app-add-edit-customer',
@@ -12,6 +15,12 @@ import { CustomerRegistrationService } from 'src/app/services/customer-registrat
   styleUrls: ['./add-edit-customer.page.scss'],
 })
 export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
+
+  stepperItems: StepperFormItem[] = [];
+  active: number = 0;
+  formStepperService = inject(FormStepperService);
+
+
   personalDetailsFormGroup!: FormGroup;
   contactDetailsFormGroup !: FormGroup;
   completedStep!: FormStep;
@@ -29,8 +38,19 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getFormStepperItems();
   }
 
+  getFormStepperItems() {
+    this.formStepperService.getFormStepperItems().subscribe((items: StepperFormItem[]) => {
+      this.stepperItems = items.map((item: StepperFormItem) => {
+        if (item.id === 1) {
+          item.isActive = true;
+        }
+        return item;
+      });
+    })
+  }
   ngAfterViewInit(): void {
     this.activeRouter.params.subscribe((params: any) => {
       this.customerId = params && params['id'] ? params['id'] : 0;

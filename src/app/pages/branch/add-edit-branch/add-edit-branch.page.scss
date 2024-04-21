@@ -6,7 +6,7 @@
 ::ng-deep .toggle-button {
     .active {
         .p-button {
-            @apply h-full bg-transparent rounded-full text-white;
+            @apply h-8 bg-transparent rounded-full text-white;
         }
     }
     .p-button {

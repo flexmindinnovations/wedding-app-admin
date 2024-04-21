@@ -131,8 +131,12 @@ export class CustomersPage implements OnInit, AfterViewInit {
     const userNameList = [...this.rowData?.map((user: any) => user.mobileNo)].filter((user: any) => user !== '');
     const modal = await this.modalCtrl.create({
       component: RegisterCustomerComponent,
+      htmlAttributes: {
+        width: '30%'
+      },
       cssClass: 'register-customer-modal',
       componentProps: {
+        
         data: {
           title: 'Register Customer',
           data: { ...event, userNameList }
@@ -152,7 +156,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.customerId}`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer' } });
+      this.router.navigateByUrl(`customers/edit/${data?.customerId}/personal`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer' } });
     } else {
       // console.log('>>>>> event delete: ', event);
     }

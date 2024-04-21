@@ -1,6 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { MessageService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -10,6 +12,7 @@ import { EducationService } from 'src/app/services/education/education.service';
 import { HeightService } from 'src/app/services/height/height.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, TITHI_LIST, findInvalidControlsRecursive, getRandomNumber, inputThemeVariables } from 'src/util/util';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'personal-info',
@@ -59,9 +62,12 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
+  key = uuidv4();
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.setCurrentClass();
   }
@@ -73,6 +79,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
+    this.getMasterData();
     this.initFormGroup();
     this.genderOptions = [
       { id: 'male', title: 'Male' },
@@ -88,7 +95,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    this.getMasterData();
     if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
   }
 
@@ -175,9 +181,47 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
-        this.alert.setAlertMessage(item, AlertType.error);
+        const itemName = this.transformString(item);
+        // this.showToast(`${itemName} is required`, AlertType.error);
+        // this.alert.setAlertMessage(`${itemName} is required`, AlertType.error);
       })
     }
+  }
+
+  transformString(input: any) {
+    let stringWithSpace = input.replace(/([a-z])([A-Z])/g, '$1 $2');
+    if (stringWithSpace.includes('Id')) stringWithSpace = stringWithSpace.replace('Id', '');
+    stringWithSpace = stringWithSpace.charAt(0).toUpperCase() + stringWithSpace.slice(1);
+    return stringWithSpace;
+  }
+
+  showToast(message: string, alertType: AlertType) {
+    this.messageService.add({
+      key: this.key,
+      sticky: true,
+      severity: this.getAlertType(alertType),
+      summary: 'Error',
+      detail: message
+    });
+
+    setTimeout(() => {
+      this.handleHideAlert();
+    }, 3000)
+  }
+
+  getAlertType(alertType: AlertType) {
+    switch (alertType) {
+      case AlertType.success:
+        return 'Success';
+      case AlertType.error:
+        return 'Error';
+      case AlertType.warning:
+        return 'Warning';
+    }
+  }
+
+  handleHideAlert() {
+    this.messageService.clear();
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
@@ -205,6 +249,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
           }
           this.personalInfoData.emit(props);
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl('customers/add/family');
         }
       },
       error: (error: any) => {
@@ -240,6 +285,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
           }
           this.personalInfoData.emit(props);
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl(`customers/edit/${customerId}/family`);
         }
       },
       error: (error: any) => {
@@ -250,6 +296,8 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getMasterData() {
+    console.log('getMasterData: ',);
+
     const education = this.educationService.getEducationList();
     const height = this.heightService.getHeightList();
     const handycap = this.sharedService.getHandyCapItemList();

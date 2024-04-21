@@ -1,5 +1,5 @@
 ::ng-deep .p-dropdown {
-    @apply w-full text-sm leading-4  dark:bg-dark-950 dark:text-white;
+    @apply w-full text-sm leading-4 dark:bg-dark-950 dark:text-white;
 
     .p-dropdown-items-wrapper {
         @apply dark:bg-dark-950 dark:text-white;
@@ -9,9 +9,7 @@
         }
 
         .p-focus {
-            @apply text-gray-700 shadow-none outline-none dark:text-white dark:bg-gray-700;
-            color: #4b5563;
-            background: #e5e7eb;
+            @apply text-white bg-gray-400 shadow-none outline-none dark:text-white dark:bg-dark-700;
         }
     }
 }
@@ -20,8 +18,8 @@ label {
     @apply text-sm mb-2 mx-1 text-dark-700 dark:bg-dark-950 dark:text-white;
 }
 
-::ng-deep .p-dropdown-label {
-    @apply p-2.5;
+.p-dropdown-label {
+    @apply text-dark-950 dark:text-white;
 }
 
 ::ng-deep .p-inputwrapper-focus {

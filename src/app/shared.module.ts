@@ -69,6 +69,12 @@ import { DividerModule } from 'primeng/divider';
 import { TableModule } from 'primeng/table';
 import { CustomLoaderComponent } from "./components/custom-loader/custom-loader.component";
 import { CheckboxComponent } from "./components/checkbox/checkbox.component";
+import { StepsModule } from 'primeng/steps';
+import { StepperModule } from 'primeng/stepper';
+import { CardModule } from 'primeng/card';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 
 
@@ -108,6 +114,12 @@ const modules: any = [
     LoadingBarRouterModule,
     // for Core use:
     LoadingBarModule,
+    StepsModule,
+    StepperModule,
+    CardModule,
+    IconFieldModule,
+    InputIconModule,
+    InputSwitchModule
 ];
 
 @NgModule({

@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -30,7 +31,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   sharedService = inject(SharedService);
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
   }
 
@@ -124,6 +126,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
             }
           }
           this.otherInfoData.emit(props);
+          this.router.navigateByUrl(`customers/add/photos`);
         }
       },
       error: (error: any) => {
@@ -163,6 +166,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
             }
           }
           this.otherInfoData.emit(props);
+          this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
         }
       },
       error: (error: any) => {

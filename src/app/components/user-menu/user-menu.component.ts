@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
 import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
+import { ThemeService } from 'src/app/services/theme.service';
 
 
 @Component({
@@ -17,7 +18,9 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   router = inject(Router);
   profileInfo: any = {};
   sharedService = inject(SharedService);
-  @ViewChild('menu', {static: true}) menuEl!: Menu;
+  themeService = inject(ThemeService);
+  @ViewChild('menu', { static: true }) menuEl!: Menu;
+  cTheme: string = 'light';
 
 
   profileItems: MenuItem[] = [
@@ -39,7 +42,6 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
           styleClass: 'logout-option',
           icon: 'pi pi-sign-out',
           command: () => {
-            this.menuEl.hide();
             this.handleUserSignOut();
           }
         }
@@ -54,6 +56,12 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     const profile = JSON.parse(localStorage.getItem('profile') || '{}');
     this.profileInfo = profile ? profile : {};
+    this.cTheme = localStorage.getItem('color-theme') || '';
+    this.iconSrc = this.cTheme === 'light' ? '/assets/icon/user.png' : '/assets/icon/user_white.png';
+    this.themeService.getThemeToggle().subscribe((cTheme: any) => {
+      this.cTheme = cTheme;
+      this.iconSrc = this.cTheme === 'light' ? '/assets/icon/user.png' : '/assets/icon/user_white.png';
+    })
   }
 
   handleImageLoadError(event: ErrorEvent) {
@@ -64,6 +72,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
     this.router.navigateByUrl('login');
+    this.menuEl.hide();
     this.sharedService.logoutCall.next(true);
   }
 }

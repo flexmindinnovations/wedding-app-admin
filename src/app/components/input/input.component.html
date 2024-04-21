@@ -36,7 +36,7 @@
     [ngClass]="control.touched && control.invalid ? 'ng-dirty ng-invalid' : ''" [value]="value"
     [placeholder]="placeholder" [required]="isRequired" />
   @if (control.touched && control.invalid) {
-  <div class="validation-errors px-2 bg-transparent dark:bg-gray-700 mt-[2px]">
+  <div class="validation-errors block w-full px-2 bg-transparent dark:bg-dark-950 mt-[2px]">
     @if (control.hasError('required')) {
     <small id="username-help" class="p-error">{{label}} is
       required</small>

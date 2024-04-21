@@ -1,0 +1,19 @@
+::ng-deep .add-edit-customer {
+    .p-steps {
+        ul {
+            li {
+                &:first-child::before {
+                    @apply border-none;
+                }
+
+                &:first-child::after {
+                    @apply w-40 bg-red-500;
+                }
+            }
+        }
+    }
+}
+
+::ng-deep .p-stepper-header  + li >  * {
+    @apply w-full h-full;
+}

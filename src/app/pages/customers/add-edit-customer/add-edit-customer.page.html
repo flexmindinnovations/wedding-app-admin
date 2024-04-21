@@ -1,32 +1,14 @@
-<div class="main ion-padding flex flex-col">
+<div class="main add-edit-customer ion-padding flex flex-col">
   @if (isDataLoaded) {
-  <div class="stepper border-b border-b-gray-100">
+  <div class="stepper border-b">
     <form-stepper [completedStepInfo]="completedStep" class="w-full"></form-stepper>
   </div>
   <div class="forms-container flex-grow h-full overflow-hidden">
-    @switch (currentForm) {
-    @case (1) {
-    <personal-info [customerData]="customerDetails"
-      (personalInfoData)="handleClickOnNext($event)"></personal-info>
-    }
-    @case (2) {
-    <family-info [customerData]="customerDetails" [completedStep]="completedStep"
-      (familyInfoData)="handleClickOnNext($event)"></family-info>
-    }
-    @case (3) {
-    <contact-info [customerData]="customerDetails" [completedStep]="completedStep"
-      (contactInfoData)="handleClickOnNext($event)"></contact-info>
-    }
-    @case (4) {
-    <other-info [customerData]="customerDetails" [completedStep]="completedStep"
-      (otherInfoData)="handleClickOnNext($event)"></other-info>
-    }
-    @case (5) {
-    <photos [customerData]="customerDetails" [completedStep]="completedStep"
-      (photosData)="handleClickOnNext($event)">
-    </photos>
-    }
-    }
+      <router-outlet></router-outlet>
   </div>
+  } @else {
+  <!-- <div class="h-full w-full flex items-center justify-center">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+  </div> -->
   }
 </div>
