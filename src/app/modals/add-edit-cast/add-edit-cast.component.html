@@ -4,52 +4,48 @@
       <h1 class="m-0 text-base">{{data?.title}}</h1>
     </div>
   </div>
-  <div class="body ion-padding border-b border-b-gray-200 flex-grow overflow-auto max-h-96">
-    <form [formGroup]="formGroup">
-      <div class="flex flex-col gap-3 p-2">
-        <app-dropdown *ngIf="religionListOptions.length" label="Religion" [control]="formGroupControl['religionId']"
-          formControlName="religionId" (onSelectionChange)="onSelectionChange($event, 'religionId')"
-          [controlValue]="formGroup.get('religionId')?.value" [options]="religionListOptions" />
-        <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
-          [control]="formGroupControl['castName']" formControlName="castName" />
-        <p class="flex items-center justify-start gap-3">
-          <input #hasSubCastSelector type="checkbox" id="react-option" formControlName="hasSubCast"
-            (change)="handleSubCastStateChange($event)"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
-          <span (click)="hasSubCastSelector.click()" class="text-sm">Has SubCast</span>
-        </p>
+  <div class="body ion-padding border-b border-b-gray-200" [ngClass]="hasSubCastToggle ? 'flex-grow' : ''">
+    <form [formGroup]="formGroup" class="flex flex-col items-start justify-start gap-3"
+      [ngClass]="hasSubCastToggle ? 'min-h-64' : ''">
+      <app-dropdown *ngIf="religionListOptions.length" label="Religion" class="flex-grow-1 w-full"
+        [control]="formGroupControl['religionId']" formControlName="religionId"
+        [controlValue]="formGroup.get('religionId')?.value"
+        (onSelectionChange)="onSelectionChange($event, 'religionId')" [options]="religionListOptions" />
+      <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
+        [control]="formGroupControl['castName']" formControlName="castName" />
 
-        @if (hasSubCastToggle) {
-        <div class="specialization-list w-full flex flex-col items-start justify-start">
-          <div class="add-specialization w-full px-3 py-2 flex items-center justify-between">
-            <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 10 items can be added)</span></p>
-            <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 10" [iconOnly]="true" [isCancel]="true"
-              [icon]="'pi pi-plus'" [size]="'large'" (action)="handleAddRowClick($event)" />
-          </div>
-          <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="subCastList">
-            @for (item of subCastFormGroup.controls; track $index) {
-            <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3" [formGroupName]="$index">
-              <app-input [label]="'Sub Cast'" [controlValue]="item?.get('subCastName')?.value"
-                class="flex-grow-1 w-full" type="text" [control]="item?.get('subCastName')"
-                (inputValue)="handleInputValue($event, item, $index)" formControlName="subCastName" />
+      <mt-checkbox formControlName="hasSubCast" label="Has SubCast" [controlValue]="formGroup.get('hasSubCast')?.value"
+        [control]="formGroupControl['hasSubCast']" (onToggle)="handleSubCastStateChange($event)"></mt-checkbox>
 
-              <div class="remove-specialization flex items-center justify-center h-11">
-                @if (subCastList.length) {
-                <mt-button [iconOnly]="true" [isCancel]="true" [size]="'large'" [icon]="'close-outline'"
-                  (action)="handleRemoveRowClick($index)" />
-                }
-              </div>
-            </div>
-            }
-          </div>
+      @if (hasSubCastToggle) {
+      <div class="specialization-list w-full flex flex-col items-start justify-start">
+        <div class="add-specialization w-[98%] pl-3 mr-auto py-2 flex items-center justify-between">
+          <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 15 items can be added)</span></p>
+          <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 15" [iconOnly]="true" [isCancel]="true"
+            [icon]="'pi pi-plus'" [size]="'small'" (action)="handleAddRowClick($event)" />
         </div>
-        }
+        <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="subCastList">
+          @for (item of subCastFormGroup.controls; track $index) {
+          <div class="specialization-item w-full flex items-end justify-between gap-5 mb-3" [formGroupName]="$index">
+            <app-input [label]="'Sub Cast'" [controlValue]="item?.get('subCastName')?.value" class="flex-grow-1 w-full"
+              type="text" [control]="item?.get('subCastName')" (inputValue)="handleInputValue($event, item, $index)"
+              formControlName="subCastName" />
+            <div class="remove-specialization flex items-center justify-center h-11">
+              @if (subCastList.length > 1) {
+              <mt-button [iconOnly]="true" [icon]="'pi pi-trash'" [isDelete]="true" size="small"
+                (action)="handleRemoveRowClick($index)" />
+              }
+            </div>
+          </div>
+          }
+        </div>
       </div>
+      }
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'"
+    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'pi pi-save'"
       (action)="handleButtonClick($event)" />
   </div>
 </div>

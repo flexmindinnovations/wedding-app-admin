@@ -36,9 +36,11 @@ export class TimePickerComponent implements OnInit {
 
   parseTimeString(timeString: any) {
     const d = new Date();
-    const time = timeString.match(/(\d+)(?::(\d\d))?\s*(p?)/);
-    d.setHours(parseInt(time[1]) + (time[3] ? 12 : 0));
-    d.setMinutes(parseInt(time[2]) || 0);
+    if (timeString) {
+      const time = timeString.match(/(\d+)(?::(\d\d))?\s*(p?)/);
+      d.setHours(parseInt(time[1]) + (time[3] ? 12 : 0));
+      d.setMinutes(parseInt(time[2]) || 0);
+    }
     return d;
   }
 

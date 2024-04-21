@@ -1,16 +1,25 @@
-::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
-    outline: 0 none;
-    outline-offset: 0;
-    box-shadow: none;
-    border-color: #3B82F6;
+// ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+//     outline: 0 none;
+//     outline-offset: 0;
+//     box-shadow: none;
+//     border-color: #3B82F6;
 
-    label {
-        margin-top: 5px !important;
-    }
+//     label {
+//         margin-top: 5px !important;
+//     }
+// }
+
+::ng-deep .p-checkbox .p-checkbox-box {
+    width: 16px;
+    height: 16px;
 }
 
-::ng-deep .mt-checkbox {
-    label {
-        @apply mt-1.5;
-    }
+.p-inputtext {
+    @apply focus:shadow-none focus:outline-none dark:bg-dark-950 dark:text-white text-sm;
 }
+
+// ::ng-deep .mt-checkbox {
+//     label {
+//         @apply mt-1.5;
+//     }
+// }

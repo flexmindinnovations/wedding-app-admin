@@ -1,5 +1,6 @@
+<p-messages></p-messages>
 @if (isDataAvailable) {
-<div class="personal-info-container h-full flex flex-col gap-5 items-start justify-center ion-padding">
+<div class="personal-info-container h-full flex flex-col gap-5 items-start justify-center">
   <form [formGroup]="formGroup" class="w-full flex-grow overflow-auto p-3">
     <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4">
       <app-input label="First Name" type="text" [control]="formGroupControl['firstName']" formControlName="firstName"
@@ -138,8 +139,12 @@
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end">
-    <mt-button [size]="'small'" title="Next" [icon]="'pi pi-arrow-right'" [icon]="'arrow-forward'" [iconSlot]="'end'"
+    <mt-button [size]="'small'" title="Next" [icon]="'pi pi-arrow-right'" [icon]="'pi pi-arrow-right'" iconPos="right"
       (action)="handleClickOnNext('personal')" />
   </div>
+</div>
+} @else {
+<div class="h-full w-full flex items-center justify-center">
+  <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
 </div>
 }

@@ -39,11 +39,14 @@ export class AddEditCastComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
-    this.getReligionList();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
     if (this.isEditMode) this.patchFormData();
+  }
+
+  ngAfterViewInit(): void {
+    this.getReligionList();
   }
 
   patchFormData() {
@@ -54,22 +57,22 @@ export class AddEditCastComponent implements OnInit {
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
-          this.hasSubCastToggle = data?.hasSubcast;
-          this.castName = data?.castName;
+          // console.log('Data retrieved:', data);
           this.religionId = data?.religionId;
+          this.castName = data?.castName;
+          this.hasSubCastToggle = data?.hasSubcast;
+          const props = {
+            religionId: this.religionId,
+            castName: this.castName,
+            hasSubCast: this.hasSubCastToggle,
+          }
+          this.formGroup.patchValue(props);
           this.subCastList = data.subCastList.map((item: any) => {
             item['name'] = 'Sub Cast';
             item['castId'] = this.castId;
             return item;
           });
 
-          const props = {
-            hasSubCast: this.hasSubCastToggle,
-            castName: this.castName,
-            religionId: this.religionId
-          }
-          this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
             // console.log('subCast: ', subCast);
 
@@ -101,7 +104,6 @@ export class AddEditCastComponent implements OnInit {
     });
     subCastArray.push(newSubCastGroup);
     this.subCastFormGroup = subCastArray;
-
   }
 
   get formGroupControl(): { [key: string]: FormControl } {
@@ -185,8 +187,7 @@ export class AddEditCastComponent implements OnInit {
   }
 
   handleSubCastStateChange(event: any) {
-    const value = event?.currentTarget.checked;
-    this.hasSubCastToggle = value;
+    this.hasSubCastToggle = event;
   }
 
 
@@ -214,16 +215,18 @@ export class AddEditCastComponent implements OnInit {
     if (control) control.setValue(event);
     this.subCastList[index].subCastName = event;
   }
+
   getReligionList() {
     this.sharedService.getReligionList().subscribe({
       next: (response: any) => {
         if (response) {
           this.religionListOptions = response?.map((item: any) => {
-            return {
+            const obj = {
               id: item?.religionId,
               title: item?.religionName,
             }
-          })
+            return obj;
+          });
         }
       },
       error: (error) => {

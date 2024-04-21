@@ -36,7 +36,7 @@ export const SIDEBAR_ITEMS = [
     },
     {
         "id": 6,
-        "title": "Master Data",
+        "title": "MasterData",
         "route": "master",
         "isActive": false,
         "icon": "briefcase-outline"

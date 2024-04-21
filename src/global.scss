@@ -13,10 +13,10 @@
 @import "@ionic/angular/css/core.css";
 
 /* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+// @import "@ionic/angular/css/normalize.css";
+// @import "@ionic/angular/css/structure.css";
+// @import "@ionic/angular/css/typography.css";
+// @import "@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
@@ -40,7 +40,8 @@
 @import "tailwindcss/components" layer(tailwindcss);
 @import "tailwindcss/utilities" layer(tailwindcss);
 
-@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+// @import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+@import "../node_modules/primeng/resources/themes/fluent-light/theme.css";
 @import "../node_modules/primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 
@@ -51,7 +52,43 @@
 @import "ag-grid-community/styles/ag-theme-balham.css";
 // @import "ag-grid-community/styles/ag-theme-balham-dark.css";
 // @import 'ag-grid-community/styles/ag-theme-quartz-dark.css';
+@layer reset, primeng;
 
+@layer reset {
+  .p-dropdown {
+    @apply focus:shadow-none focus:outline-none dark:bg-dark-950 dark:text-white text-sm;
+  }
+
+  .p-dropdown-label {
+    @apply text-dark-800 dark:text-white;
+  }
+
+  .p-dropdown-panel {
+    @apply bg-white text-dark-950 dark:bg-dark-800 dark:text-white;
+  }
+
+  .p-dropdown-item {
+    @apply focus:shadow-none focus:outline-none dark:bg-dark-800 dark:text-white text-sm;
+  }
+
+  .p-checkbox .p-checkbox-box {
+    @apply shadow-none outline-none;
+    width: 16px;
+    height: 16px;
+  }
+
+  .p-inputtext {
+    @apply bg-white text-dark-800 dark:bg-dark-950 dark:text-white;
+  }
+
+  .p-button-icon-only {
+    gap: 0 !important;
+  }
+
+  .p-datepicker:not(.p-datepicker-inline) {
+    @apply bg-white text-dark-800 dark:bg-dark-700 dark:text-white;
+  }
+}
 
 html {
   box-sizing: border-box;
@@ -82,12 +119,16 @@ span:not(ag-icon) {
   @apply flex items-center justify-start;
 
   .modal-title {
-    @apply flex w-full h-full items-center min-h-12 px-2  justify-start;
+    @apply flex w-full h-full items-center py-2 px-4 justify-start;
 
     h1 {
-      font-size: 1.2rem;
+      @apply text-base font-semibold;
     }
   }
+}
+
+.modal-default::part(content) {
+  border-radius: 0 !important;
 }
 
 
@@ -129,7 +170,7 @@ border-right {
 }
 
 .main {
-  @apply bg-white w-full ease-in-out dark:bg-gray-700 dark:text-white flex-grow overflow-auto;
+  @apply bg-white w-full ease-in-out dark:bg-dark-950 dark:text-white flex-grow overflow-auto;
 
   .header {
     @apply flex items-center justify-between min-h-16;

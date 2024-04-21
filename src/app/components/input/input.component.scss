@@ -16,7 +16,7 @@ label {
 }
 
 .p-inputtext {
-    @apply p-2.5 dark:border-[#d1d5db] focus:shadow-none focus:outline-none dark:bg-dark-950 dark:text-white text-sm;
+    @apply focus:shadow-none focus:outline-none dark:bg-dark-950 dark:text-white text-sm;
 }
 
 input::-webkit-outer-spin-button,
@@ -36,7 +36,7 @@ input[type=number]{
 		@apply w-full;
 
 		.p-inputtext {
-			@apply w-full p-2.5 dark:border dark:border-[#d1d5db] dark:bg-dark-950 dark:text-white text-sm focus:shadow-none;
+			@apply w-full dark:border dark:border-[#d1d5db] dark:bg-dark-950 dark:text-white text-sm focus:shadow-none;
 		}
 	}
 
@@ -44,7 +44,7 @@ input[type=number]{
 		@apply w-full;
 
 		.p-inputtext {
-			@apply w-full p-2.5 dark:border dark:border-[#d1d5db] dark:bg-dark-950 dark:text-white text-sm shadow-none;
+			@apply w-full dark:border dark:border-[#d1d5db] dark:bg-dark-950 dark:text-white text-sm shadow-none;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { error } from 'console';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -41,7 +42,8 @@ export class FamilyInfoComponent implements OnInit {
   isSubCastDataAvailable: boolean = false;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
   }
 
@@ -165,6 +167,7 @@ export class FamilyInfoComponent implements OnInit {
       error: (error: any) => {
         console.log('error: ', error);
         this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
+        this.router.navigateByUrl(`customers/add/contact`);
       }
     })
   }
@@ -197,6 +200,8 @@ export class FamilyInfoComponent implements OnInit {
             }
           }
           this.familyInfoData.emit(props);
+          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`);
+
         }
       },
       error: (error: any) => {

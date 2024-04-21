@@ -5,17 +5,7 @@
         <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4 px-2">
           <div class="flex flex-col gap-2 col-span-4">
             <label>Status</label>
-            <div
-              class="toggle-button flex items-center justify-between p-1 max-w-40 bg-gray-300 flex-shrink-0 h-10 rounded-full"
-              role="group">
-              <p-button type="button" (click)="toggleActive()" [ngClass]="isActive ? getBackgroundColor() : ''">
-                Active
-              </p-button>
-              <p-button type="button" (click)="toggleActive()"
-                [ngClass]="!isActive ? getBackgroundColor() : 'text-black'">
-                Inactive
-              </p-button>
-            </div>
+            <p-inputSwitch formControlName="isActive" [(ngModel)]="isActive"></p-inputSwitch>
           </div>
           <app-input label="Enter Blog Title" formControlName="blogTitle" [control]="formGroupControl['blogTitle']" />
 
@@ -33,7 +23,7 @@
 
       <div class="actions flex items-center justify-end p-2">
         <mt-button size="small" [title]="blogId > 0 ? 'Update Blog' : 'Save Blog'" (action)="handleFormSubmit()"
-          [icon]="'document-outline'" />
+          [icon]="blogId > 0 ? 'pi pi-file-plus' : 'pi pi-save'" />
       </div>
     </div>
   </ion-content>

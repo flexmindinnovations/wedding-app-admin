@@ -1,9 +1,9 @@
 ::ng-deep .cast-modal::part(content) {
-    min-width: 40%;
+    min-width: 50%;
     // min-height: 90%;
     position: relative;
 
-    --height: 450px;
+    --height: auto;
     border-radius: 6px;
 }
 
