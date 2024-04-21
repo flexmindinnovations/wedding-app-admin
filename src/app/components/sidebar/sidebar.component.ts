@@ -6,6 +6,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { SIDEBAR_ITEMS } from 'src/util/sidebar-items';
 import { COLOR_SCHEME, nestedRoutes, themeVariables } from 'src/util/util';
 
@@ -20,6 +21,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   sharedService = inject(SharedService);
   roleService = inject(RolesService);
   alert = inject(AlertService);
+  themeService = inject(ThemeService);
   sidebarItems: SideBarItem[] = [];
   buttonHelp = 'Collapse Sidebar';
   isSidebarExpanded = true;
@@ -30,6 +32,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   // colorScheme = 'red';
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
+  logoSrc: any = '/assets/icon/logo.png';
 
   ngOnInit() {
     this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
@@ -83,6 +86,30 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sidebarItems = [];
       }
     })
+
+    this.router.events.subscribe((events: any) => {
+      const currentUrl = this.router.url;
+      // const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
+      this.setParentRoute(currentUrl);
+    })
+
+    this.themeService.getThemeToggle().subscribe((theme: string) => {
+      this.logoSrc = theme === 'light' ? '/assets/icon/logo.png' : '/assets/icon/logo_white.png';
+    })
+  }
+
+  setParentRoute(currentRoute: any) {
+    const routeSplitted = currentRoute.split('/');
+    const isNestedRoute = nestedRoutes.includes(routeSplitted[1]);
+    let activeRoute: any;
+    if (isNestedRoute) activeRoute = currentRoute.split('/')[1];
+    else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
+    // console.log('activeRoute: ', activeRoute);
+    
+    this.sidebarItems.forEach(each => each.isActive = false);
+    if (activeRoute) this.setActiveItem(activeRoute);
+    else this.sidebarItems[0].isActive = true;
+    this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
   }
 
 

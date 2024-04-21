@@ -1,0 +1,4 @@
+<div class="mt-checkbox">
+  <p-checkbox [label]="label" class="flex items-center justify-start gap-2" binary="true" [(ngModel)]="value" 
+  (ngModelChange)="handleToggle($event)" [ngClass]="labelPosition == 'left' ? 'flex-row-reverse' : 'flex-row'" name="hasSpecialization"></p-checkbox>
+</div>

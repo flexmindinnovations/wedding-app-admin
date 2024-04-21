@@ -1,0 +1,36 @@
+::ng-deep .p-button {
+    @apply text-sm font-semibold dark:text-white px-3 min-h-8 min-w-24 w-auto lg:xl:max-w-full mt-auto rounded-md flex items-center justify-start;
+    font-family: "Overpass", sans-serif;
+    font-optical-sizing: auto;  
+
+    .p-button-label {
+        @apply mt-[2px];
+    }
+
+    &:focus {
+        @apply shadow-none border-none outline-none;
+    }
+
+}
+
+::ng-deep .hybrid {
+    .p-button {
+        @apply gap-2;
+    }
+}
+
+::ng-deep .small {
+    .p-button {
+        @apply py-1.5 px-3;
+    }
+}
+
+::ng-deep .large {
+    .p-button {
+        @apply p-2.5 px-3;
+    }
+}
+
+::ng-deep p-button {
+    @apply block h-full w-full;
+}

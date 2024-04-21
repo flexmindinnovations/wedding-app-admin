@@ -14,7 +14,7 @@
       <app-input label="Date Of Birth" presentaion="date" type="date" [control]="formGroupControl['dateOfBirth']"
         formControlName="dateOfBirth" [controlValue]="formGroup.get('dateOfBirth')?.value || ''" />
 
-      <app-input label="Time Of Birth" presentaion="time" type="text" [control]="formGroupControl['timeOfBirth']"
+      <app-input label="Time Of Birth" presentaion="time" type="date" [control]="formGroupControl['timeOfBirth']"
         formControlName="timeOfBirth" (inputValue)="handleInputValue($event)" />
       <!-- @if(passwordActive){
       <app-input label="Password" type="password" [control]="formGroupControl['customerPassword']"
@@ -61,20 +61,26 @@
         formControlName="hobbies" [controlValue]="formGroup.get('hobbies')?.value" [isMultiline]=true />
 
       <p class="flex items-center justify-start gap-3">
-        <input #hasSpectaclesSelector type="checkbox" id="react-option" [checked]="spectacles"
+        <!-- <input #hasSpectaclesSelector type="checkbox" id="react-option" [checked]="spectacles"
           (change)="handleSpectacleStateChange($event)"
           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
         <span (click)="hasSpectaclesSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">
-          Do you have Spectacles?</span>
+          Do you have Spectacles?</span> -->
+        <mt-checkbox formControlName="spectacles" label="Do you have Spectacles?"
+          [controlValue]="formGroup.get('spectacles')?.value" [control]="formGroupControl['spectacles']"
+          (onToggle)="handleSpectacleStateChange($event)"></mt-checkbox>
       </p>
 
       <div class="col-span-3 lg:col-span-4 flex flex-col gap-3">
         <p class="flex items-center justify-start gap-3">
-          <input #showPatrikaSelector type="checkbox" id="react-option" [checked]="showPatrika"
+          <!-- <input #showPatrikaSelector type="checkbox" id="react-option" [checked]="showPatrika"
             (change)="handlePatrikaStateChange($event)"
             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
           <span (click)="showPatrikaSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">Show
-            Patrika</span>
+            Patrika</span> -->
+          <mt-checkbox formControlName="isPatrika" label="Show
+          Patrika" [controlValue]="formGroup.get('isPatrika')?.value" [control]="formGroupControl['isPatrika']"
+            (onToggle)="handlePatrikaStateChange($event)"></mt-checkbox>
         </p>
         @if (showPatrika) {
         <ul>
@@ -89,13 +95,19 @@
         }
       </div>
 
-      <p class="flex items-center justify-start col-span-3 lg:col-span-4 gap-3">
+      <!-- <p class="flex items-center justify-start col-span-3 lg:col-span-4 gap-3">
         <input #isPhysicallyAbledSelector type="checkbox" id="react-option" [checked]="isPhysicallyAbled"
           (change)="isPhysicallyAbledStateChange($event)"
           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600" />
         <span (click)="isPhysicallyAbledSelector.click()" class="text-sm mt-[2px] cursor-pointer select-none">
           Is Physically Abled?</span>
-      </p>
+      </p> -->
+
+      <div class="flex items-center justify-start col-span-3 lg:col-span-4 gap-3">
+        <mt-checkbox formControlName="physicalStatus" label="Is Physically Abled?"
+          [controlValue]="formGroup.get('physicalStatus')?.value" [control]="formGroupControl['physicalStatus']"
+          (onToggle)="isPhysicallyAbledStateChange($event)"></mt-checkbox>
+      </div>
 
       @if (isPhysicallyAbled) {
       <app-dropdown *ngIf="physicalStatusListOptions.length" label="Physical Status"
@@ -126,7 +138,7 @@
     </div>
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end">
-    <mt-button [disabled]="formGroup.invalid" [size]="'md'" title="Next" [icon]="'arrow-forward'" [iconSlot]="'end'"
+    <mt-button [size]="'small'" title="Next" [icon]="'pi pi-arrow-right'" [icon]="'arrow-forward'" [iconSlot]="'end'"
       (action)="handleClickOnNext('personal')" />
   </div>
 </div>

@@ -1,5 +1,5 @@
 <div class="cast-modal flex flex-col h-full">
-  <div class="header px-3 py-2 border-b border-b-gray-200 min-h-14 flex items-center justify-start">
+  <div class="header border-b border-b-gray-200  flex items-center justify-start">
     <div class="modal-title">
       <h1 class="m-0 text-base">{{data?.title}}</h1>
     </div>
@@ -24,7 +24,7 @@
           <div class="add-specialization w-full px-3 py-2 flex items-center justify-between">
             <p>Add SubCast: <span class="text-xs opacity-70">(Maximum 10 items can be added)</span></p>
             <mt-button [title]="'Add Row'" [disabled]="subCastList.length === 10" [iconOnly]="true" [isCancel]="true"
-              [icon]="'add-outline'" [size]="'lg'" (action)="handleAddRowClick($event)" />
+              [icon]="'pi pi-plus'" [size]="'large'" (action)="handleAddRowClick($event)" />
           </div>
           <div class="list-container w-full max-h-72 overflow-auto ion-padding" formArrayName="subCastList">
             @for (item of subCastFormGroup.controls; track $index) {
@@ -35,7 +35,7 @@
 
               <div class="remove-specialization flex items-center justify-center h-11">
                 @if (subCastList.length) {
-                <mt-button [iconOnly]="true" [isCancel]="true" [size]="'lg'" [icon]="'close-outline'"
+                <mt-button [iconOnly]="true" [isCancel]="true" [size]="'large'" [icon]="'close-outline'"
                   (action)="handleRemoveRowClick($index)" />
                 }
               </div>
@@ -48,8 +48,8 @@
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
-    <mt-button [title]="'Cancel'" size="md" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [disabled]="formGroup.invalid" size="md" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'"
+    <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
+    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'save-outline'"
       (action)="handleButtonClick($event)" />
   </div>
 </div>

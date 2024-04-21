@@ -5,13 +5,25 @@
 module.exports = {
   content: [
     './src/**/*.{html,ts}',
-    "./node_modules/flowbite/**/*.js"
   ],
   darkMode: 'class',
   // important: true,
   theme: {
     extend: {
       colors: {
+        dark: {
+          '50': '#f5f6f6',
+          '100': '#e4e7e9',
+          '200': '#ccd1d5',
+          '300': '#a9b1b7',
+          '400': '#7e8892',
+          '500': '#626c78',
+          '600': '#545b66',
+          '700': '#484e56',
+          '800': '#40444a',
+          '900': '#393b40',
+          '950': '#222428',
+        },
         cb: {
           '50': '#f0f2fe',
           '100': '#dee2fb',
@@ -60,6 +72,5 @@ module.exports = {
   plugins: [require('@tailwindcss/aspect-ratio')
     , require('@tailwindcss/forms')
     , require('@tailwindcss/typography'),
-  require('flowbite/plugin')
-  ],
+    ],
 };

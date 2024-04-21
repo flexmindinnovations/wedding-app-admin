@@ -35,7 +35,7 @@ export class DashboardPage implements OnInit, AfterViewInit {
     this.setCssClasses();
 
     this.sharedService.getIsLoggedIn().subscribe((loggedIn: any) => {
-      if(loggedIn) this.router.navigateByUrl('/');
+      if (loggedIn) this.router.navigateByUrl('/');
     })
   }
 
@@ -154,10 +154,7 @@ export class DashboardPage implements OnInit, AfterViewInit {
 
   }
 
-  handleShowProfileStateChange(event: any) {
-    const value = event?.currentTarget.checked;
-    this.showProfile = value;
-  }
+  handleShowProfileStateChange(event: any) { }
 
   handleOnItemClick(item: any) {
     if (item?.hasRoute) {

@@ -5,20 +5,21 @@
         <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4 px-2">
           <div class="flex flex-col gap-2 col-span-4">
             <label>Status</label>
-            <div class="flex" role="group">
-              <button type="button" (click)="toggleActive()"
-                class="p-1 text-sm font-medium rounded-s-lg bg-gray-100 focus:z-10">
-                <p class="p-1 min-w-16 rounded-md" [ngClass]="[isActive ? cssClass + ' shadow-lg' : '']">Active</p>
-              </button>
-              <button type="button" (click)="toggleActive()"
-                class="p-1 text-sm font-medium  rounded-e-lg bg-gray-100 focus:z-10">
-                <p class="p-1 min-w-16 rounded-md" [ngClass]="[!isActive ? cssClass + ' shadow-lg' : '']">Inactive</p>
-              </button>
+            <div
+              class="toggle-button flex items-center justify-between p-1 max-w-40 bg-gray-300 flex-shrink-0 h-10 rounded-full"
+              role="group">
+              <p-button type="button" (click)="toggleActive()" [ngClass]="isActive ? getBackgroundColor() : ''">
+                Active
+              </p-button>
+              <p-button type="button" (click)="toggleActive()"
+                [ngClass]="!isActive ? getBackgroundColor() : 'text-black'">
+                Inactive
+              </p-button>
             </div>
           </div>
           <app-input label="Enter Blog Title" formControlName="blogTitle" [control]="formGroupControl['blogTitle']" />
 
-          <app-input label="Date" type="date" [control]="formGroupControl['blogDate']"
+          <app-input label="Date" type="date" presentaion="date" [control]="formGroupControl['blogDate']"
             [controlValue]="formGroup.get('blogDate')?.value" formControlName="blogDate"
             (inputValue)="handleInputChange($event)" />
           <div class="text-editor min-h-[16rem] w-full col-span-4">
@@ -31,7 +32,7 @@
       </form>
 
       <div class="actions flex items-center justify-end p-2">
-        <mt-button size="md" [title]="blogId > 0 ? 'Update Blog' : 'Save Blog'" (action)="handleFormSubmit()"
+        <mt-button size="small" [title]="blogId > 0 ? 'Update Blog' : 'Save Blog'" (action)="handleFormSubmit()"
           [icon]="'document-outline'" />
       </div>
     </div>

@@ -62,9 +62,9 @@ export const buttonThemeVariables: any = {
 }
 
 export const iconSize = {
-    sm: 'text-sm',
-    md: 'text-xl',
-    lg: 'text-2xl'
+    small: 'text-sm',
+    default: 'text-xl',
+    large: 'text-2xl'
 }
 
 export const inputThemeVariables: any = {
@@ -166,7 +166,7 @@ export const findInvalidControlsRecursive = (formToInvestigate: FormGroup | Form
     return invalidControls;
 }
 
-export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', 'customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
+export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', '/customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
 
 export const TITHI_LIST = [
     { title: 'Gotra', value: '' },

@@ -1,0 +1,12 @@
+.profile-toggle {
+    ::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+        outline: 0 none;
+        outline-offset: 0;
+        box-shadow: none;
+        border-color: #3B82F6;
+    
+    }
+    ::ng-deep label {
+        margin-top: 3px !important;
+    }
+}

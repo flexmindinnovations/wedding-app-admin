@@ -87,6 +87,11 @@ export class AddEditEventPage implements OnInit, AfterViewInit {
     this.cssClass = themeVariables[this.colorScheme];
   }
 
+  getBackgroundColor() {
+    const classes = `bg-${this.colorScheme}-500 rounded-full active`;
+    return classes;
+  }
+
   initFormGroup() {
     this.formGroup = this.fb.group({
       eventName: ['', [Validators.required]],

@@ -1,92 +1,50 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import * as moment from 'moment';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'time-picker',
   templateUrl: './time-picker.component.html',
   styleUrls: ['./time-picker.component.scss'],
 })
-export class TimePickerComponent implements OnInit, AfterViewInit {
+export class TimePickerComponent implements OnInit {
 
   @Input() value: string = '';
-  hoursData: any;
-  minutesData: any;
-  amPmData: any;
-
-  selectedHour: any;
-  selectedMinutes: any;
-  selectedAmPm: any;
   @Output() selectedTime: any = new EventEmitter();
+  @Input() isDisabled: any = false;
+  time: any = new Date();
+  defaultDate: any;
 
-  hour: any;
-  minute: any;
-  ampm: any;
-
-  constructor() {
-    const d = new Date();
-    let hours: any = (d.getHours() + 24) % 12 || 12;
-    let minutes: any = d.getMinutes().toString();
-    const amPm = d.getHours() >= 12 ? 'pm' : 'am';
-    hours = hours < 10 ? '0' + hours.toString() : hours.toString();
-    minutes = minutes < 10 ? '0' + minutes.toString() : minutes.toString();
-    this.hour = hours.toString();
-    this.minute = minutes.toString();
-    this.ampm = amPm;
-  }
+  constructor(
+    private sharedService: SharedService,
+    private cdref: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
-    if (this.value) {
-      this.hour = this.value.split(':')[0];
-      this.minute = this.value.split(':')[1];
-      this.ampm = this.value.split(':')[2].toLowerCase();
+    if (!moment(this.value).isValid()) {
+      const parsedDateTime = this.parseTimeString(this.value);
+      this.time = new Date(parsedDateTime);
+      this.defaultDate = new Date(parsedDateTime);
+    } else {
+      this.time = new Date(this.value);
+      this.defaultDate = new Date(this.value);
     }
-    this.setHours();
+    this.sharedService.getIsReadOnlyMode().subscribe((readOnly: any) => {
+      this.isDisabled = readOnly;
+    })
   }
 
-  ngAfterViewInit(): void {
-    const isTimeSelected = this.hour && this.minute && this.ampm ? true : false;
-    if (isTimeSelected) this.selectedTime.emit(`${this.hour}:${this?.minute}:${this?.ampm.toUpperCase()}`);
+  parseTimeString(timeString: any) {
+    const d = new Date();
+    const time = timeString.match(/(\d+)(?::(\d\d))?\s*(p?)/);
+    d.setHours(parseInt(time[1]) + (time[3] ? 12 : 0));
+    d.setMinutes(parseInt(time[2]) || 0);
+    return d;
   }
 
-  setHours() {
-    const hours = [];
-    for (let i = 1; i <= 12; i++) {
-      const hoursObj = { id: i, value: i < 10 ? '0' + i.toString() : i.toString(), title: i < 10 ? '0' + i.toString() : i.toString() }
-      hours.push(hoursObj);
-    }
-    this.hoursData = hours;
-    this.setMinutes();
-  }
 
-  setMinutes() {
-    const minutes = [];
-    for (let i = 1; i <= 60; i++) {
-      const minutObj = { id: i, value: i < 10 ? '0' + i.toString() : i.toString(), title: i < 10 ? '0' + i.toString() : i.toString() }
-      minutes.push(minutObj);
-    }
-    this.minutesData = minutes;
-    this.setAmPm();
-  }
-
-  setAmPm() {
-    this.amPmData = [
-      { id: 1, value: 'am', title: 'AM' },
-      { id: 2, value: 'pm', title: 'PM' }
-    ]
-  }
-
-  handleSelectionChange(event: any, src: string) {
-    const value = event?.target?.value;
-    switch (src) {
-      case 'hour':
-        this.selectedHour = value ? value.toString() : this.hour;
-        break;
-      case 'minutes':
-        this.selectedMinutes = value ? value.toString() : this.minute;
-        break;
-      case 'ampm':
-        this.selectedAmPm = value ? value.toString() : this.ampm;
-        break;
-    }
-    this.selectedTime.emit(`${this.selectedHour ? this.selectedHour : this.hour}:${this.selectedMinutes ? this.selectedMinutes : this.minute}:${this.selectedAmPm ? this.selectedAmPm?.toUpperCase() : this.ampm.toUpperCase()}`);
+  handleSelectionChange(event: any, src?: string) {
+    this.selectedTime.emit(event);
+    this.cdref.detectChanges();
   }
 }
