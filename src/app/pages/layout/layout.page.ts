@@ -7,6 +7,7 @@ import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
 import { Keepalive } from '@ng-idle/keepalive';
 import { AuthService } from 'src/app/services/auth.service';
 import { ModalController } from '@ionic/angular';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-layout',
@@ -31,12 +32,17 @@ export class LayoutPage implements OnInit, AfterViewInit {
   lastPing?: Date | any = null;
   isTimeOut: boolean = false;
 
+  showLogoutModal = false;
+  showSessionExpiredDialog = false;
+
   constructor(
     private idle: Idle,
     private keepalive: Keepalive,
     private authService: AuthService,
     private cdref: ChangeDetectorRef,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private sharedService: SharedService,
+    private cdr: ChangeDetectorRef
   ) {
 
   }
@@ -111,10 +117,30 @@ export class LayoutPage implements OnInit, AfterViewInit {
       else activeRoute = url.substring(url.lastIndexOf('/') + 1, url.length);
       this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
     }
+
+    this.sharedService.isUnAuthorizedRequest.subscribe((isUnAuthorizedRequest: any) => {
+      if (isUnAuthorizedRequest) {
+        this.showSessionExpiredDialog = true;
+        this.cdr.detectChanges();
+      }
+    })
+  }
+
+  handleSignIn() {
+    this.logoutUser();
   }
 
   handleIsCollapsed(isCollapsed: boolean) {
     this.isCollapsed = isCollapsed;
+  }
+
+  logoutUser() {
+    this.authService.logoutUser();
+    this.showLogoutModal = true;
+    setTimeout(() => {
+      this.router.navigateByUrl('/');
+      this.sharedService.isLoggedOutCompleted.next(true);
+    })
   }
 
   ngOnDestroy() {
