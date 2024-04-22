@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -46,9 +46,16 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
       if (permissionList) {
         const newList = permissionList.filter((item: any) => item.canView === true);
+        let permissionsArray = newList;
+        for (let i = 0; i < permissionsArray.length; i++) {
+          if (permissionsArray[i].moduleName === "MasterData") {
+            permissionsArray[i].moduleName = "Master Data";
+            break;
+          }
+        }
         this.sharedService.permissionListMap.set('permissionList', permissionList);
         this.showTitles = this.isSidebarExpanded ? true : false;
-        newList.forEach((item: any) => {
+        permissionsArray.forEach((item: any) => {
           jsonItems.forEach((menu: any) => {
             if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
               menuItemsMap.set(item.moduleId, {
@@ -89,8 +96,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.router.events.subscribe((events: any) => {
       const currentUrl = this.router.url;
-      // const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
+      // const activeRoute = this.router.url.subsring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
       this.setParentRoute(currentUrl);
+
+
     })
 
     this.themeService.getThemeToggle().subscribe((theme: string) => {
@@ -105,11 +114,14 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     if (isNestedRoute) activeRoute = currentRoute.split('/')[1];
     else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
     // console.log('activeRoute: ', activeRoute);
-    
+
     this.sidebarItems.forEach(each => each.isActive = false);
-    if (activeRoute) this.setActiveItem(activeRoute);
-    else this.sidebarItems[0].isActive = true;
-    this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
+    setTimeout(() => {
+      if (activeRoute) this.setActiveItem(activeRoute);
+      else this.sidebarItems[0].isActive = true;
+      this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
+    })
+
   }
 
 
@@ -179,10 +191,16 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (permissionList: any) => {
         if (permissionList) {
           const newList = permissionList.filter((item: any) => item.canView === true);
-          // console.log('permissionList: ', permissionList);
+          let permissionsArray = newList;
+          for (let i = 0; i < permissionsArray.length; i++) {
+            if (permissionsArray[i].moduleName === "MasterData") {
+              permissionsArray[i].moduleName = "Master Data";
+              break;
+            }
+          }
           this.sharedService.permissionListMap.set('permissionList', permissionList);
           this.showTitles = this.isSidebarExpanded ? true : false;
-          newList.forEach((item: any) => {
+          permissionsArray.forEach((item: any) => {
             jsonItems.forEach((menu: any) => {
               if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
                 menuItemsMap.set(item.moduleId, {

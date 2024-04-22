@@ -4,8 +4,9 @@
       <h1 class="m-0 text-base">{{data?.title}}</h1>
     </div>
   </div>
-  <div class="body ion-padding border-b border-b-gray-200" [ngClass]="hasSubCastToggle ? 'flex-grow' : ''">
-    <form [formGroup]="formGroup" class="flex flex-col items-start justify-start gap-3"
+  <div class="body ion-padding border-b border-b-gray-200 min-h-60" [ngClass]="
+    hasSubCastToggle ? 'flex-grow' : ''">
+    <form [formGroup]=" formGroup" class="flex flex-col items-start justify-start gap-3"
       [ngClass]="hasSubCastToggle ? 'min-h-64' : ''">
       <app-dropdown *ngIf="religionListOptions.length" label="Religion" class="flex-grow-1 w-full"
         [control]="formGroupControl['religionId']" formControlName="religionId"

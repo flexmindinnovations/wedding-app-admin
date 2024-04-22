@@ -41,8 +41,8 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
           label: 'Logout',
           styleClass: 'logout-option',
           icon: 'pi pi-sign-out',
-          command: () => {
-            this.handleUserSignOut();
+          command: (event) => {
+            this.handleUserSignOut(event);
           }
         }
       ]
@@ -68,11 +68,11 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   }
 
 
-  handleUserSignOut() {
+  handleUserSignOut(event: any) {
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
     this.router.navigateByUrl('login');
-    this.menuEl.hide();
+    this.menuEl.toggle(event);
     this.sharedService.logoutCall.next(true);
   }
 }

@@ -42,7 +42,10 @@ export class AddEditCastComponent implements OnInit {
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
-    if (this.isEditMode) this.patchFormData();
+    if (this.isEditMode) {
+      this.patchFormData();
+    }
+
   }
 
   ngAfterViewInit(): void {
@@ -52,27 +55,25 @@ export class AddEditCastComponent implements OnInit {
   patchFormData() {
     const modalData = this.data?.data?.rowData;
     this.castId = modalData?.castId;
+    this.castName = modalData?.castName;
+    this.hasSubCastToggle = modalData?.hasSubcast;
     const subCastList = this.formGroup.get('subCastList') as FormArray;
     subCastList.clear();
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
-          // console.log('Data retrieved:', data);
           this.religionId = data?.religionId;
-          this.castName = data?.castName;
-          this.hasSubCastToggle = data?.hasSubcast;
-          const props = {
-            religionId: this.religionId,
-            castName: this.castName,
-            hasSubCast: this.hasSubCastToggle,
-          }
-          this.formGroup.patchValue(props);
           this.subCastList = data.subCastList.map((item: any) => {
             item['name'] = 'Sub Cast';
             item['castId'] = this.castId;
             return item;
           });
-
+          const props = {
+            hasSubCast: modalData?.hasSubcast,
+            castName: modalData?.castName,
+            religionId: this.religionId
+          }
+          this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
             // console.log('subCast: ', subCast);
 
