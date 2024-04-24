@@ -12,8 +12,8 @@
         formControlName="educationName" />
 
       <mt-checkbox formControlName="hasSpecialization" label="Has Specialization"
-        [controlValue]="formGroup.get('hasSpecialization')?.value"
-        [control]="formGroupControl['hasSpecialization']" (onToggle)="handleEducationStateChange($event)"></mt-checkbox>
+        [controlValue]="formGroup.get('hasSpecialization')?.value" [control]="formGroupControl['hasSpecialization']"
+        (onToggle)="handleEducationStateChange($event)"></mt-checkbox>
 
       @if (hasSpecializationToggle) {
       <div class="specialization-list w-full flex flex-col items-start justify-start">
@@ -28,7 +28,7 @@
             <app-input [label]="'Specialization Name'" [controlValue]="item?.get('specializationName')?.value"
               class="flex-grow-1 w-full" type="text" [control]="item?.get('specializationName')"
               (inputValue)="handleInputValue($event, item, $index)" formControlName="specializationName" />
-            <div class="remove-specialization flex items-center justify-center h-11">
+            <div class="remove-specialization flex items-center justify-center h-11 pt-1.5">
               @if (specializationList.length > 1) {
               <mt-button [iconOnly]="true" [icon]="'pi pi-trash'" [isDelete]="true" size="small"
                 (action)="handleRemoveRowClick($index)" />
@@ -45,6 +45,7 @@
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="isEditMode ? 'pi pi-file-plus' : 'pi pi-save'" (action)="handleButtonClick($event)" />
+    <mt-button [title]="isEditMode ? 'Update' : 'Save'" [icon]="isEditMode ? 'pi pi-file-plus' : 'pi pi-save'"
+      (action)="handleButtonClick($event)" />
   </div>
 </div>

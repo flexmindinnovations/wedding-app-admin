@@ -18,7 +18,7 @@ export const SIDEBAR_ITEMS = [
         "title": "Branch",
         "route": "branch",
         "isActive": false,
-        "icon": "people-outline"
+        "icon": "",
     },
     {
         "id": 4,

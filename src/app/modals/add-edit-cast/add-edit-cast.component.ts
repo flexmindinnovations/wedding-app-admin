@@ -42,9 +42,7 @@ export class AddEditCastComponent implements OnInit {
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
-    if (this.isEditMode) {
-      this.patchFormData();
-    }
+    if (this.isEditMode) this.patchFormData();
 
   }
 
@@ -63,17 +61,17 @@ export class AddEditCastComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.religionId = data?.religionId;
-          this.subCastList = data.subCastList.map((item: any) => {
-            item['name'] = 'Sub Cast';
-            item['castId'] = this.castId;
-            return item;
-          });
           const props = {
             hasSubCast: modalData?.hasSubcast,
             castName: modalData?.castName,
             religionId: this.religionId
           }
           this.formGroup.patchValue(props);
+          this.subCastList = data.subCastList.map((item: any) => {
+            item['name'] = 'Sub Cast';
+            item['castId'] = this.castId;
+            return item;
+          });
           this.subCastList.forEach((subCast: any) => {
             // console.log('subCast: ', subCast);
 
@@ -93,10 +91,10 @@ export class AddEditCastComponent implements OnInit {
 
   initFormGroup() {
     this.formGroup = this.fb.group({
-      religionId: ['', [Validators.required]],
       castName: ['', [Validators.required]],
       hasSubCast: !['', [Validators.required]],
       subCastList: this.fb.array([]),
+      religionId: ['', [Validators.required]],
     })
 
     const subCastArray = this.formGroup.get('subCastList') as FormArray;

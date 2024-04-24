@@ -31,7 +31,7 @@
             <app-input [label]="'Sub Cast'" [controlValue]="item?.get('subCastName')?.value" class="flex-grow-1 w-full"
               type="text" [control]="item?.get('subCastName')" (inputValue)="handleInputValue($event, item, $index)"
               formControlName="subCastName" />
-            <div class="remove-specialization flex items-center justify-center h-11">
+            <div class="remove-specialization flex items-center justify-center h-11 pt-1.5">
               @if (subCastList.length > 1) {
               <mt-button [iconOnly]="true" [icon]="'pi pi-trash'" [isDelete]="true" size="small"
                 (action)="handleRemoveRowClick($index)" />
