@@ -43,7 +43,6 @@ export class AddEditCastComponent implements OnInit {
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
     if (this.isEditMode) this.patchFormData();
-
   }
 
   ngAfterViewInit(): void {
@@ -60,42 +59,41 @@ export class AddEditCastComponent implements OnInit {
     this.castService.getCastListById(this.castId).subscribe({
       next: (data: any) => {
         if (data) {
-          this.religionId = data?.religionId;
-          const props = {
-            hasSubCast: modalData?.hasSubcast,
-            castName: modalData?.castName,
-            religionId: this.religionId
-          }
-          this.formGroup.patchValue(props);
+          this.religionId = data['religionId'];
           this.subCastList = data.subCastList.map((item: any) => {
             item['name'] = 'Sub Cast';
             item['castId'] = this.castId;
             return item;
           });
+          const props = {
+            religionId: this.religionId,
+            hasSubCast: this.hasSubCastToggle,
+            castName: this.castName
+          }
+          this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
-            // console.log('subCast: ', subCast);
-
             subCastList.push(
               this.fb.group({
                 subCastName: subCast?.subCastName ? subCast.subCastName : ''
               })
-            )
-          })
+            );
+          });
         }
       },
       error: (error) => {
         this.alert.setAlertMessage(error?.message, AlertType.error);
       }
-    })
+    });
   }
 
   initFormGroup() {
     this.formGroup = this.fb.group({
       castName: ['', [Validators.required]],
-      hasSubCast: !['', [Validators.required]],
-      subCastList: this.fb.array([]),
       religionId: ['', [Validators.required]],
+      subCastList: this.fb.array([]),
+      hasSubCast: !['', [Validators.required]],
     })
+
 
     const subCastArray = this.formGroup.get('subCastList') as FormArray;
     const newSubCastGroup = this.fb.group({
@@ -180,9 +178,8 @@ export class AddEditCastComponent implements OnInit {
     throw new Error('Method not implemented.');
   }
 
-  onSelectionChange(event: any, src: string) {
-    const religionId = event?.id;
-    this.religionId = religionId;
+  onSelectionChange(event: any) {
+    this.religionId = event?.id;
   }
 
   handleSubCastStateChange(event: any) {

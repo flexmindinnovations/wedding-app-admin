@@ -82,9 +82,11 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.getSidebarItems();
     this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-      this.sidebarItems.forEach(each => each.isActive = false);
-      if (route) this.setActiveItem(route);
-      else this.sidebarItems[0].isActive = true;
+      if (this.sidebarItems.length) {
+        this.sidebarItems.forEach(each => each.isActive = false);
+        if (route) this.setActiveItem(route);
+        else this.sidebarItems[0].isActive = true;
+      }
     })
     this.getPermissionListByRoleId();
 
@@ -115,13 +117,12 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
     // console.log('activeRoute: ', activeRoute);
 
-    this.sidebarItems.forEach(each => each.isActive = false);
-    setTimeout(() => {
+    if (this.sidebarItems.length) {
+      this.sidebarItems.forEach(each => each.isActive = false);
       if (activeRoute) this.setActiveItem(activeRoute);
       else this.sidebarItems[0].isActive = true;
-      this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
-    })
-
+    }
+    this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
   }
 
 
@@ -217,9 +218,11 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
           this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
           // this.getSidebarItems();
           this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-            this.sidebarItems.forEach(each => each.isActive = false);
-            if (route) this.setActiveItem(route);
-            else this.sidebarItems[0].isActive = true;
+            if (this.sidebarItems.length) {
+              this.sidebarItems.forEach(each => each.isActive = false);
+              if (route) this.setActiveItem(route);
+              else this.sidebarItems[0].isActive = true;
+            }
           })
         }
       },

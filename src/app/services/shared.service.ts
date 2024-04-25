@@ -22,7 +22,12 @@ export class SharedService {
 
   isLoggedIn = new Subject();
   isReadOnlyMode = new Subject();
+  isUnAuthorizedRequest = new Subject();
+  isLoggedOutCompleted = new Subject();
 
+  getIsLoggedOutEvent() {
+    return this.isLoggedOutCompleted.asObservable();
+  }
 
   getIsReadOnlyMode(): Observable<any> {
     return this.isReadOnlyMode.asObservable();

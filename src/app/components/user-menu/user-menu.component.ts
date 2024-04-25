@@ -19,7 +19,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   profileInfo: any = {};
   sharedService = inject(SharedService);
   themeService = inject(ThemeService);
-  @ViewChild('menu', { static: true }) menuEl!: Menu;
+  @ViewChild('menu', { static: false }) menuEl!: Menu;
   cTheme: string = 'light';
 
 
@@ -41,7 +41,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
           label: 'Logout',
           styleClass: 'logout-option',
           icon: 'pi pi-sign-out',
-          command: (event) => {
+          command: (event: any) => {
             this.handleUserSignOut(event);
           }
         }

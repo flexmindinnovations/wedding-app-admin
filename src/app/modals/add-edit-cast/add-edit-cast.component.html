@@ -9,9 +9,9 @@
     <form [formGroup]=" formGroup" class="flex flex-col items-start justify-start gap-3"
       [ngClass]="hasSubCastToggle ? 'min-h-64' : ''">
       <app-dropdown *ngIf="religionListOptions.length" label="Religion" class="flex-grow-1 w-full"
-        [control]="formGroupControl['religionId']" formControlName="religionId"
-        [controlValue]="formGroup.get('religionId')?.value"
-        (onSelectionChange)="onSelectionChange($event, 'religionId')" [options]="religionListOptions" />
+        (onSelectionChange)="onSelectionChange($event)" [control]="formGroupControl['religionId']"
+        [controlValue]="formGroup.get('religionId')?.value" formControlName="religionId"
+        [options]="religionListOptions" />
       <app-input label="Cast" class="flex-grow-1 w-full" type="text" [controlValue]="formGroup.get('castName')?.value"
         [control]="formGroupControl['castName']" formControlName="castName" />
 
