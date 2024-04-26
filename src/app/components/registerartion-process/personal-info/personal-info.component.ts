@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { MessageService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
@@ -59,7 +59,11 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   isOccupationDetailsDataAvailable = false;
   tithiList: any[] = TITHI_LIST;
   passwordActive: boolean = true;
-
+  activeRouter = inject(ActivatedRoute);
+  customerService = inject(CustomerRegistrationService);
+  customerId = 0;
+  customerDetails: any = null;
+  isDataLoaded: boolean = false;
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
   key = uuidv4();
@@ -67,7 +71,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
   ) {
     this.setCurrentClass();
   }
@@ -94,12 +98,18 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     ]
   }
 
+
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
   }
 
   ngAfterViewInit(): void {
-    this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
+
+    this.activeRouter.params.subscribe((params: any) => {
+      this.customerId = history.state.customerId ? history.state.customerId : 0;
+      if (this.customerId > 0) this.getCustomerDetails();
+      else this.isDataLoaded = true;
+    })
     if (this.isEditMode) this.passwordActive = false;
     this.cdref.detectChanges();
   }
@@ -114,7 +124,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       shakeDate: !['', [Validators.required]],
       gender: ['', [Validators.required]],
       heightId: ['', [Validators.required]],
-      eduationId: ['', [Validators.required]],
+      educationId: ['', [Validators.required]],
       specializationId: !['', [Validators.required]],
       occupationDetailId: !['', [Validators.required]],
       dateOfBirth: [new Date(), [Validators.required]],
@@ -298,8 +308,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getMasterData() {
-    console.log('getMasterData: ',);
-
     const education = this.educationService.getEducationList();
     const height = this.heightService.getHeightList();
     const handycap = this.sharedService.getHandyCapItemList();
@@ -456,5 +464,21 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     })
   }
 
+  getCustomerDetails(): void {
+    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.customerData = data;
+          this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
+          this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
+          this.isDataLoaded = true;
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
+      }
+    })
+  }
 
 }

@@ -136,7 +136,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
       },
       cssClass: 'register-customer-modal',
       componentProps: {
-        
+
         data: {
           title: 'Register Customer',
           data: { ...event, userNameList }
@@ -156,7 +156,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     const action = event?.src;
     const data = event?.rowData;
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.customerId}/personal`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer' } });
+      this.router.navigateByUrl(`customers/edit/${data?.customerId}/personal`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: data?.customerId } });
     } else {
       // console.log('>>>>> event delete: ', event);
     }
