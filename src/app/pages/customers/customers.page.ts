@@ -15,6 +15,7 @@ import { RegisterCustomerComponent } from 'src/app/modals/register-customer/regi
 import { ModalController } from '@ionic/angular';
 
 
+
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.page.html',
@@ -27,6 +28,8 @@ export class CustomersPage implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
   rowData: any = [];
+  filteredRowData: any[] = [];
+  searchQuery: string = '';
   roleService = inject(RolesService);
   isAddActive: boolean = false;
   customerRegistrationService = inject(CustomerRegistrationService);
@@ -69,6 +72,10 @@ export class CustomersPage implements OnInit, AfterViewInit {
     },
   ];
 
+  ngOnChanges() {
+    this.filterData();
+  }
+
   ngOnInit() {
     this.getCustomerList();
     this.getPermissionListByRoleId();
@@ -78,6 +85,13 @@ export class CustomersPage implements OnInit, AfterViewInit {
     this.customerRegistrationService.getRequestStatus().subscribe(isCompleted => {
       if (isCompleted) this.getCustomerList();
     })
+  }
+
+  filterData() {
+    this.filteredRowData = this.rowData.filter((row: any) => {
+      // Perform case-insensitive search on each row's data
+      return row.fullName.toLowerCase().includes(this.searchQuery.toLowerCase());
+    });
   }
 
   getPermissionListByRoleId() {
@@ -112,6 +126,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
               registrationDate: moment(item['registrationDate']).format('DD/MM/YYYY')
             }
           });
+          this.filteredRowData = [...this.rowData];
         }
       },
       error: (error) => {
