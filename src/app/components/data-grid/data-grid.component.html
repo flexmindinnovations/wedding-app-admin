@@ -1,6 +1,20 @@
 <div>
+  @if (showFilter || showAddButton) {
+  <div class="w-full my-2 mr-auto flex items-center justify-between gap-5">
+    @if (showFilter) {
+    <input type="text" name="filter" [id]="id" (keyup)="onFilterTextBoxChanged($event)" pInputText pKeyFilter="int"
+      class="w-full max-w-96 !text-sm" placeholder="Filter query" />
+    }
+
+    @if (showAddButton) {
+    <mt-button class="text-sm" [hybrid]="true" [title]="addButtonTitle" [icon]="'pi pi-plus'"
+      (action)="handleClick()"></mt-button>
+    }
+  </div>
+  }
   <ag-grid-angular [className]="themeName" [rowData]="rowDefs" class="ag-theme-material" [columnDefs]="columnDefs"
     [pagination]="true" [style]="{'height': gridSize === 'sm' ? '300px' : '500px'}" [rowHeight]="35"
+    [cacheQuickFilter]="true" [quickFilterParser]="quickFilterParser" [quickFilterMatcher]="quickFilterMatcher"
     (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 </div>

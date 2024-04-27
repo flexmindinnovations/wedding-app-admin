@@ -33,14 +33,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
   logoSrc: any = '/assets/icon/logo.png';
+  activeRoute: any;
 
   ngOnInit() {
-    this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
-    this.cssClass = themeVariables[this.colorScheme];
     const jsonItems = SIDEBAR_ITEMS;
-    let menuItems: any[] = [
-      jsonItems[0]
-    ];
     this.sidebarItems = jsonItems;
     const menuItemsMap = new Map<number, any>();
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
@@ -69,27 +65,17 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
           })
         });
         const menuItemsMapValues = Array.from(menuItemsMap.values());
-        this.sidebarItems = [jsonItems[0], ...menuItemsMapValues]; this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
+        this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
+        this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
           this.sidebarItems.forEach(each => each.isActive = false);
           if (route) this.setActiveItem(route);
           else this.sidebarItems[0].isActive = true;
         })
       }
     })
-
   }
 
   ngAfterViewInit(): void {
-    this.getSidebarItems();
-    this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-      if (this.sidebarItems.length) {
-        this.sidebarItems.forEach(each => each.isActive = false);
-        if (route) this.setActiveItem(route);
-        else this.sidebarItems[0].isActive = true;
-      }
-    })
-    this.getPermissionListByRoleId();
-
     this.sharedService.getLogoutEvent().subscribe((event: any) => {
       if (event) {
         this.sidebarItems = [];
@@ -97,11 +83,11 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     })
 
     this.router.events.subscribe((events: any) => {
-      const currentUrl = this.router.url;
-      // const activeRoute = this.router.url.subsring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
-      this.setParentRoute(currentUrl);
-
-
+      if (events instanceof NavigationEnd) {        
+        const activeUrl = events?.url;
+        this.activeRoute = activeUrl;
+        this.setParentRoute(activeUrl);
+      }
     })
 
     this.themeService.getThemeToggle().subscribe((theme: string) => {
@@ -111,54 +97,32 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setParentRoute(currentRoute: any) {
     const routeSplitted = currentRoute.split('/');
-    const isNestedRoute = nestedRoutes.includes(routeSplitted[1]);
+    const isNestedRoute = nestedRoutes.includes(routeSplitted[1] && routeSplitted.length > 2);
     let activeRoute: any;
     if (isNestedRoute) activeRoute = currentRoute.split('/')[1];
     else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
-    // console.log('activeRoute: ', activeRoute);
-
     if (this.sidebarItems.length) {
       this.sidebarItems.forEach(each => each.isActive = false);
       if (activeRoute) this.setActiveItem(activeRoute);
       else this.sidebarItems[0].isActive = true;
     }
-    this.sidebarItemService.setCurrentRoute(activeRoute ? activeRoute : '');
-  }
-
-
-  getSidebarItems() {
-    const route = window.location.pathname;
-    const routeSplitted = route.split('/');
-    const isNestedRoute = nestedRoutes.includes(routeSplitted[1]);
-    if (isNestedRoute) {
-      const activeRoute = route.split('/');
-      if (activeRoute.length) this.setActiveItem(activeRoute[1]);
-      else {
-        this.sidebarItems[0].isActive = true;
-        this.sidebarItemService.setCurrentPage(this.sidebarItems[0]);
-      }
-    } else {
-      const activeRoute = route.substring(route.lastIndexOf('/') + 1, window.location.href.length);
-      if (activeRoute) this.setActiveItem(activeRoute);
-      else {
-        this.sidebarItems[0].isActive = true;
-        this.sidebarItemService.setCurrentPage(this.sidebarItems[0]);
-      }
-    }
+    this.getPermissionListByRoleId();
   }
 
   handleSidebarItemClick(item: SideBarItem) {
-    this.setActiveItem(item.route);
     this.router.navigateByUrl(item.route, { state: item });
   }
 
-  setActiveItem(param: number | string) {
+  setActiveItem(param: any) {
     const isId = typeof (param) === 'number';
+    if (!isId && param.includes('/')) param = param.split('/')[1];
     this.sidebarItems.forEach(each => each.isActive = false);
     const cItemIndex = this.sidebarItems.findIndex(each => isId ? (each.id === param) : (each.route === param));
     if (cItemIndex > -1) {
       this.sidebarItems[cItemIndex].isActive = true;
       this.sidebarItemService.setCurrentPage(this.sidebarItems[cItemIndex]);
+    } else {
+      this.sidebarItems[0].isActive = true;
     }
   }
 
@@ -183,9 +147,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     // debugger;
     const roleId = localStorage.getItem('role');
     const jsonItems = SIDEBAR_ITEMS;
-    const menuItems: any[] = [
-      jsonItems[0]
-    ];
     this.sidebarItems = jsonItems;
     const menuItemsMap = new Map<number, any>();
     this.roleService.getPermissionListById(roleId).subscribe({
@@ -216,21 +177,19 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
           });
           const menuItemsMapValues = Array.from(menuItemsMap.values());
           this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
-          // this.getSidebarItems();
-          this.sidebarItemService.getCurrentRoute().subscribe((route: string) => {
-            if (this.sidebarItems.length) {
-              this.sidebarItems.forEach(each => each.isActive = false);
-              if (route) this.setActiveItem(route);
-              else this.sidebarItems[0].isActive = true;
-            }
-          })
+          this.setActiveItem(this.activeRoute);
         }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage(error?.message, AlertType.error);
       }
     })
+  }
+
+  getStyleClasses() {
+    this.colorScheme = localStorage.getItem('color-scheme') || this.colorScheme;
+    const activeClass = `active-${this.colorScheme}`;
+    return activeClass;
   }
 
   ngOnDestroy(): void {
