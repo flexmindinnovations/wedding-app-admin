@@ -100,11 +100,10 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
+    // if (changes?.customerData?.currentValue) this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
   }
 
   ngAfterViewInit(): void {
-
     this.activeRouter.params.subscribe((params: any) => {
       this.customerId = history.state.customerId ? history.state.customerId : 0;
       if (this.customerId > 0) this.getCustomerDetails();
@@ -189,7 +188,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src)
-      else this.saveNewCustomerInfo(formVal, src)
+      // else this.saveNewCustomerInfo(formVal, src)
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -236,40 +235,40 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.messageService.clear();
   }
 
-  saveNewCustomerInfo(formVal: any, src: string): void {
-    let payload = { ...formVal, personalInfoId: 0, occupation: "" };
-    this.tithiList.forEach((item: any) => {
-      payload = { ...payload, [item.title]: item.value ? item.value : "" }
-    });
-    this.customerRegistrationService.savePersonalInformation(payload).subscribe({
-      next: (data: any) => {
-        if (data) {
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, customerId: data?.id },
-            formId: 1,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: null,
-            next: {
-              source: 'family',
-              data: {},
-              formId: 2,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.personalInfoData.emit(props);
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl('customers/add/family');
-        }
-      },
-      error: (error: any) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
-      }
-    })
-  }
+  // saveNewCustomerInfo(formVal: any, src: string): void {
+  //   let payload = { ...formVal, personalInfoId: 0, occupation: "" };
+  //   this.tithiList.forEach((item: any) => {
+  //     payload = { ...payload, [item.title]: item.value ? item.value : "" }
+  //   });
+  //   this.customerRegistrationService.savePersonalInformation(payload).subscribe({
+  //     next: (data: any) => {
+  //       if (data) {
+  //         const props: FormStep = {
+  //           source: src,
+  //           data: { ...formVal, customerId: data?.id },
+  //           formId: 1,
+  //           action: ActionValue.next,
+  //           isCompleted: data?.status,
+  //           previous: null,
+  //           next: {
+  //             source: 'family',
+  //             data: {},
+  //             formId: 2,
+  //             action: ActionValue.next,
+  //             isCompleted: false
+  //           }
+  //         }
+  //         this.personalInfoData.emit(props);
+  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+  //         this.router.navigateByUrl('customers/add/family',);
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.log('error: ', error);
+  //       this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+  //     }
+  //   })
+  // }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const customerId = this.customerData?.customerId;
@@ -297,7 +296,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
           }
           this.personalInfoData.emit(props);
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl(`customers/edit/${customerId}/family`);
+          this.router.navigateByUrl(`customers/edit/${customerId}/family`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
         }
       },
       error: (error: any) => {

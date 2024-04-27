@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { error } from 'console';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -38,6 +38,10 @@ export class FamilyInfoComponent implements OnInit {
   hasSubCast: boolean = false;
   religionId: any;
   subCastId: any;
+  activeRouter = inject(ActivatedRoute);
+  customerService = inject(CustomerRegistrationService);
+  customerId = 0;
+  isDataLoaded: boolean = false;
 
   isSubCastDataAvailable: boolean = false;
 
@@ -49,19 +53,19 @@ export class FamilyInfoComponent implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
-    this.getCastList();
-    this.getReligionList();
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    if (changes?.customerData?.currentValue) this.familyData = this.customerData['familyInfoModel'];
+    // if (changes?.customerData?.currentValue) this.familyData =JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
   }
 
   ngAfterViewInit(): void {
-    this.isEditMode = this.customerData['isFamilyInfoFill'];
-    if (this.familyData) {
-      if (this.isEditMode) this.patchFormData();
-    }
+    this.activeRouter.params.subscribe((params: any) => {
+      this.customerId = history.state.customerId ? history.state.customerId : 0;
+      if (this.customerId > 0) this.getCustomerDetails();
+      else this.isDataLoaded = true;
+    })
+    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -78,6 +82,8 @@ export class FamilyInfoComponent implements OnInit {
       castId: ['', [Validators.required]],
       subCastId: ['', [Validators.required]]
     })
+    this.getCastList();
+    this.getReligionList();
   }
 
   patchFormData() {
@@ -122,10 +128,9 @@ export class FamilyInfoComponent implements OnInit {
 
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId };
-    this.cdref.detectChanges();
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      else this.saveNewCustomerInfo(formVal, src);
+      // else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -134,43 +139,43 @@ export class FamilyInfoComponent implements OnInit {
     }
   }
 
-  saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, familyInfoId: 0 };
-    this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, familyInfoId: data?.id },
-            formId: 2,
-            action: ActionValue.next,
-            isCompleted: true,
-            previous: {
-              source: 'personal',
-              data: {},
-              formId: 1,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.familyInfoData.emit(props);
-        }
-      },
-      error: (error: any) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
-        this.router.navigateByUrl(`customers/add/contact`);
-      }
-    })
-  }
+  // saveNewCustomerInfo(formVal: any, src: string): void {
+  //   const payload = { ...formVal, familyInfoId: 0 };
+  //   this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
+  //     next: (data: any) => {
+  //       if (data) {
+  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+  //         const props: FormStep = {
+  //           source: src,
+  //           data: { ...formVal, familyInfoId: data?.id },
+  //           formId: 2,
+  //           action: ActionValue.next,
+  //           isCompleted: true,
+  //           previous: {
+  //             source: 'personal',
+  //             data: {},
+  //             formId: 1,
+  //             action: ActionValue.previous,
+  //             isCompleted: true
+  //           },
+  //           next: {
+  //             source: 'contact',
+  //             data: {},
+  //             formId: 3,
+  //             action: ActionValue.next,
+  //             isCompleted: false
+  //           }
+  //         }
+  //         this.familyInfoData.emit(props);
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.log('error: ', error);
+  //       this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
+  //       this.router.navigateByUrl(`customers/add/contact`);
+  //     }
+  //   })
+  // }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const payload = { ...formVal, familyInfoId: this.familyData.familyInfoId };
@@ -200,7 +205,7 @@ export class FamilyInfoComponent implements OnInit {
             }
           }
           this.familyInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`);
+          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
 
         }
       },
@@ -285,5 +290,23 @@ export class FamilyInfoComponent implements OnInit {
     })
   }
 
+  getCustomerDetails(): void {
+    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.customerData = data;
+          this.familyData = JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
+          this.isEditMode = this.customerData ? this.customerData['isFamilyInfoFill'] : false;
+          if (this.isEditMode) this.patchFormData();
+          this.cdref.detectChanges();
+          this.isDataLoaded = true;
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
+      }
+    })
+  }
 
 }
