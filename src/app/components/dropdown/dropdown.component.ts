@@ -82,7 +82,11 @@ export class DropdownComponent implements OnInit, OnChanges, AfterViewInit, Cont
     if (this.options.length) {
       const value = this.value ? this.value : this.control.value;
       const itemVlue = this.options.filter((item: any) => item.id == value);
-      if (itemVlue?.length) this.itemValue = itemVlue[0];
+      if (itemVlue?.length) {
+        this.itemValue = itemVlue[0];
+        this.value = itemVlue[0];
+        this.writeValue(itemVlue[0])
+      }
       this.cdr.detectChanges();
     }
   }
