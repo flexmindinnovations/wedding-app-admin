@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, inject, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Console } from 'console';
 import { debounceTime, forkJoin, of } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -223,13 +222,13 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
     console.log('event: ', event);
     
     item.actions.forEach((action: any) => action.enabled = event);
-    console.log('item: ', item);
+    // console.log('item: ', item);
   }
 
   handleChildStateChange(event: any, item: any) {
     // const value = event?.currentTarget.checked;
-    console.log('event: ', event);
-    console.log('item: ', item);
+    // console.log('event: ', event);
+    // console.log('item: ', item);
     
     item.enabled = event;
   }

@@ -138,8 +138,8 @@
         formControlName="shakeDate" [controlValue]="formGroup.get('shakeDate')?.value || ''" />
     </div>
   </form>
-  <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end">
-    <mt-button [size]="'small'" [disabled]="formGroup.invalid" title="Next" [icon]="'pi pi-arrow-right'" [icon]="'pi pi-arrow-right'" iconPos="right"
+  <div class="action-buttons ion-padding-horizontal max-h-14 min-h-12 w-full flex items-center justify-end">
+    <mt-button [size]="'small'" [disabled]="formGroup.invalid" title="Next" [icon]="'pi pi-arrow-right'" iconPos="right"
       (action)="handleClickOnNext('personal')" />
   </div>
 </div>

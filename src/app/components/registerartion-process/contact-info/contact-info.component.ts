@@ -75,13 +75,12 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       stateId: ['', [Validators.required]],
       cityId: ['', [Validators.required]],
     })
-    this.formGroup.get('contactNumber')?.disable();
-
   }
 
   patchFormData() {
     const contactData = { ...this.contactData, contactNumber: this.customerData['customerUserName'] };
     this.formGroup.patchValue(contactData);
+    this.formGroup.get('contactNumber')?.disable();
     this.cdref.detectChanges();
   }
 

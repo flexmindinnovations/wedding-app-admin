@@ -75,7 +75,7 @@ export class LayoutPage implements OnInit, AfterViewInit {
     this.idle.setTimeout(5);
     this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
     this.idle.onIdleStart.subscribe(() => {
-      console.log('idle: ', this.idle);
+      // console.log('idle: ', this.idle);
 
       this.idleState = "IDLE";
       this.isTimeOut = true;

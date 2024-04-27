@@ -367,7 +367,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     switch (src) {
       case 'educationId':
         this.hasSpecialization = event?.hasSpecialization;
-        console.log(this.hasSpecialization);
+        // console.log(this.hasSpecialization);
         if (this.hasSpecialization) this.getSpecialization(event?.id);
         break;
       case 'specializationId':
@@ -425,7 +425,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.educationService.getSpecializationListByEducationId(educationId).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data);
+          // console.log(data);
           this.specializationListOptions = data.map((item: any) => {
             return {
               id: item?.specializationId,
