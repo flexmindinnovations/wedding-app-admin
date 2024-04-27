@@ -77,8 +77,10 @@ export class AddEditCastComponent implements OnInit {
               })
             );
           });
-          if(props) this.formGroup.patchValue(props);
-          this.cdref.detectChanges();
+          setTimeout(() => {
+            if(props) this.formGroup.patchValue(props);
+            this.cdref.detectChanges();
+          })
         }
       },
       error: (error) => {
