@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Optional, Output, Self, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { COLOR_SCHEME, dropdownThemeVariables } from 'src/util/util';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
 })
-export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class DropdownComponent implements OnInit, OnChanges, AfterViewInit, ControlValueAccessor {
 
   cdr = inject(ChangeDetectorRef);
 
@@ -78,6 +78,15 @@ export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAcc
     })
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.options.length) {
+      const value = this.value ? this.value : this.control.value;
+      const itemVlue = this.options.filter((item: any) => item.id == value);
+      if (itemVlue?.length) this.itemValue = itemVlue[0];
+      this.cdr.detectChanges();
+    }
+  }
+
   getId() {
     let idKey = 'id';
     switch (this.label) {
@@ -89,14 +98,7 @@ export class DropdownComponent implements OnInit, AfterViewInit, ControlValueAcc
     return idKey;
   }
 
-  ngAfterViewInit(): void {
-    if (this.options.length) {
-      const value = this.control.value;
-      const itemVlue = this.options.filter((item: any) => item.id == value);
-      if (itemVlue?.length) this.itemValue = itemVlue[0];
-      this.cdr.detectChanges();
-    }
-  }
+  ngAfterViewInit(): void { }
 
   handleToggle() {
     this.isOpen = !this.isOpen;

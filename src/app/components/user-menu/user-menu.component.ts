@@ -1,5 +1,5 @@
 import { SharedService } from 'src/app/services/shared.service';
-import { AfterContentInit, Component, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +19,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   profileInfo: any = {};
   sharedService = inject(SharedService);
   themeService = inject(ThemeService);
+  cdref = inject(ChangeDetectorRef);
   @ViewChild('menu', { static: false }) menuEl!: Menu;
   cTheme: string = 'light';
 
@@ -56,12 +57,13 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     const profile = JSON.parse(localStorage.getItem('profile') || '{}');
     this.profileInfo = profile ? profile : {};
-    this.cTheme = localStorage.getItem('color-theme') || '';
+    this.cTheme = localStorage.getItem('color-theme') || '';    
     this.iconSrc = this.cTheme === 'light' ? '/assets/icon/user.png' : '/assets/icon/user_white.png';
     this.themeService.getThemeToggle().subscribe((cTheme: any) => {
       this.cTheme = cTheme;
       this.iconSrc = this.cTheme === 'light' ? '/assets/icon/user.png' : '/assets/icon/user_white.png';
     })
+    this.cdref.detectChanges();
   }
 
   handleImageLoadError(event: ErrorEvent) {

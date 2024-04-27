@@ -166,7 +166,7 @@ export const findInvalidControlsRecursive = (formToInvestigate: FormGroup | Form
     return invalidControls;
 }
 
-export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', '/customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit'];
+export const nestedRoutes = ['users', 'customers', 'branch', 'events', 'blog', '/users/add', '/customers/add', '/branch/add', '/events/add', '/events/edit', '/branch/edit', '/users/edit', '/blog/add', '/blog/edit', 'master'];
 
 export const TITHI_LIST = [
     { title: 'Gotra', value: '' },

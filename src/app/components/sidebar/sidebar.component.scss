@@ -6,6 +6,18 @@
     @apply bg-red-400 hover:bg-red-600 dark:bg-gray-400 dark:text-white shadow-md text-white border-none
 }
 
+.active-red {
+    @apply bg-red-500 hover:bg-red-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none;
+}
+
+.active-bo {
+    @apply bg-bo-500 hover:bg-bo-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none;
+}
+
+.active-br {
+    @apply bg-br-500 hover:bg-br-600 dark:bg-gray-500 dark:text-white shadow-md text-white border-none;
+}
+
 .hide {
     display: none;
     transition: display .1s ease-in-out;
@@ -17,7 +29,8 @@
     display: block;
 }
 
-.logo-image, .logo-text {
+.logo-image,
+.logo-text {
     animation: showAnimator .8s ease-in-out;
     display: flex;
 }

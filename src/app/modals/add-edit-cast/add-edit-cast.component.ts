@@ -26,6 +26,7 @@ export class AddEditCastComponent implements OnInit {
   cdref = inject(ChangeDetectorRef);
   religionListOptions: any[] = [];
   religionId: any;
+  isDataAvailable: boolean = false;
 
   subCastList: any[] = [
     { id: 1, name: "Sub Cast", subCastName: '' },
@@ -42,7 +43,6 @@ export class AddEditCastComponent implements OnInit {
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
     this.alreadyCastList = data?.alreadyCastList;
-    if (this.isEditMode) this.patchFormData();
   }
 
   ngAfterViewInit(): void {
@@ -70,7 +70,6 @@ export class AddEditCastComponent implements OnInit {
             hasSubCast: this.hasSubCastToggle,
             castName: this.castName
           }
-          this.formGroup.patchValue(props);
           this.subCastList.forEach((subCast: any) => {
             subCastList.push(
               this.fb.group({
@@ -78,6 +77,8 @@ export class AddEditCastComponent implements OnInit {
               })
             );
           });
+          if(props) this.formGroup.patchValue(props);
+          this.cdref.detectChanges();
         }
       },
       error: (error) => {
@@ -223,6 +224,7 @@ export class AddEditCastComponent implements OnInit {
             }
             return obj;
           });
+          if (this.isEditMode) this.patchFormData();
         }
       },
       error: (error) => {

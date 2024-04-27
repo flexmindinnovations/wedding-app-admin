@@ -169,6 +169,18 @@ border-right {
   font-family: "agGridBalham" !important;
 }
 
+// @media(prefers-color-scheme: dark) {
+//   .ag-icon {
+//     font-family: "agGridBalham" !important;
+//     background-color: red;
+//   }
+// }
+html.dark {
+  .ag-icon {
+    font-family: "agGridBalham" !important;
+  }
+}
+
 .main {
   @apply bg-white w-full ease-in-out dark:bg-dark-950 dark:text-white flex-grow overflow-auto;
 
