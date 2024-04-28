@@ -39,7 +39,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
   isDataLoaded: boolean = false;
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -61,7 +60,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    // if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
+    if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
   }
 
   ngAfterViewInit(): void { }
@@ -73,6 +72,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
           this.customerData = response;
           const isFamilyInfoFill = response?.isFamilyInfoFill;
           if (isFamilyInfoFill) {
+            this.customerData = response;
             this.isEditMode = response?.isContactInfoFill;
             this.contactData = response?.contactInfoModel;
             if (this.isEditMode) this.patchFormData();
@@ -151,10 +151,11 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleClickOnNext(src: string) {
-    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, contactInfoId: 0 };
+    const formVal = { ...this.formGroup.value, customerId: this.customerData.customerId, contactInfoId: 0 };
+    formVal['contactNumber'] = formVal['contactNumber'] ? formVal['contactNumber'] : this.customerData['customerUserName'];
     if (this.formGroup.valid) {
-      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      // else this.saveNewCustomerInfo(formVal, src);
+      if(this.isEditMode) this.updateCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {

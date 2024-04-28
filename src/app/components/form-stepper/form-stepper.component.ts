@@ -62,7 +62,11 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   setActiveStep(activeRoute: string) {
     this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
+    // console.log('registrationSteps: ', this.registrationSteps);
+
     const activeItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.route === activeRoute);
+    // console.log('activeItemIndex: ', activeItemIndex);
+
     if (activeItemIndex > -1) this.registrationSteps[activeItemIndex].isActive = true;
   }
 

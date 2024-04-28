@@ -65,6 +65,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
           this.customerData = response;
           const isOtherInfoFill = response?.isOtherInfoFill;
           if (isOtherInfoFill) {
+            this.customerData = response;
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
             if (this.isEditMode) this.getCustomerImages();
@@ -181,7 +182,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             },
             next: null
           }
-          this.photosData.emit(props);
+          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'add');
         }
@@ -220,7 +221,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             },
             next: null
           }
-          this.photosData.emit(props);
+          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'update');
         }

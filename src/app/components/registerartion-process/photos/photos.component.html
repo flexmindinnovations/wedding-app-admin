@@ -15,6 +15,6 @@
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
     <!-- <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('photos')" /> -->
     <mt-button [disabled]="selectedFiles.length !== 2 || imageData.length !== 2" [size]="'small'"
-      title="Complete Registration" [textOnly]="true" (action)="handleClickOnNext('photos')" />
+      title="Complete Registration" [icon]="'pi pi-check-circle'" iconPos="left" (action)="handleClickOnNext('photos')" />
   </div>
 </div>

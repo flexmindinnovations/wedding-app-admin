@@ -188,7 +188,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src)
-      // else this.saveNewCustomerInfo(formVal, src)
+      else this.saveNewCustomerInfo(formVal, src)
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -235,40 +235,40 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.messageService.clear();
   }
 
-  // saveNewCustomerInfo(formVal: any, src: string): void {
-  //   let payload = { ...formVal, personalInfoId: 0, occupation: "" };
-  //   this.tithiList.forEach((item: any) => {
-  //     payload = { ...payload, [item.title]: item.value ? item.value : "" }
-  //   });
-  //   this.customerRegistrationService.savePersonalInformation(payload).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         const props: FormStep = {
-  //           source: src,
-  //           data: { ...formVal, customerId: data?.id },
-  //           formId: 1,
-  //           action: ActionValue.next,
-  //           isCompleted: data?.status,
-  //           previous: null,
-  //           next: {
-  //             source: 'family',
-  //             data: {},
-  //             formId: 2,
-  //             action: ActionValue.next,
-  //             isCompleted: false
-  //           }
-  //         }
-  //         this.personalInfoData.emit(props);
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         this.router.navigateByUrl('customers/add/family',);
-  //       }
-  //     },
-  //     error: (error: any) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
-  //     }
-  //   })
-  // }
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    let payload = { ...formVal, personalInfoId: 0, occupation: "" };
+    this.tithiList.forEach((item: any) => {
+      payload = { ...payload, [item.title]: item.value ? item.value : "" }
+    });
+    this.customerRegistrationService.savePersonalInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, customerId: data?.id },
+            formId: 1,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: null,
+            next: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.personalInfoData.emit(props);
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl('customers/add/family',);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const customerId = this.customerData?.customerId;
@@ -353,7 +353,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
               title: item?.foodName,
             }
           });
-          if (this.isEditMode) this.patchValue();
           this.cdref.detectChanges();
         },
         error: (error: Error) => {
@@ -425,7 +424,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.educationService.getSpecializationListByEducationId(educationId).subscribe({
       next: (data: any) => {
         if (data) {
-          // console.log(data);
           this.specializationListOptions = data.map((item: any) => {
             return {
               id: item?.specializationId,
@@ -470,6 +468,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
           this.customerData = data;
           this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
           this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
+          if (this.isEditMode) this.patchValue();
           this.isDataLoaded = true;
         }
       },
