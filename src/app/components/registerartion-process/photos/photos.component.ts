@@ -32,6 +32,10 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   photoName: string = '';
   router = inject(Router);
   imageData: any[] = [];
+  activeRouter = inject(ActivatedRoute);
+  customerService = inject(CustomerRegistrationService);
+  customerId = 0;
+  isDataLoaded: boolean = false;
 
   constructor(
     private activedRoute: ActivatedRoute
@@ -53,7 +57,11 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.isEditMode = this.customerData['isImagesAdded'];
+    this.activeRouter.params.subscribe((params: any) => {
+      this.customerId = history.state.customerId ? history.state.customerId : 0;
+      if (this.customerId > 0) this.getCustomerDetails();
+      else this.isDataLoaded = true;
+    })
     // console.log(this.isEditMode)
     if (this.isEditMode) {
       this.getCustomerImages();
@@ -211,6 +219,22 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       error: (error: any) => {
         console.log('error: ', error);
         this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
+  getCustomerDetails(): void {
+    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.customerData = data;
+          this.imagesData = JSON.parse(JSON.stringify(this.customerData['imageInfoModel']));
+          this.isEditMode = this.customerData ? this.customerData['isImagesAdded'] : false;
+          this.isDataLoaded = true;
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
       }
     })
   }

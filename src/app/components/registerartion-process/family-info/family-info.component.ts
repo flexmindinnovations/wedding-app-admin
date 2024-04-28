@@ -41,6 +41,9 @@ export class FamilyInfoComponent implements OnInit {
   religionId: any;
   subCastId: any;
   customerId: any;
+  activeRouter = inject(ActivatedRoute);
+  customerService = inject(CustomerRegistrationService);
+  isDataLoaded: boolean = false;
 
   isSubCastDataAvailable: boolean = false;
 
@@ -63,11 +66,10 @@ export class FamilyInfoComponent implements OnInit {
     this.initFormGroup();
     this.getCastList();
     this.getReligionList();
-
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    if (changes?.customerData?.currentValue) this.familyData = this.customerData['familyInfoModel'];
+    // if (changes?.customerData?.currentValue) this.familyData =JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
   }
 
   ngAfterViewInit(): void {
@@ -110,6 +112,8 @@ export class FamilyInfoComponent implements OnInit {
       castId: ['', [Validators.required]],
       subCastId: ['', [Validators.required]]
     })
+    this.getCastList();
+    this.getReligionList();
   }
 
   patchFormData() {
@@ -154,10 +158,9 @@ export class FamilyInfoComponent implements OnInit {
 
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId };
-    this.cdref.detectChanges();
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      else this.saveNewCustomerInfo(formVal, src);
+      // else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -232,7 +235,7 @@ export class FamilyInfoComponent implements OnInit {
             }
           }
           this.familyInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`);
+          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
 
         }
       },
@@ -316,6 +319,4 @@ export class FamilyInfoComponent implements OnInit {
       }
     })
   }
-
-
 }

@@ -29,6 +29,10 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   motherTongueListOptions: any = [];
   motherTongueId: any = ''
   sharedService = inject(SharedService);
+  activeRouter = inject(ActivatedRoute);
+  customerService = inject(CustomerRegistrationService);
+  customerId = 0;
+  isDataLoaded: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -110,7 +114,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      else this.saveNewCustomerInfo(formVal, src);
+      // else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -126,43 +130,43 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, otherInfoId: 0 };
-    this.customerRegistrationService.saveOtherInformation(payload).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, otherInfoId: data?.id },
-            formId: 4,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'photos',
-              data: {},
-              formId: 5,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.otherInfoData.emit(props);
-          this.router.navigateByUrl(`customers/add/photos`);
-        }
-      },
-      error: (error: any) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
-      }
-    })
-  }
+  // saveNewCustomerInfo(formVal: any, src: string): void {
+  //   const payload = { ...formVal, otherInfoId: 0 };
+  //   this.customerRegistrationService.saveOtherInformation(payload).subscribe({
+  //     next: (data: any) => {
+  //       if (data) {
+  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+  //         const props: FormStep = {
+  //           source: src,
+  //           data: { ...formVal, otherInfoId: data?.id },
+  //           formId: 4,
+  //           action: ActionValue.next,
+  //           isCompleted: data?.status,
+  //           previous: {
+  //             source: 'contact',
+  //             data: {},
+  //             formId: 3,
+  //             action: ActionValue.previous,
+  //             isCompleted: true
+  //           },
+  //           next: {
+  //             source: 'photos',
+  //             data: {},
+  //             formId: 5,
+  //             action: ActionValue.next,
+  //             isCompleted: false
+  //           }
+  //         }
+  //         this.otherInfoData.emit(props);
+  //         this.router.navigateByUrl(`customers/add/photos`);
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.log('error: ', error);
+  //       this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
+  //     }
+  //   })
+  // }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const otherInfo = this.customerData['otherInfoModel'];
@@ -194,7 +198,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
             }
           }
           this.otherInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
+          this.router.navigateByUrl(`customers/edit/${customerId}/photos`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
         }
       },
       error: (error: any) => {

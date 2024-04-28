@@ -146,7 +146,7 @@ export class BlogPage implements OnInit, AfterViewInit {
     }
   }
   async openDeleteModal(event?: any) {
-    console.log('open')
+    // console.log('open')
     this.canShowModal = true;
     const modal = await this.modalCtrl.create({
       component: DeleteConfirmComponent,
