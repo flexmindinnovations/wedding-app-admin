@@ -83,18 +83,43 @@ export class FamilyInfoComponent implements OnInit {
           if (isPersonInfoFill) {
             this.isEditMode = response?.isFamilyInfoFill;
             this.familyData = response?.familyInfoModel;
+            this.setStepperData();
             if (this.isEditMode) this.patchFormData();
           } else {
-            console.log('isPersonInfoFill: ', isPersonInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
           }
-        }
+        } 
       },
       error: (error) => {
         console.log('error: ', error);
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
+  }
+
+  setStepperData() {
+    const props: FormStep = {
+      source: 'family',
+      data: { },
+      formId: 2,
+      action: ActionValue.next,
+      isCompleted: true,
+      previous: {
+        source: 'personal',
+        data: {},
+        formId: 1,
+        action: ActionValue.previous,
+        isCompleted: true
+      },
+      next: {
+        source: 'contact',
+        data: {},
+        formId: 3,
+        action: ActionValue.next,
+        isCompleted: false
+      }
+    }
+    this.sharedService.stepData.next(props);
   }
 
   initFormGroup() {

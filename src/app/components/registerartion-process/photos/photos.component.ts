@@ -62,14 +62,14 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
       next: (response) => {
         if (response) {
+          this.customerData = response;
           const isOtherInfoFill = response?.isOtherInfoFill;
           if (isOtherInfoFill) {
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
-            console.log('this.otherData: ', this.photosData);
             if (this.isEditMode) this.getCustomerImages();
+            this.setStepperData();
           } else {
-            console.log('isOtherInfoFill: ', isOtherInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/other`);
           }
         }
@@ -79,6 +79,25 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
+  }
+
+  setStepperData() {
+    const props: FormStep = {
+      source: 'photos',
+      data: [],
+      formId: 5,
+      action: ActionValue.next,
+      isCompleted: true,
+      previous: {
+        source: 'other',
+        data: {},
+        formId: 4,
+        action: ActionValue.previous,
+        isCompleted: true
+      },
+      next: null
+    }
+    this.sharedService.stepData.next(props);
   }
 
   getCustomerImages() {

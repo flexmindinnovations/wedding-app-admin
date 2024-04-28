@@ -54,20 +54,20 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
     this.getMotherTongueList();
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   getCustomerDetails(customerId: any) {
     this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
       next: (response) => {
         if (response) {
+          this.customerData = response;
           const isContactInfoFill = response?.isContactInfoFill;
           if (isContactInfoFill) {
             this.isEditMode = response?.isOtherInfoFill;
             this.otherData = response?.otherInfoModel;
-            console.log('this.otherData: ', this.otherData);
             if (this.isEditMode) this.patchFormData();
+            this.setStepperData();
           } else {
-            console.log('isContactInfoFill: ', isContactInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
           }
         }
@@ -77,6 +77,31 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
+  }
+
+  setStepperData() {
+    const props: FormStep = {
+      source: 'other',
+      data: {},
+      formId: 4,
+      action: ActionValue.next,
+      isCompleted: false,
+      previous: {
+        source: 'contact',
+        data: {},
+        formId: 3,
+        action: ActionValue.previous,
+        isCompleted: true
+      },
+      next: {
+        source: 'photos',
+        data: {},
+        formId: 5,
+        action: ActionValue.next,
+        isCompleted: false
+      }
+    }
+    this.sharedService.stepData.next(props);
   }
 
   initFormGroup() {
@@ -198,7 +223,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
             }
           }
           this.otherInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${customerId}/photos`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${customerId}/photos`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
         }
       },
       error: (error: any) => {

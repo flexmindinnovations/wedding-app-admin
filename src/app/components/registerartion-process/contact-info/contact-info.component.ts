@@ -64,29 +64,53 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     // if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void { }
 
   getCustomerDetails(customerId: any) {
     this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
       next: (response) => {
         if (response) {
+          this.customerData = response;
           const isFamilyInfoFill = response?.isFamilyInfoFill;
           if (isFamilyInfoFill) {
             this.isEditMode = response?.isContactInfoFill;
             this.contactData = response?.contactInfoModel;
-            console.log('this.contactData: ', this.contactData);
             if (this.isEditMode) this.patchFormData();
+            this.setStepperData();
           } else {
-            console.log('isFamilyInfoFill: ', isFamilyInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/family`);
           }
         }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
+  }
+
+  setStepperData() {
+    const props: FormStep = {
+      source: 'contact',
+      data: {},
+      formId: 3,
+      action: ActionValue.next,
+      isCompleted: false,
+      previous: {
+        source: 'family',
+        data: {},
+        formId: 2,
+        action: ActionValue.previous,
+        isCompleted: true
+      },
+      next: {
+        source: 'other',
+        data: {},
+        formId: 4,
+        action: ActionValue.next,
+        isCompleted: false
+      }
+    }
+    this.sharedService.stepData.next(props);
   }
 
   initFormGroup() {
@@ -139,43 +163,20 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // saveNewCustomerInfo(formVal: any, src: string): void {
-  //   const payload = { ...formVal, contactInfoId: 0 };
-  //   this.customerRegistrationService.saveContactInformation(payload).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         const props: FormStep = {
-  //           source: src,
-  //           data: { ...formVal, contactInfoId: data?.id },
-  //           formId: 3,
-  //           action: ActionValue.next,
-  //           isCompleted: data?.status,
-  //           previous: {
-  //             source: 'family',
-  //             data: {},
-  //             formId: 2,
-  //             action: ActionValue.previous,
-  //             isCompleted: true
-  //           },
-  //           next: {
-  //             source: 'other',
-  //             data: {},
-  //             formId: 4,
-  //             action: ActionValue.next,
-  //             isCompleted: false
-  //           }
-  //         }
-  //         this.contactInfoData.emit(props);
-  //         this.router.navigateByUrl(`customers/add/other`);
-  //       }
-  //     },
-  //     error: (error: any) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
-  //     }
-  //   })
-  // }
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, contactInfoId: 0 };
+    this.customerRegistrationService.saveContactInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.router.navigateByUrl(`customers/add/other`);
+        }
+      },
+      error: (error: any) => {
+        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const contactInfo = this.customerData['contactInfoModel'];
@@ -185,29 +186,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, contactInfoId: data?.id },
-            formId: 3,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: {
-              source: 'family',
-              data: {},
-              formId: 2,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'other',
-              data: {},
-              formId: 4,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.contactInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${customerId}/other` ,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${customerId}/other`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
         }
       },
       error: (error: any) => {

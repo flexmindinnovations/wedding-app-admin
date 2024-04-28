@@ -4,6 +4,7 @@ import { filter } from 'rxjs';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { COLOR_SCHEME, stepperThemeVariables } from 'src/util/util';
 
 @Component({
@@ -17,6 +18,7 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   colorScheme: any = COLOR_SCHEME;
   registrationSteps: StepperFormItem[] = [];
   formStepperService = inject(FormStepperService);
+  sharedService = inject(SharedService);
 
   currentStepData!: FormStep;
   themesParams = stepperThemeVariables['lastItem'];
@@ -33,17 +35,22 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() template: any;
   active: number = 0;
-
-  @HostListener('window:beforeunload', ['$event'])
-  onPageRefresh() {
-    console.log('on page refresh');
-
-  }
-
   ngOnInit() {
     this.getFormStepperItems();
     this.router.events.subscribe((events: any) => {
       this.getCurrentRoute();
+    })
+
+    this.sharedService.getStepData().subscribe((stepData: any) => {
+      this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
+      this.getCurrentRoute();
+      const totalSteps = this.registrationSteps.length;
+      const nextPage: any = stepData?.formId < totalSteps ? stepData?.formId - 1 : stepData?.formId;
+      for (let iterator = 0; iterator < nextPage; iterator++) {
+        if (!this.registrationSteps[iterator].isActive) {
+          this.registrationSteps[iterator].isCompleted = true;
+        }
+      }
     })
   }
 
@@ -95,8 +102,8 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
         return item;
       });
       const entries = performance.getEntriesByType("navigation")[0];
-      const entryType = entries.toJSON().type;      
-      if(entryType === 'reload') {
+      const entryType = entries.toJSON().type;
+      if (entryType === 'reload') {
         this.getCurrentRoute();
       }
     })

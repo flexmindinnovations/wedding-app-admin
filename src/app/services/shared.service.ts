@@ -25,6 +25,12 @@ export class SharedService {
   isUnAuthorizedRequest = new Subject();
   isLoggedOutCompleted = new Subject();
 
+  stepData = new Subject();
+
+  getStepData(): Observable<any> {
+    return this.stepData.asObservable();
+  }
+
   getIsLoggedOutEvent() {
     return this.isLoggedOutCompleted.asObservable();
   }
