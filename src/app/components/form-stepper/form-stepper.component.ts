@@ -1,5 +1,6 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
@@ -24,7 +25,8 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   colorVarients: any;
   constructor(
-    private router: Router
+    public router: Router,
+    public cdref: ChangeDetectorRef
   ) {
     this.setCurrentClass();
   }
@@ -32,14 +34,23 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() template: any;
   active: number = 0;
 
+  @HostListener('window:beforeunload', ['$event'])
+  onPageRefresh() {
+    console.log('on page refresh');
+
+  }
+
   ngOnInit() {
     this.getFormStepperItems();
-
     this.router.events.subscribe((events: any) => {
-      const currentUrl = this.router.url;
-      const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
-      if (activeRoute && this.stepperRoutes.includes(activeRoute)) this.setActiveStep(activeRoute);
+      this.getCurrentRoute();
     })
+  }
+
+  getCurrentRoute() {
+    const currentUrl = this.router.url;
+    const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
+    if (activeRoute && this.stepperRoutes.includes(activeRoute)) this.setActiveStep(activeRoute);
   }
 
   setActiveStep(activeRoute: string) {
@@ -83,6 +94,11 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
         }
         return item;
       });
+      const entries = performance.getEntriesByType("navigation")[0];
+      const entryType = entries.toJSON().type;      
+      if(entryType === 'reload') {
+        this.getCurrentRoute();
+      }
     })
   }
 

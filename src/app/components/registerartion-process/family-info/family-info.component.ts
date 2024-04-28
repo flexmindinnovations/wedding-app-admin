@@ -83,7 +83,6 @@ export class FamilyInfoComponent implements OnInit {
           if (isPersonInfoFill) {
             this.isEditMode = response?.isFamilyInfoFill;
             this.familyData = response?.familyInfoModel;
-            console.log('this.familyData: ', this.familyData);
             if (this.isEditMode) this.patchFormData();
           } else {
             console.log('isPersonInfoFill: ', isPersonInfoFill);
