@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { error } from 'console';
+import { forkJoin} from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -42,7 +42,7 @@ export class FamilyInfoComponent implements OnInit {
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
   isDataLoaded: boolean = false;
-
+  isDataAvailable = false;
   isSubCastDataAvailable: boolean = false;
 
   constructor(
@@ -52,11 +52,14 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getMasterData();
     this.initFormGroup();
+    // this.getCastList();
+    // this.getReligionList();
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    // if (changes?.customerData?.currentValue) this.familyData =JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
+    if (changes?.customerData?.currentValue) this.familyData =JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
   }
 
   ngAfterViewInit(): void {
@@ -82,8 +85,6 @@ export class FamilyInfoComponent implements OnInit {
       castId: ['', [Validators.required]],
       subCastId: ['', [Validators.required]]
     })
-    this.getCastList();
-    this.getReligionList();
   }
 
   patchFormData() {
@@ -130,7 +131,7 @@ export class FamilyInfoComponent implements OnInit {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId };
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      // else this.saveNewCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -139,43 +140,43 @@ export class FamilyInfoComponent implements OnInit {
     }
   }
 
-  // saveNewCustomerInfo(formVal: any, src: string): void {
-  //   const payload = { ...formVal, familyInfoId: 0 };
-  //   this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         const props: FormStep = {
-  //           source: src,
-  //           data: { ...formVal, familyInfoId: data?.id },
-  //           formId: 2,
-  //           action: ActionValue.next,
-  //           isCompleted: true,
-  //           previous: {
-  //             source: 'personal',
-  //             data: {},
-  //             formId: 1,
-  //             action: ActionValue.previous,
-  //             isCompleted: true
-  //           },
-  //           next: {
-  //             source: 'contact',
-  //             data: {},
-  //             formId: 3,
-  //             action: ActionValue.next,
-  //             isCompleted: false
-  //           }
-  //         }
-  //         this.familyInfoData.emit(props);
-  //       }
-  //     },
-  //     error: (error: any) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
-  //       this.router.navigateByUrl(`customers/add/contact`);
-  //     }
-  //   })
-  // }
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, familyInfoId: 0 };
+    this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, familyInfoId: data?.id },
+            formId: 2,
+            action: ActionValue.next,
+            isCompleted: true,
+            previous: {
+              source: 'personal',
+              data: {},
+              formId: 1,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'contact',
+              data: {},
+              formId: 3,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.familyInfoData.emit(props);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
+        this.router.navigateByUrl(`customers/add/contact`);
+      }
+    })
+  }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const payload = { ...formVal, familyInfoId: this.familyData.familyInfoId };
@@ -232,42 +233,36 @@ export class FamilyInfoComponent implements OnInit {
     }
   }
 
-  getReligionList() {
-    this.sharedService.getReligionList().subscribe({
-      next: (response: any) => {
-        if (response) {
-          this.religionListOptions = response?.map((item: any) => {
+  getMasterData() {
+    const religion =  this.sharedService.getReligionList();
+    const cast = this.castService.getCastList();
+    forkJoin({ religion, cast})
+      .subscribe({
+        next: async (result) => {
+          this.isDataAvailable = true;
+          const { religion, cast } = result;
+          this.religionListOptions = religion?.map((item: any) => {
             return {
               id: item?.religionId,
               title: item?.religionName,
             }
           })
-        }
-      },
-      error: (error) => {
-        console.log(error)
-      }
-    })
-  }
-
-  getCastList() {
-    this.castService.getCastList().subscribe({
-      next: (response: any) => {
-        if (response) {
-          this.castListOptions = response?.map((item: any) => {
+          this.castListOptions = cast?.map((item: any) => {
             return {
               id: item?.castId,
               title: item?.castName,
               hasSubcast: item?.hasSubcast
             }
           })
+          this.cdref.detectChanges();
+        },
+        error: (error: Error) => {
+          console.log('error: ', error);
+          this.alert.setAlertMessage('Error while processing request', AlertType.error);
         }
-      },
-      error: (error) => {
-        console.log(error)
-      }
-    })
+      })
   }
+
 
   getSubCastList(castId: number) {
     this.subCastListOptions = [];
@@ -278,7 +273,9 @@ export class FamilyInfoComponent implements OnInit {
           this.subCastListOptions = response?.map((item: any) => {
             return {
               id: item?.subCastId,
-              title: item?.subCastName
+              title: item?.subCastName,
+              castId,
+              subCastId:item?.subCastId
             }
           })
           this.isSubCastDataAvailable = true;
@@ -298,8 +295,9 @@ export class FamilyInfoComponent implements OnInit {
           this.familyData = JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
           this.isEditMode = this.customerData ? this.customerData['isFamilyInfoFill'] : false;
           if (this.isEditMode) this.patchFormData();
-          this.cdref.detectChanges();
           this.isDataLoaded = true;
+          this.cdref.detectChanges();
+        
         }
       },
       error: (error) => {

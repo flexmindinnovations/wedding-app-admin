@@ -39,7 +39,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
   isDataLoaded: boolean = false;
-
   constructor(
     private fb: FormBuilder,
     private router: Router
@@ -52,7 +51,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    // if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
+    if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +79,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   patchFormData() {
     const contactData = { ...this.contactData, contactNumber: this.customerData['customerUserName'] };
     this.formGroup.patchValue(contactData);
-    this.formGroup.get('contactNumber')?.disable();
     this.cdref.detectChanges();
   }
 
@@ -104,8 +102,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, contactInfoId: 0 };
     if (this.formGroup.valid) {
-      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
-      // else this.saveNewCustomerInfo(formVal, src);
+      if(this.isEditMode) this.updateCustomerInfo(formVal, src);
+      else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
@@ -114,43 +112,43 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // saveNewCustomerInfo(formVal: any, src: string): void {
-  //   const payload = { ...formVal, contactInfoId: 0 };
-  //   this.customerRegistrationService.saveContactInformation(payload).subscribe({
-  //     next: (data: any) => {
-  //       if (data) {
-  //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-  //         const props: FormStep = {
-  //           source: src,
-  //           data: { ...formVal, contactInfoId: data?.id },
-  //           formId: 3,
-  //           action: ActionValue.next,
-  //           isCompleted: data?.status,
-  //           previous: {
-  //             source: 'family',
-  //             data: {},
-  //             formId: 2,
-  //             action: ActionValue.previous,
-  //             isCompleted: true
-  //           },
-  //           next: {
-  //             source: 'other',
-  //             data: {},
-  //             formId: 4,
-  //             action: ActionValue.next,
-  //             isCompleted: false
-  //           }
-  //         }
-  //         this.contactInfoData.emit(props);
-  //         this.router.navigateByUrl(`customers/add/other`);
-  //       }
-  //     },
-  //     error: (error: any) => {
-  //       console.log('error: ', error);
-  //       this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
-  //     }
-  //   })
-  // }
+  saveNewCustomerInfo(formVal: any, src: string): void {
+    const payload = { ...formVal, contactInfoId: 0 };
+    this.customerRegistrationService.saveContactInformation(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          const props: FormStep = {
+            source: src,
+            data: { ...formVal, contactInfoId: data?.id },
+            formId: 3,
+            action: ActionValue.next,
+            isCompleted: data?.status,
+            previous: {
+              source: 'family',
+              data: {},
+              formId: 2,
+              action: ActionValue.previous,
+              isCompleted: true
+            },
+            next: {
+              source: 'other',
+              data: {},
+              formId: 4,
+              action: ActionValue.next,
+              isCompleted: false
+            }
+          }
+          this.contactInfoData.emit(props);
+          this.router.navigateByUrl(`customers/add/other`);
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
+      }
+    })
+  }
 
   updateCustomerInfo(formVal: any, src: string): void {
     const contactInfo = this.customerData['contactInfoModel'];
@@ -277,10 +275,13 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       next: (data: any) => {
         if (data) {
           this.customerData = data;
+          console.log(this.customerData);
           this.contactData = JSON.parse(JSON.stringify(this.customerData['contactInfoModel']));
           this.isEditMode = this.customerData ? this.customerData['isContactInfoFill'] : false;
           if (this.isEditMode) this.patchFormData();
-          this.cdref.detectChanges();
+          // if(this.customerData['customerUserName']){
+          //   this.formGroup.get('contactNumber')?.disable();
+          // }
           this.isDataLoaded = true;
         }
       },

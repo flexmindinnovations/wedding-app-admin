@@ -52,9 +52,6 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       else this.isDataLoaded = true;
     })
     // console.log(this.isEditMode)
-    if (this.isEditMode) {
-      this.getCustomerImages();
-    }
   }
 
   getCustomerImages() {
@@ -195,6 +192,8 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
           this.customerData = data;
           this.imagesData = JSON.parse(JSON.stringify(this.customerData['imageInfoModel']));
           this.isEditMode = this.customerData ? this.customerData['isImagesAdded'] : false;
+          if (this.isEditMode) this.getCustomerImages();
+          this.cdref.detectChanges();
           this.isDataLoaded = true;
         }
       },
