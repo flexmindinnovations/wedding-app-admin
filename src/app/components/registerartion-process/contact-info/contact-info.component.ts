@@ -72,14 +72,11 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
           const isFamilyInfoFill = response?.isFamilyInfoFill;
           if (isFamilyInfoFill) {
             this.customerData = response;
-            console.log(this.customerData);
             this.isEditMode = response?.isContactInfoFill;
             this.contactData = response?.contactInfoModel;
-            console.log('this.contactData: ', this.contactData);
             if (this.isEditMode) this.patchFormData();
             
           } else {
-            console.log('isFamilyInfoFill: ', isFamilyInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/family`);
           }
         }
@@ -132,7 +129,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     const formVal = { ...this.formGroup.value, customerId: this.customerData.customerId, contactInfoId: 0 };
     formVal['contactNumber'] = formVal['contactNumber'] ? formVal['contactNumber'] : this.customerData['customerUserName'];
     if (this.formGroup.valid) {
-      console.log(formVal);
       if(this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
     } else {

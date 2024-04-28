@@ -219,7 +219,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   handleParentStateChange(event: any, item: any) {
     // const value = event?.currentTarget.checked;
     item.enabled = event;
-    console.log('event: ', event);
+    // console.log('event: ', event);
     
     item.actions.forEach((action: any) => action.enabled = event);
     // console.log('item: ', item);

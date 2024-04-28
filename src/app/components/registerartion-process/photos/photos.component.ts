@@ -67,10 +67,8 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             this.customerData = response;
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
-            console.log('this.otherData: ', this.photosData);
             if (this.isEditMode) this.getCustomerImages();
           } else {
-            console.log('isOtherInfoFill: ', isOtherInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/other`);
           }
         }

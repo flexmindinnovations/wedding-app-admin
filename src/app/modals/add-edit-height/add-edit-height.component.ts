@@ -52,7 +52,7 @@ export class AddEditHeightComponent implements OnInit {
 
     this.formGroup.valueChanges.subscribe((event: any) => {
       const val = event
-      console.log('val: ', val);
+      // console.log('val: ', val);
     })
   }
   get formGroupControl(): { [key: string]: FormControl } {

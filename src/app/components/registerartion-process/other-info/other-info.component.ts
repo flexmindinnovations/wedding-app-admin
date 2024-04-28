@@ -65,10 +65,8 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
             this.customerData = response;
             this.isEditMode = response?.isOtherInfoFill;
             this.otherData = response?.otherInfoModel;
-            console.log('this.otherData: ', this.otherData);
             if (this.isEditMode) this.patchFormData();
           } else {
-            console.log('isContactInfoFill: ', isContactInfoFill);
             this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
           }
         }

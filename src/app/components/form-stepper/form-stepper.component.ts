@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
@@ -24,8 +25,8 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   colorVarients: any;
   constructor(
-    private router: Router,
-    public cdref:ChangeDetectorRef
+    public router: Router,
+    public cdref: ChangeDetectorRef
   ) {
     this.setCurrentClass();
   }
@@ -33,35 +34,31 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   @Input() template: any;
   active: number = 0;
 
-  @HostListener('window:onload', ['$event'])
+  @HostListener('window:beforeunload', ['$event'])
   onPageRefresh() {
-    console.log('on window refresh: ');
-    this.setCurrentStep();
+    // console.log('on page refresh');
+
   }
 
-
   ngOnInit() {
-    this.cdref.detectChanges();
     this.getFormStepperItems();
     this.router.events.subscribe((events: any) => {
-      this.setCurrentStep();
+      this.getCurrentRoute();
     })
   }
 
-  setCurrentStep() {
+  getCurrentRoute() {
     const currentUrl = this.router.url;
     const activeRoute = this.router.url.substring(currentUrl.lastIndexOf('/') + 1, this.router.url.length);
-    console.log({ currentUrl, activeRoute, stepperRoutes: this.stepperRoutes });
-
     if (activeRoute && this.stepperRoutes.includes(activeRoute)) this.setActiveStep(activeRoute);
   }
 
   setActiveStep(activeRoute: string) {
     this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
-    console.log('registrationSteps: ', this.registrationSteps);
+    // console.log('registrationSteps: ', this.registrationSteps);
 
     const activeItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.route === activeRoute);
-    console.log('activeItemIndex: ', activeItemIndex);
+    // console.log('activeItemIndex: ', activeItemIndex);
 
     if (activeItemIndex > -1) this.registrationSteps[activeItemIndex].isActive = true;
   }
@@ -101,6 +98,11 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
         }
         return item;
       });
+      const entries = performance.getEntriesByType("navigation")[0];
+      const entryType = entries.toJSON().type;      
+      if(entryType === 'reload') {
+        this.getCurrentRoute();
+      }
     })
   }
 
