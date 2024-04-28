@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { SideBarItem } from 'src/app/interfaces/sidebar';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
@@ -18,6 +19,7 @@ import { COLOR_SCHEME, nestedRoutes, themeVariables } from 'src/util/util';
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   router = inject(Router);
   sidebarItemService = inject(SidebarItemsService);
+  authService = inject(AuthService);
   sharedService = inject(SharedService);
   roleService = inject(RolesService);
   alert = inject(AlertService);
@@ -39,6 +41,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     const jsonItems = SIDEBAR_ITEMS;
     this.sidebarItems = jsonItems;
     const menuItemsMap = new Map<number, any>();
+    this.getPermissionListByRoleId();
     this.sharedService.getUserPermissions().subscribe((permissionList) => {
       if (permissionList) {
         const newList = permissionList.filter((item: any) => item.canView === true);
@@ -81,12 +84,13 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sidebarItems = [];
       }
     })
-
     this.router.events.subscribe((events: any) => {
-      if (events instanceof NavigationEnd) {        
+      if (events instanceof NavigationEnd) {
         const activeUrl = events?.url;
         this.activeRoute = activeUrl;
-        this.setParentRoute(activeUrl);
+        console.log('activeUrl: ', activeUrl);
+        if(activeUrl)this.setParentRoute(activeUrl);
+        else this.setActiveItem(this.sidebarItems[0].route);
       }
     })
 
@@ -106,10 +110,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       if (activeRoute) this.setActiveItem(activeRoute);
       else this.sidebarItems[0].isActive = true;
     }
-    this.getPermissionListByRoleId();
   }
 
   handleSidebarItemClick(item: SideBarItem) {
+    // this.setActiveItem(item?.route);
     this.router.navigateByUrl(item.route, { state: item });
   }
 
@@ -145,45 +149,48 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getPermissionListByRoleId() {
     // debugger;
-    const roleId = localStorage.getItem('role');
-    const jsonItems = SIDEBAR_ITEMS;
-    this.sidebarItems = jsonItems;
-    const menuItemsMap = new Map<number, any>();
-    this.roleService.getPermissionListById(roleId).subscribe({
-      next: (permissionList: any) => {
-        if (permissionList) {
-          const newList = permissionList.filter((item: any) => item.canView === true);
-          let permissionsArray = newList;
-          for (let i = 0; i < permissionsArray.length; i++) {
-            if (permissionsArray[i].moduleName === "MasterData") {
-              permissionsArray[i].moduleName = "Master Data";
-              break;
-            }
-          }
-          this.sharedService.permissionListMap.set('permissionList', permissionList);
-          this.showTitles = this.isSidebarExpanded ? true : false;
-          permissionsArray.forEach((item: any) => {
-            jsonItems.forEach((menu: any) => {
-              if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
-                menuItemsMap.set(item.moduleId, {
-                  id: item?.moduleId,
-                  title: item?.moduleName,
-                  route: menu?.route,
-                  isActive: false,
-                  icon: menu?.icon
-                })
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      const roleId = localStorage.getItem('role');
+      const jsonItems = SIDEBAR_ITEMS;
+      this.sidebarItems = jsonItems;
+      const menuItemsMap = new Map<number, any>();
+      this.roleService.getPermissionListById(roleId).subscribe({
+        next: (permissionList: any) => {
+          if (permissionList) {
+            const newList = permissionList.filter((item: any) => item.canView === true);
+            let permissionsArray = newList;
+            for (let i = 0; i < permissionsArray.length; i++) {
+              if (permissionsArray[i].moduleName === "MasterData") {
+                permissionsArray[i].moduleName = "Master Data";
+                break;
               }
-            })
-          });
-          const menuItemsMapValues = Array.from(menuItemsMap.values());
-          this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
-          this.setActiveItem(this.activeRoute);
+            }
+            this.sharedService.permissionListMap.set('permissionList', permissionList);
+            this.showTitles = this.isSidebarExpanded ? true : false;
+            permissionsArray.forEach((item: any) => {
+              jsonItems.forEach((menu: any) => {
+                if (menu.title.toLowerCase() === item.moduleName.toLowerCase()) {
+                  menuItemsMap.set(item.moduleId, {
+                    id: item?.moduleId,
+                    title: item?.moduleName,
+                    route: menu?.route,
+                    isActive: false,
+                    icon: menu?.icon
+                  })
+                }
+              })
+            });
+            const menuItemsMapValues = Array.from(menuItemsMap.values());
+            this.sidebarItems = [jsonItems[0], ...menuItemsMapValues];
+            this.setActiveItem(this.activeRoute);
+          }
+        },
+        error: (error) => {
+          this.alert.setAlertMessage(error?.message, AlertType.error);
         }
-      },
-      error: (error) => {
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
+      })
+    }
   }
 
   getStyleClasses() {

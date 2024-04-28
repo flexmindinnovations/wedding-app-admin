@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { error } from 'console';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
@@ -8,6 +8,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { CastService } from 'src/app/services/cast/cast.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
@@ -18,6 +19,7 @@ import { findInvalidControlsRecursive } from 'src/util/util';
 export class FamilyInfoComponent implements OnInit {
 
   @Input() completedStep!: FormStep;
+  @Input() id: any;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
@@ -38,19 +40,30 @@ export class FamilyInfoComponent implements OnInit {
   hasSubCast: boolean = false;
   religionId: any;
   subCastId: any;
+  customerId: any;
 
   isSubCastDataAvailable: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
     this.getCastList();
     this.getReligionList();
+
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
@@ -58,10 +71,29 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.isEditMode = this.customerData['isFamilyInfoFill'];
-    if (this.familyData) {
-      if (this.isEditMode) this.patchFormData();
-    }
+  }
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isPersonInfoFill = response?.isPersonInfoFill;
+          if (isPersonInfoFill) {
+            this.isEditMode = response?.isFamilyInfoFill;
+            this.familyData = response?.familyInfoModel;
+            console.log('this.familyData: ', this.familyData);
+            if (this.isEditMode) this.patchFormData();
+          } else {
+            console.log('isPersonInfoFill: ', isPersonInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
+    })
   }
 
   initFormGroup() {
@@ -142,7 +174,7 @@ export class FamilyInfoComponent implements OnInit {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
           const props: FormStep = {
             source: src,
-            data: { ...formVal, familyInfoId: data?.id },
+            data: { ...formVal, familyInfoId: data?.extractCustomerId },
             formId: 2,
             action: ActionValue.next,
             isCompleted: true,

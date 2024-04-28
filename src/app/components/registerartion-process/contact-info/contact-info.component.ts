@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -38,11 +38,20 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
   }
 
@@ -50,12 +59,29 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
   }
 
-  ngAfterViewInit(): void {
-    this.isEditMode = this.customerData['isContactInfoFill'];
-    if (this.contactData) {
-      if (this.isEditMode) this.patchFormData();
-    }
-    this.cdref.detectChanges();
+  ngAfterViewInit(): void {}
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isFamilyInfoFill = response?.isFamilyInfoFill;
+          if (isFamilyInfoFill) {
+            this.isEditMode = response?.isContactInfoFill;
+            this.contactData = response?.contactInfoModel;
+            console.log('this.contactData: ', this.contactData);
+            if (this.isEditMode) this.patchFormData();
+          } else {
+            console.log('isFamilyInfoFill: ', isFamilyInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/family`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
+    })
   }
 
   initFormGroup() {

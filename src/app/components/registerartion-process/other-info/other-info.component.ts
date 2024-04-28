@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -32,19 +32,47 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
     this.getMotherTongueList();
   }
 
-  ngAfterViewInit(): void {
-    this.otherData = this.customerData['otherInfoModel'];
-    this.isEditMode = this.customerData['isOtherInfoFill'];
-    if (this.isEditMode) this.patchFormData();
+  ngAfterViewInit(): void {}
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isContactInfoFill = response?.isContactInfoFill;
+          if (isContactInfoFill) {
+            this.isEditMode = response?.isOtherInfoFill;
+            this.otherData = response?.otherInfoModel;
+            console.log('this.otherData: ', this.otherData);
+            if (this.isEditMode) this.patchFormData();
+          } else {
+            console.log('isContactInfoFill: ', isContactInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
+    })
   }
 
   initFormGroup() {

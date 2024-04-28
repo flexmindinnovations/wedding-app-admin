@@ -57,7 +57,7 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     const profile = JSON.parse(localStorage.getItem('profile') || '{}');
     this.profileInfo = profile ? profile : {};
-    this.cTheme = localStorage.getItem('color-theme') || '';    
+    this.cTheme = localStorage.getItem('color-theme') || '';
     this.iconSrc = this.cTheme === 'light' ? '/assets/icon/user.png' : '/assets/icon/user_white.png';
     this.themeService.getThemeToggle().subscribe((cTheme: any) => {
       this.cTheme = cTheme;
@@ -73,8 +73,10 @@ export class UserMenuComponent implements OnInit, AfterContentInit {
   handleUserSignOut(event: any) {
     localStorage.removeItem('token');
     localStorage.removeItem('profile');
-    this.router.navigateByUrl('login');
     this.menuEl.toggle(event);
     this.sharedService.logoutCall.next(true);
+    setTimeout(() => {
+      this.router.navigateByUrl('login');
+    })
   }
 }

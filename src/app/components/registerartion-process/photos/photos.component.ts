@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -33,12 +33,23 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   router = inject(Router);
   imageData: any[] = [];
 
+  constructor(
+    private activedRoute: ActivatedRoute
+  ) { }
+
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
   }
 
   ngOnInit() {
-
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
   }
 
   ngAfterViewInit(): void {
@@ -47,6 +58,29 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.isEditMode) {
       this.getCustomerImages();
     }
+  }
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isOtherInfoFill = response?.isOtherInfoFill;
+          if (isOtherInfoFill) {
+            this.isEditMode = response?.isImagesAdded;
+            this.photosData = response?.imageInfoModel;
+            console.log('this.otherData: ', this.photosData);
+            if (this.isEditMode) this.getCustomerImages();
+          } else {
+            console.log('isOtherInfoFill: ', isOtherInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/other`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
+    })
   }
 
   getCustomerImages() {
