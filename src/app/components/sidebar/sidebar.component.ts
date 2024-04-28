@@ -88,9 +88,8 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       if (events instanceof NavigationEnd) {
         const activeUrl = events?.url;
         this.activeRoute = activeUrl;
-        console.log('activeUrl: ', activeUrl);
         if(activeUrl)this.setParentRoute(activeUrl);
-        else this.setActiveItem(this.sidebarItems[0].route);
+        else this.setParentRoute(this.sidebarItems[0].route);
       }
     })
 
@@ -101,7 +100,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setParentRoute(currentRoute: any) {
     const routeSplitted = currentRoute.split('/');
-    const isNestedRoute = nestedRoutes.includes(routeSplitted[1] && routeSplitted.length > 2);
+    const isNestedRoute = nestedRoutes.includes(routeSplitted[1]) && routeSplitted.length > 2;
     let activeRoute: any;
     if (isNestedRoute) activeRoute = currentRoute.split('/')[1];
     else activeRoute = currentRoute.substring(currentRoute.lastIndexOf('/') + 1, currentRoute.length);
