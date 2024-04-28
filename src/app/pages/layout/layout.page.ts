@@ -137,9 +137,12 @@ export class LayoutPage implements OnInit, AfterViewInit {
   logoutUser() {
     this.authService.logoutUser();
     this.showLogoutModal = true;
+    this.sharedService.isLoggedOutCompleted.next(true);
     setTimeout(() => {
-      this.router.navigateByUrl('/');
-      this.sharedService.isLoggedOutCompleted.next(true);
+      this.isTimeOut = false;
+      setTimeout(() => {
+        this.router.navigateByUrl('/');
+      })
     })
   }
 

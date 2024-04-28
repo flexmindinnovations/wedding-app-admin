@@ -36,22 +36,48 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
     this.getMotherTongueList();
   }
 
-  ngAfterViewInit(): void {
-    this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = history.state.customerId ? history.state.customerId : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
-      else this.isDataLoaded = true;
+  ngAfterViewInit(): void {}
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isContactInfoFill = response?.isContactInfoFill;
+          if (isContactInfoFill) {
+            this.customerData = response;
+            this.isEditMode = response?.isOtherInfoFill;
+            this.otherData = response?.otherInfoModel;
+            console.log('this.otherData: ', this.otherData);
+            if (this.isEditMode) this.patchFormData();
+          } else {
+            console.log('isContactInfoFill: ', isContactInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
     })
-    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -199,24 +225,4 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       }
     })
   }
-
-  getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.customerData = data;
-          this.otherData = JSON.parse(JSON.stringify(this.customerData['otherInfoModel']));
-          this.isEditMode = this.customerData ? this.customerData['isOtherInfoFill'] : false;
-          if (this.isEditMode) this.patchFormData();
-          this.cdref.detectChanges();
-          this.isDataLoaded = true;
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
-      }
-    })
-  }
-
 }

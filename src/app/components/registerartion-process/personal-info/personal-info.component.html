@@ -1,6 +1,6 @@
 <p-messages></p-messages>
 @if (isDataAvailable) {
-<div class="personal-info-container h-full flex flex-col gap-5 items-start justify-center">
+<div class="personal-info-container h-full flex flex-col gap-5 items-start justify-center ion-padding">
   <form [formGroup]="formGroup" class="w-full flex-grow overflow-auto p-3">
     <div class="grid gap-5 grid-cols-1 md:lg:grid-cols-4">
       <app-input label="First Name" type="text" [control]="formGroupControl['firstName']" formControlName="firstName"
@@ -138,8 +138,8 @@
         formControlName="shakeDate" [controlValue]="formGroup.get('shakeDate')?.value || ''" />
     </div>
   </form>
-  <div class="action-buttons ion-padding-horizontal max-h-14 min-h-12 w-full flex items-center justify-end">
-    <mt-button [size]="'small'" [disabled]="formGroup.invalid" title="Next" [icon]="'pi pi-arrow-right'" iconPos="right"
+  <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
+    <mt-button [size]="'small'" title="Next" [icon]="'pi pi-arrow-right'"   [icon]="'pi pi-arrow-right'" [disabled]="formGroup.invalid" iconPos="right"
       (action)="handleClickOnNext('personal')" />
   </div>
 </div>

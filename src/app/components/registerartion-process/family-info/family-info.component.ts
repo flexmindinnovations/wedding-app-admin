@@ -8,6 +8,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { CastService } from 'src/app/services/cast/cast.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
@@ -18,6 +19,7 @@ import { findInvalidControlsRecursive } from 'src/util/util';
 export class FamilyInfoComponent implements OnInit {
 
   @Input() completedStep!: FormStep;
+  @Input() id: any;
   formGroup!: FormGroup;
   @ViewChild('dropdownInput') dropdownInput: any;
   @Input() customerData: any = null;
@@ -38,24 +40,31 @@ export class FamilyInfoComponent implements OnInit {
   hasSubCast: boolean = false;
   religionId: any;
   subCastId: any;
+  customerId: any;
   activeRouter = inject(ActivatedRoute);
   customerService = inject(CustomerRegistrationService);
-  customerId = 0;
   isDataLoaded: boolean = false;
   isDataAvailable = false;
   isSubCastDataAvailable: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
-    this.getMasterData();
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
-    // this.getCastList();
-    // this.getReligionList();
+    this.getMasterData();
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
@@ -63,12 +72,30 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = history.state.customerId ? history.state.customerId : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
-      else this.isDataLoaded = true;
+  }
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.customerId = response?.customerId
+          const isPersonInfoFill = response?.isPersonInfoFill;
+          if (isPersonInfoFill) {
+            this.isEditMode = response?.isFamilyInfoFill;
+            this.familyData = response?.familyInfoModel;
+            console.log('this.familyData: ', this.familyData);
+            if (this.isEditMode) this.patchFormData();
+          } else {
+            console.log('isPersonInfoFill: ', isPersonInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
     })
-    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -128,7 +155,8 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   handleClickOnNext(src: string) {
-    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId };
+    const customerId = localStorage.getItem('customer')
+    const formVal = { ...this.formGroup.value, customerId: this.customerId };
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
@@ -148,7 +176,7 @@ export class FamilyInfoComponent implements OnInit {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
           const props: FormStep = {
             source: src,
-            data: { ...formVal, familyInfoId: data?.id },
+            data: { ...formVal, familyInfoId: data?.extractCustomerId },
             formId: 2,
             action: ActionValue.next,
             isCompleted: true,
@@ -180,7 +208,7 @@ export class FamilyInfoComponent implements OnInit {
 
   updateCustomerInfo(formVal: any, src: string): void {
     const payload = { ...formVal, familyInfoId: this.familyData.familyInfoId };
-    this.customerRegistrationService.updateFamilyInformation(payload, this.customerData?.customerId).subscribe({
+    this.customerRegistrationService.updateFamilyInformation(payload, this.customerId).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
@@ -206,7 +234,7 @@ export class FamilyInfoComponent implements OnInit {
             }
           }
           this.familyInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${this.customerData?.customerId}/contact`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${this.customerId}/contact`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
 
         }
       },
@@ -286,25 +314,4 @@ export class FamilyInfoComponent implements OnInit {
       }
     })
   }
-
-  getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.customerData = data;
-          this.familyData = JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
-          this.isEditMode = this.customerData ? this.customerData['isFamilyInfoFill'] : false;
-          if (this.isEditMode) this.patchFormData();
-          this.isDataLoaded = true;
-          this.cdref.detectChanges();
-        
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
-      }
-    })
-  }
-
 }

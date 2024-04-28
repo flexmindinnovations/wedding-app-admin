@@ -41,11 +41,20 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   isDataLoaded: boolean = false;
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private activedRoute: ActivatedRoute
   ) {
   }
 
   ngOnInit() {
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
     this.initFormGroup();
     this.getCountryList();
   }
@@ -54,13 +63,32 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     if (changes?.customerData?.currentValue) this.contactData = this.customerData['contactInfoModel'];
   }
 
-  ngAfterViewInit(): void {
-    this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = history.state.customerId ? history.state.customerId : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
-      else this.isDataLoaded = true;
+  ngAfterViewInit(): void {}
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isFamilyInfoFill = response?.isFamilyInfoFill;
+          if (isFamilyInfoFill) {
+            this.customerData = response;
+            console.log(this.customerData);
+            this.isEditMode = response?.isContactInfoFill;
+            this.contactData = response?.contactInfoModel;
+            console.log('this.contactData: ', this.contactData);
+            if (this.isEditMode) this.patchFormData();
+            
+          } else {
+            console.log('isFamilyInfoFill: ', isFamilyInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/family`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
     })
-    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -79,6 +107,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   patchFormData() {
     const contactData = { ...this.contactData, contactNumber: this.customerData['customerUserName'] };
     this.formGroup.patchValue(contactData);
+    this.formGroup.get('contactNumber')?.disable();
     this.cdref.detectChanges();
   }
 
@@ -100,8 +129,10 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleClickOnNext(src: string) {
-    const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, contactInfoId: 0 };
+    const formVal = { ...this.formGroup.value, customerId: this.customerData.customerId, contactInfoId: 0 };
+    formVal['contactNumber'] = formVal['contactNumber'] ? formVal['contactNumber'] : this.customerData['customerUserName'];
     if (this.formGroup.valid) {
+      console.log(formVal);
       if(this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
     } else {
@@ -269,26 +300,5 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
         }
       })
     }
-  }
-  getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.customerData = data;
-          console.log(this.customerData);
-          this.contactData = JSON.parse(JSON.stringify(this.customerData['contactInfoModel']));
-          this.isEditMode = this.customerData ? this.customerData['isContactInfoFill'] : false;
-          if (this.isEditMode) this.patchFormData();
-          // if(this.customerData['customerUserName']){
-          //   this.formGroup.get('contactNumber')?.disable();
-          // }
-          this.isDataLoaded = true;
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
-      }
-    })
   }
 }

@@ -37,21 +37,49 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   customerId = 0;
   isDataLoaded: boolean = false;
 
+  constructor(
+    private activedRoute: ActivatedRoute
+  ) { }
+
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
   }
 
   ngOnInit() {
-
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      if (extractCustomerId && typeof extractCustomerId === 'number') {
+        this.getCustomerDetails(extractCustomerId);
+      }
+    })
   }
 
-  ngAfterViewInit(): void {
-    this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = history.state.customerId ? history.state.customerId : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
-      else this.isDataLoaded = true;
+  ngAfterViewInit(): void { }
+
+  getCustomerDetails(customerId: any) {
+    this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
+      next: (response) => {
+        if (response) {
+          const isOtherInfoFill = response?.isOtherInfoFill;
+          if (isOtherInfoFill) {
+            this.customerData = response;
+            this.isEditMode = response?.isImagesAdded;
+            this.photosData = response?.imageInfoModel;
+            console.log('this.otherData: ', this.photosData);
+            if (this.isEditMode) this.getCustomerImages();
+          } else {
+            console.log('isOtherInfoFill: ', isOtherInfoFill);
+            this.router.navigateByUrl(`customers/edit/${customerId}/other`);
+          }
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Something went wrong', AlertType.error);
+      }
     })
-    // console.log(this.isEditMode)
   }
 
   getCustomerImages() {
@@ -135,7 +163,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             },
             next: null
           }
-          this.photosData.emit(props);
+          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'add');
         }
@@ -174,7 +202,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             },
             next: null
           }
-          this.photosData.emit(props);
+          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'update');
         }
@@ -182,24 +210,6 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       error: (error: any) => {
         console.log('error: ', error);
         this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
-      }
-    })
-  }
-  getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.customerData = data;
-          this.imagesData = JSON.parse(JSON.stringify(this.customerData['imageInfoModel']));
-          this.isEditMode = this.customerData ? this.customerData['isImagesAdded'] : false;
-          if (this.isEditMode) this.getCustomerImages();
-          this.cdref.detectChanges();
-          this.isDataLoaded = true;
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage('Error: ' + error, AlertType.error);
       }
     })
   }
