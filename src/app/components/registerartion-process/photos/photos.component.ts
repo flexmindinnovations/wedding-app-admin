@@ -36,13 +36,12 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   activeRouter = inject(ActivatedRoute);
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
-  isDataLoaded: any;
+  isDataLoaded: any = false;
   activePath: string = StepPath.PHOTOS;
 
   constructor(
     private activedRoute: ActivatedRoute
   ) {
-    this.isDataLoaded = Promise.reject(false);
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
@@ -75,7 +74,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
             if (this.isEditMode) this.getCustomerImages();
-            else this.isDataLoaded = Promise.resolve(true);
+            else this.isDataLoaded = true;
             this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/other`);
@@ -122,7 +121,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       this.imageData.push(this.photo1);
     }
     if (this.imageData.length === 2) this.sharedService.imagesSelected.next(true);
-    this.isDataLoaded = Promise.resolve(true);
+    this.isDataLoaded = true;
     this.cdref.detectChanges();
   }
 
@@ -138,7 +137,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
 
     if (this.selectedFiles.length === 2) {
       this.sharedService.imagesSelected.next(true);
-      this.isDataLoaded = Promise.resolve(true);
+      this.isDataLoaded = true;
       this.cdref.detectChanges();
     }
   }

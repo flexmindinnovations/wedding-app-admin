@@ -1,7 +1,7 @@
 <div class="customer-content main ion-padding flex flex-col w-full">
   <div class="header flex justify-between items-center">
     <div class="data-grid flex-grow">
-      <app-data-grid [showFilter]="true" [showAddButton]="isAddActive" [addButtonTitle]="'Add Customer'"
+      <app-data-grid [showFilter]="filteredRowData.length ? true : false" [showAddButton]="isAddActive" [addButtonTitle]="'Add Customer'"
         (buttonAction)="handleClick()" [rowDefs]="filteredRowData" [gridSize]="'lg'" [columnDefs]="colDefs" />
     </div>
   </div>

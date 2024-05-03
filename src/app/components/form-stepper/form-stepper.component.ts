@@ -45,7 +45,7 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
       const urlPath = window.location.pathname;
       const splittedUrl: any = urlPath.split('/');
       this.isAddMode = splittedUrl.includes['add'];
-      if (this.isAddMode) {} else {
+      if (this.isAddMode) { } else {
         const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
         if (extractCustomerId && typeof extractCustomerId === 'number') {
           this.customerId = extractCustomerId;
@@ -53,20 +53,20 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
       }
     })
 
-    this.router.events.subscribe((events: any) => {
-      this.getCurrentRoute();
-    })
-
     this.sharedService.getStepData().subscribe((stepData: FormStep) => {
-      this.registrationSteps.forEach((item: StepperFormItem, index: number) => {
-        if (index === stepData.formId - 1) item.isActive = stepData.active;
-        else item.isActive = !stepData.active;
-        Object.keys(stepData.steps).forEach((key) => {
-          if (item.key === key) {
-            item.isCompleted = stepData.steps[key];
-          }
+      setTimeout(() => {
+        const registrationSteps = this.registrationSteps.map((item: StepperFormItem, index: number) => {
+          if (index === stepData.formId - 1) item.isActive = stepData.active;
+          else item.isActive = !stepData.active;
+          Object.keys(stepData.steps).forEach((key) => {
+            if (item.key === key) {
+              item.isCompleted = stepData.steps[key];
+            }
+          });
+          return item;
         });
-      });
+        this.registrationSteps = registrationSteps;
+      })
       this.getCurrentRoute();
     })
   }

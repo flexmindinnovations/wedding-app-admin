@@ -13,6 +13,9 @@ import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/gri
 import { RolesService } from 'src/app/services/role/roles.service';
 import { RegisterCustomerComponent } from 'src/app/modals/register-customer/register-customer.component';
 import { ModalController } from '@ionic/angular';
+import { FormStep } from 'src/app/interfaces/form-step-item';
+import { StepPath } from 'src/util/util';
+import { SharedService } from 'src/app/services/shared.service';
 
 
 
@@ -27,6 +30,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
   sidebarItemService = inject(SidebarItemsService);
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
+  sharedService = inject(SharedService);
   rowData: any = [];
   filteredRowData: any[] = [];
   searchQuery: string = '';
@@ -169,13 +173,58 @@ export class CustomersPage implements OnInit, AfterViewInit {
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
-    const data = event?.rowData;    
+    const data = event?.rowData;
     if (action === GridActions.edit) {
-      const customerId = data?.customerId;
-      if(customerId) this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
+      this.redirectToIncompleteStep(data);
     } else {
       // console.log('>>>>> event delete: ', event);
     }
+  }
+
+  redirectToIncompleteStep(data: any) {
+    const customerId = data?.customerId;
+    this.customerService.getCustomerDetailsById(customerId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = data;
+          if (customerId) {
+            if (!isPersonInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
+            else if (!isFamilyInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/family`);
+            else if (!isContactInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
+            else if (!isOtherInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/other`);
+            else if (!isImagesAdded) this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
+            else this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
+          }
+        }
+      },
+      error: (error) => {
+        this.alertService.setAlertMessage('Error: Something went wrong', AlertType.error);
+      }
+    })
+  }
+
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+    const props: FormStep = {
+      source: this.getSource(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded),
+      data: {},
+      formId: 1,
+      active: true,
+      isCompleted: isPersonInfoFill,
+      previous: null,
+      completeKey: StepPath.PERSONAL,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded }
+    }
+    this.sharedService.stepData.next(props);
+  }
+
+  getSource(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+    if (!isPersonInfoFill) return StepPath.PERSONAL;
+    else if (!isFamilyInfoFill) return StepPath.FAMILY;
+    else if (!isContactInfoFill) return StepPath.CONTACT;
+    else if (!isOtherInfoFill) return StepPath.OTHER;
+    else if (!isImagesAdded) return StepPath.PHOTOS;
+    else return StepPath.PERSONAL;
   }
 
   ngOnDestroy(): void { }
