@@ -25,7 +25,7 @@ export class AddEditBranchPage implements OnInit {
   isActive: boolean = true;
   colorScheme: any = COLOR_SCHEME;
   cssClass: any;
-  selectedImage: any;
+  selectedImage: any[] = [];
   branchId: number = 0;
   countryId = undefined;
   stateId = undefined;
@@ -70,6 +70,9 @@ export class AddEditBranchPage implements OnInit {
           this.imageName = data?.branchImagePath.substring(imageNameIndex, data?.branchImagePath.length);
           this.isActive = data?.isActive;
           this.formGroup.patchValue(data);
+          if(this.imagePath){
+            this.selectedImage.push(this.imagePath);
+          }
           this.cdref.detectChanges();
           this.isDataLoaded = true;
         }
@@ -124,7 +127,7 @@ export class AddEditBranchPage implements OnInit {
   }
 
   handleSelectedImage(event: any) {
-    this.selectedImage = event?.file;
+    this.selectedImage.push(event?.file);
   }
 
   handleSubmitClick() {
@@ -141,7 +144,7 @@ export class AddEditBranchPage implements OnInit {
     formVal = { ...formVal, isActive: this.isActive, branchImagePath: '' }
     const formData: FormData = new FormData();
     formData.append('branchModel', JSON.stringify(formVal));
-    if (this.selectedImage) formData.append('file', this.selectedImage, this.selectedImage.name);
+    if (this.selectedImage) formData.append('file', this.selectedImage[0], this.selectedImage[0].name);
     this.branchService.addBranch(formData).subscribe({
       next: (data: any) => {
         if (data) {
@@ -166,7 +169,7 @@ export class AddEditBranchPage implements OnInit {
     formVal = { ...formVal, branchId, isActive: this.isActive, branchImagePath: this.branchDetails['branchImagePath'] }
     const formData: FormData = new FormData();
     formData.append('branchModel', JSON.stringify(formVal));
-    if (this.selectedImage) formData.append('file', this.selectedImage, this.selectedImage.name);
+    if (this.selectedImage) formData.append('file', this.selectedImage[0], this.selectedImage[0].name);
     this.branchService.updateBranch(formData).subscribe({
       next: (data: any) => {
         if (data) {
