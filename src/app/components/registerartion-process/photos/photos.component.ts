@@ -7,6 +7,7 @@ import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { environment } from 'src/environments/environment';
+import { StepPath } from 'src/util/util';
 
 @Component({
   selector: 'photos',
@@ -35,11 +36,14 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
   activeRouter = inject(ActivatedRoute);
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
-  isDataLoaded: boolean = false;
+  isDataLoaded: any;
+  activePath: string = StepPath.PHOTOS;
 
   constructor(
     private activedRoute: ActivatedRoute
-  ) { }
+  ) {
+    this.isDataLoaded = Promise.reject(false);
+  }
 
   ngOnChanges(changes: SimpleChanges | any): void {
     if (changes?.customerData?.currentValue) this.imagesData = this.customerData?.photos;
@@ -49,6 +53,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     this.activedRoute.params.subscribe((params) => {
       const urlPath = window.location.pathname;
       const splittedUrl = urlPath.split('/');
+      this.activePath = splittedUrl[4];
       const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
       if (extractCustomerId && typeof extractCustomerId === 'number') {
         this.getCustomerDetails(extractCustomerId);
@@ -65,36 +70,39 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
           this.customerData = response;
           const isOtherInfoFill = response?.isOtherInfoFill;
           if (isOtherInfoFill) {
+            const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
             this.customerData = response;
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
             if (this.isEditMode) this.getCustomerImages();
-            this.setStepperData();
+            else this.isDataLoaded = Promise.resolve(true);
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/other`);
           }
         }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
   }
 
-  setStepperData() {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
     const props: FormStep = {
-      source: 'photos',
+      source: StepPath.PHOTOS,
       data: [],
       formId: 5,
-      action: ActionValue.next,
-      isCompleted: true,
+      active: this.activePath === StepPath.PHOTOS,
+      isCompleted: isImagesAdded,
+      completeKey: StepPath.PHOTOS,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
       previous: {
-        source: 'other',
+        source: StepPath.OTHER,
         data: {},
         formId: 4,
-        action: ActionValue.previous,
-        isCompleted: true
+        active: this.activePath === StepPath.OTHER,
+        isCompleted: isOtherInfoFill
       },
       next: null
     }
@@ -113,39 +121,26 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       this.imageData.push(this.thumbnailImage);
       this.imageData.push(this.photo1);
     }
-    // if (this.selectedFiles.length === 2 || this.imageData.length === 2) {
-    //   this.photoNext = true;
-    // }
-    // console.log('photos', this.imageName, this.photoName);
     if (this.imageData.length === 2) this.sharedService.imagesSelected.next(true);
+    this.isDataLoaded = Promise.resolve(true);
     this.cdref.detectChanges();
   }
 
   handleSelectedImage(event: any, src: string) {
-    // console.log(event, src)
     switch (src) {
       case 'thumbnail':
-        this.selectedFiles.push(event.file);
+        if (this.selectedFiles.length < 2) this.selectedFiles.push(event.file);
         break;
       case 'photo':
-        this.selectedFiles.push(event.file);
+        if (this.selectedFiles.length < 2) this.selectedFiles.push(event.file);
         break;
     }
 
-    if (this.selectedFiles.length === 2) this.sharedService.imagesSelected.next(true);
-    this.cdref.detectChanges();
-    // console.log(this.selectedFiles)
-  }
-
-  handleClickOnPrevious(src: string) {
-    const props: FormStep = {
-      source: src,
-      data: [],
-      formId: 5,
-      action: ActionValue.previous,
-      isCompleted: false
+    if (this.selectedFiles.length === 2) {
+      this.sharedService.imagesSelected.next(true);
+      this.isDataLoaded = Promise.resolve(true);
+      this.cdref.detectChanges();
     }
-    this.photosData.emit(props);
   }
 
   handleClickOnNext(src: string) {
@@ -156,10 +151,9 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
 
 
   saveNewCustomerInfo(src: string): void {
-    const customerId: any = this.completedStep?.data?.customerId;
+    const customerId: any = this.customerData?.customerId;
     const formData: FormData = new FormData();
     formData.append('customerId', customerId);
-    // console.log(this.selectedFiles);
     this.selectedFiles.forEach((file: any) => {
       formData.append('file', file, file.name);
     })
@@ -167,28 +161,11 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: [],
-            formId: 5,
-            action: ActionValue.next,
-            isCompleted: true,
-            previous: {
-              source: 'other',
-              data: {},
-              formId: 4,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: null
-          }
-          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'add');
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
       }
     })
@@ -198,7 +175,6 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     const customerId = this.customerData?.customerId;
     const formData: FormData = new FormData();
     formData.append('customerId', customerId);
-    // console.log(this.selectedFiles);
     this.selectedFiles.forEach((file: any) => {
       formData.append('file', file, file.name);
     })
@@ -206,28 +182,11 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: [],
-            formId: 5,
-            action: ActionValue.next,
-            isCompleted: true,
-            previous: {
-              source: 'other',
-              data: {},
-              formId: 4,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: null
-          }
-          // this.photosData.emit(props);
           this.router.navigateByUrl('customers');
           this.customerRegistrationService.setRequestStatus(true, 'update');
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Photos: ' + error?.statusText, AlertType.error);
       }
     })

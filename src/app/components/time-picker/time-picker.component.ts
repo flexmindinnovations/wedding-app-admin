@@ -32,6 +32,7 @@ export class TimePickerComponent implements OnInit {
     this.sharedService.getIsReadOnlyMode().subscribe((readOnly: any) => {
       this.isDisabled = readOnly;
     })
+    this.selectedTime.emit(this.time);
   }
 
   parseTimeString(timeString: any) {

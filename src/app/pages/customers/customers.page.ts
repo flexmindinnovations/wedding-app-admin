@@ -169,9 +169,10 @@ export class CustomersPage implements OnInit, AfterViewInit {
 
   handleGridActionButtonClick(event: any) {
     const action = event?.src;
-    const data = event?.rowData;
+    const data = event?.rowData;    
     if (action === GridActions.edit) {
-      this.router.navigateByUrl(`customers/edit/${data?.customerId}/personal`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: data?.customerId } });
+      const customerId = data?.customerId;
+      if(customerId) this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
     } else {
       // console.log('>>>>> event delete: ', event);
     }

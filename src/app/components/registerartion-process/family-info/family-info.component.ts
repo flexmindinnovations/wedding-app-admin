@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin} from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
@@ -9,7 +9,7 @@ import { CastService } from 'src/app/services/cast/cast.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { findInvalidControlsRecursive } from 'src/util/util';
+import { StepPath, findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
   selector: 'family-info',
@@ -46,6 +46,9 @@ export class FamilyInfoComponent implements OnInit {
   isDataLoaded: boolean = false;
   isDataAvailable = false;
   isSubCastDataAvailable: boolean = false;
+  isFamilyInfoFill: boolean = false;
+  activePath: string = StepPath.FAMILY;
+  isAddMode: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -58,9 +61,13 @@ export class FamilyInfoComponent implements OnInit {
     this.activedRoute.params.subscribe((params) => {
       const urlPath = window.location.pathname;
       const splittedUrl = urlPath.split('/');
-      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
-      if (extractCustomerId && typeof extractCustomerId === 'number') {
-        this.getCustomerDetails(extractCustomerId);
+      this.isAddMode = splittedUrl.includes('add');
+      this.activePath = splittedUrl.includes('edit') ? splittedUrl[4] : splittedUrl[3];
+      if (this.isAddMode) { } else {
+        const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+        if (extractCustomerId && typeof extractCustomerId === 'number') {
+          this.getCustomerDetails(extractCustomerId);
+        }
       }
     })
     this.initFormGroup();
@@ -68,7 +75,7 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges | any): void {
-    if (changes?.customerData?.currentValue) this.familyData =JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
+    if (changes?.customerData?.currentValue) this.familyData = JSON.parse(JSON.stringify(this.customerData['familyInfoModel']));
   }
 
   ngAfterViewInit(): void {
@@ -78,45 +85,48 @@ export class FamilyInfoComponent implements OnInit {
     this.customerRegistrationService.getCustomerDetailsById(customerId).subscribe({
       next: (response) => {
         if (response) {
+          this.customerData = response;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
           this.customerId = response?.customerId
-          const isPersonInfoFill = response?.isPersonInfoFill;
+          this.isFamilyInfoFill = response?.isFamilyInfoFill;
           if (isPersonInfoFill) {
             this.isEditMode = response?.isFamilyInfoFill;
             this.familyData = response?.familyInfoModel;
-            this.setStepperData();
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
             if (this.isEditMode) this.patchFormData();
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
           }
-        } 
+        }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
   }
 
-  setStepperData() {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
     const props: FormStep = {
-      source: 'family',
-      data: { },
+      source: StepPath.FAMILY,
+      data: {},
       formId: 2,
-      action: ActionValue.next,
-      isCompleted: true,
+      active: this.activePath === StepPath.FAMILY,
+      isCompleted: isFamilyInfoFill,
+      completeKey: StepPath.FAMILY,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
       previous: {
-        source: 'personal',
+        source: StepPath.PERSONAL,
         data: {},
         formId: 1,
-        action: ActionValue.previous,
-        isCompleted: true
+        active: this.activePath === StepPath.PERSONAL,
+        isCompleted: isPersonInfoFill
       },
       next: {
-        source: 'contact',
+        source: StepPath.CONTACT,
         data: {},
         formId: 3,
-        action: ActionValue.next,
-        isCompleted: false
+        active: this.activePath === StepPath.CONTACT,
+        isCompleted: isContactInfoFill
       }
     }
     this.sharedService.stepData.next(props);
@@ -147,37 +157,6 @@ export class FamilyInfoComponent implements OnInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
-  handleClickOnPrevious(src: string) {
-    const formVal = this.formGroup.value;
-    // if (this.formGroup.valid) {
-    //   this.customerRegistrationService.saveFamilyInformation(formVal).subscribe({
-    //     next: (data: any) => {
-    //       if (data) {
-    //         this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 2,
-      action: ActionValue.previous,
-      isCompleted: this.formGroup.valid
-    }
-    this.familyInfoData.emit(props);
-    //       }
-    //     },
-    //     error: (error: any) => {
-    //       console.log('error: ', error);
-    //       this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
-    //     }
-    //   })
-    // } else {
-    //   const invalidFields = findInvalidControlsRecursive(this.formGroup);
-    //   console.log('invalidFields: ', invalidFields);
-    //   invalidFields.forEach((item: any) => {
-    //     this.alert.setAlertMessage(item, AlertType.error);
-    //   })
-    // }
-  }
-
   handleClickOnNext(src: string) {
     const customerId = localStorage.getItem('customer')
     const formVal = { ...this.formGroup.value, customerId: this.customerId };
@@ -191,41 +170,18 @@ export class FamilyInfoComponent implements OnInit {
       })
     }
   }
-
   saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, familyInfoId: 0 };
+    const customerId = this.customerData?.customerId;
+    const payload = { ...formVal, customerId, familyInfoId: 0 };
     this.customerRegistrationService.saveFamilyInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, familyInfoId: data?.extractCustomerId },
-            formId: 2,
-            action: ActionValue.next,
-            isCompleted: true,
-            previous: {
-              source: 'personal',
-              data: {},
-              formId: 1,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.familyInfoData.emit(props);
+          this.router.navigateByUrl(`customers/edit/${this.customerId}/contact`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
-        this.router.navigateByUrl(`customers/add/contact`);
       }
     })
   }
@@ -236,34 +192,10 @@ export class FamilyInfoComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, familyInfoId: data?.id },
-            formId: 2,
-            action: ActionValue.next,
-            isCompleted: true,
-            previous: {
-              source: 'personal',
-              data: {},
-              formId: 1,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.familyInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${this.customerId}/contact`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
-
+          this.router.navigateByUrl(`customers/edit/${this.customerId}/contact`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Family Info: ' + error?.statusText, AlertType.error);
       }
     })
@@ -272,10 +204,14 @@ export class FamilyInfoComponent implements OnInit {
   onSelectionChange(event: any, src: string) {
     switch (src) {
       case 'religionId':
-        this.religionId = event?.religionId;
+        this.religionId = event?.id;
+        this.castListOptions = [];
+        this.subCastListOptions = [];
+        this.getCastListByReligionId(this.religionId);
         break;
       case 'castId':
         this.hasSubCast = event?.hasSubcast;
+        this.subCastListOptions = [];
         if (this.hasSubCast) this.getSubCastList(event?.id);
         break;
       case 'subCastId':
@@ -286,36 +222,46 @@ export class FamilyInfoComponent implements OnInit {
   }
 
   getMasterData() {
-    const religion =  this.sharedService.getReligionList();
-    const cast = this.castService.getCastList();
-    forkJoin({ religion, cast})
+    const religion = this.sharedService.getReligionList();
+    forkJoin({ religion })
       .subscribe({
         next: async (result) => {
           this.isDataAvailable = true;
-          const { religion, cast } = result;
+          const { religion } = result;
           this.religionListOptions = religion?.map((item: any) => {
             return {
               id: item?.religionId,
               title: item?.religionName,
             }
           })
-          this.castListOptions = cast?.map((item: any) => {
-            return {
-              id: item?.castId,
-              title: item?.castName,
-              hasSubcast: item?.hasSubcast
-            }
-          })
           this.cdref.detectChanges();
         },
         error: (error: Error) => {
-          console.log('error: ', error);
           this.alert.setAlertMessage('Error while processing request', AlertType.error);
         }
       })
   }
 
 
+  getCastListByReligionId(religionId: number) {
+    this.castService.getCastListByReligionId(religionId).subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.castListOptions = response?.map((item: any) => {
+            return {
+              id: item?.castId,
+              title: item?.castName,
+              hasSubcast: item?.hasSubcast
+            }
+          })
+          this.isSubCastDataAvailable = true;
+        }
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
+  }
   getSubCastList(castId: number) {
     this.subCastListOptions = [];
     this.isSubCastDataAvailable = false;
@@ -327,7 +273,7 @@ export class FamilyInfoComponent implements OnInit {
               id: item?.subCastId,
               title: item?.subCastName,
               castId,
-              subCastId:item?.subCastId
+              subCastId: item?.subCastId
             }
           })
           this.isSubCastDataAvailable = true;

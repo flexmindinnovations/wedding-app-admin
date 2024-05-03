@@ -2,9 +2,12 @@ export interface FormStep {
     source: string;
     data: {} | any;
     formId: number;
-    action: ActionValue;
+    active: boolean;
+    action?: ActionValue;
+    completeKey?: string;
     isCompleted: boolean;
     previous?: FormStep | null;
+    steps?: any;
     next?: FormStep | null;
 }
 

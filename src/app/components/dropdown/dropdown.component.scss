@@ -5,11 +5,11 @@
         @apply dark:bg-dark-950 dark:text-white;
 
         .p-dropdown-item {
-            @apply dark:text-white/50;
+            @apply dark:text-white/50 p-1.5 rounded-md m-1;
         }
 
         .p-focus {
-            @apply text-white bg-gray-400 shadow-none outline-none dark:text-white dark:bg-dark-700;
+            @apply bg-[#f1f5f9] hover:bg-[#f1f5f9] shadow-none outline-none dark:text-white dark:bg-dark-700;
         }
     }
 }

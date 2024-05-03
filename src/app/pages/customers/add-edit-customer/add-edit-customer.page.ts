@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
@@ -28,13 +28,14 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   isEditMode: boolean = false;
   customerId = 0;
   customerDetails: any = null;
-  isDataLoaded = false;
+  isDataLoaded: any;
 
   router = inject(Router);
   customerService = inject(CustomerRegistrationService);
   fb = inject(FormBuilder);
   activeRouter = inject(ActivatedRoute);
   alertService = inject(AlertService);
+  subs: Subscription[] = [];
 
   ngOnInit() {
     this.initFormGroup();
@@ -42,21 +43,24 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getFormStepperItems() {
-    this.formStepperService.getFormStepperItems().subscribe((items: StepperFormItem[]) => {
-      this.stepperItems = items.map((item: StepperFormItem) => {
-        if (item.id === 1) {
-          item.isActive = true;
-        }
-        return item;
-      });
-    })
+    // this.subs.push(
+    //   this.formStepperService.getFormStepperItems().subscribe((items: StepperFormItem[]) => {
+    //     this.stepperItems = items.map((item: StepperFormItem) => {
+    //       if (item.id === 1) {
+    //         item.isActive = true;
+    //       }
+    //       return item;
+    //     });
+    //   })
+    // )
   }
   ngAfterViewInit(): void {
-    this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = params && params['id'] ? params['id'] : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
-      else this.isDataLoaded = true;
-    })
+    this.subs.push(
+      this.activeRouter.params.subscribe((params: any) => {
+        this.customerId = params && params['id'] ? params['id'] : 0;
+        if (this.customerId > 0) this.getCustomerDetails();
+      })
+    )
   }
 
   initFormGroup() {
@@ -80,18 +84,21 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.customerDetails = data;
-          this.isDataLoaded = true;
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alertService.setAlertMessage('Error: ' + error, AlertType.error);
-      }
-    })
+    if (this.customerId && this.customerId > 0) {
+      this.subs.push(
+        this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+          next: (data: any) => {
+            if (data) {
+              this.customerDetails = data;
+            }
+          },
+          error: (error) => {
+            console.log('error: ', error);
+            this.alertService.setAlertMessage('Error: ' + error, AlertType.error);
+          }
+        })
+      )
+    }
   }
 
   handleClickOnNext(data: FormStep) {
@@ -115,6 +122,10 @@ export class AddEditCustomerPage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => {
+      sub.unsubscribe();
+    })
+  }
 
 }

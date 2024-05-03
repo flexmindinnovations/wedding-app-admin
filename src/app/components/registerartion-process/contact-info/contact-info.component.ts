@@ -6,7 +6,7 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
-import { findInvalidControlsRecursive } from 'src/util/util';
+import { StepPath, findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
   selector: 'contact-info',
@@ -39,6 +39,8 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
   isDataLoaded: boolean = false;
+  isContactInfoFill: boolean = false;
+  activePath: string = StepPath.CONTACT;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -50,6 +52,7 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     this.activedRoute.params.subscribe((params) => {
       const urlPath = window.location.pathname;
       const splittedUrl = urlPath.split('/');
+      this.activePath = splittedUrl[4];
       const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
       if (extractCustomerId && typeof extractCustomerId === 'number') {
         this.getCustomerDetails(extractCustomerId);
@@ -70,13 +73,21 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       next: (response) => {
         if (response) {
           this.customerData = response;
-          const isFamilyInfoFill = response?.isFamilyInfoFill;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
+          this.isContactInfoFill = response?.isContactInfoFill;
           if (isFamilyInfoFill) {
             this.customerData = response;
             this.isEditMode = response?.isContactInfoFill;
             this.contactData = response?.contactInfoModel;
             if (this.isEditMode) this.patchFormData();
-            this.setStepperData();
+            else {
+              const customerUserName = response?.customerUserName;
+              if(customerUserName) {
+                this.formGroup.patchValue({contactNumber: customerUserName});
+                this.formGroup.get('contactNumber')?.disable();
+              }
+            }
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/family`);
           }
@@ -88,26 +99,28 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     })
   }
 
-  setStepperData() {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
     const props: FormStep = {
-      source: 'contact',
+      source: StepPath.CONTACT,
       data: {},
       formId: 3,
-      action: ActionValue.next,
-      isCompleted: false,
+      active: this.activePath === StepPath.CONTACT,
+      isCompleted: this.isContactInfoFill,
+      completeKey: StepPath.CONTACT,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
       previous: {
-        source: 'family',
+        source: StepPath.FAMILY,
         data: {},
         formId: 2,
-        action: ActionValue.previous,
-        isCompleted: true
+        active: this.activePath === StepPath.FAMILY,
+        isCompleted: isFamilyInfoFill
       },
       next: {
-        source: 'other',
+        source: StepPath.OTHER,
         data: {},
         formId: 4,
-        action: ActionValue.next,
-        isCompleted: false
+        active: this.activePath === StepPath.OTHER,
+        isCompleted: isOtherInfoFill
       }
     }
     this.sharedService.stepData.next(props);
@@ -137,24 +150,11 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
-  handleClickOnPrevious(src: string) {
-    const formVal = this.formGroup.value;
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 3,
-      action: ActionValue.previous,
-      // isCompleted: this.formGroup.valid
-      isCompleted: true
-    }
-    this.contactInfoData.emit(props);
-  }
-
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.customerData.customerId, contactInfoId: 0 };
     formVal['contactNumber'] = formVal['contactNumber'] ? formVal['contactNumber'] : this.customerData['customerUserName'];
     if (this.formGroup.valid) {
-      if(this.isEditMode) this.updateCustomerInfo(formVal, src);
+      if (this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
     } else {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
@@ -165,12 +165,13 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, contactInfoId: 0 };
+    const customerId = this.customerData?.customerId;
+    const payload = { ...formVal, customerId, contactInfoId: 0 };
     this.customerRegistrationService.saveContactInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl(`customers/add/other`);
+          this.router.navigateByUrl(`customers/edit/${customerId}/other`);
         }
       },
       error: (error: any) => {
@@ -187,11 +188,10 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl(`customers/edit/${customerId}/other`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${customerId}/other`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Contact Info: ' + error?.statusText, AlertType.error);
       }
     })
@@ -223,7 +223,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
         }
       },
       error: (error) => {
-        console.log('error: ', error);
 
       }
     })
@@ -247,7 +246,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
           }
         },
         error: (error) => {
-          console.log('error: ', error);
 
         }
       })
@@ -271,7 +269,6 @@ export class ContactInfoComponent implements OnInit, AfterViewInit {
           }
         },
         error: (error) => {
-          console.log('error: ', error);
 
         }
       })

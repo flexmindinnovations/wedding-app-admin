@@ -1,10 +1,10 @@
 <div class="main add-edit-customer ion-padding flex flex-col">
-  @if (isDataLoaded) {
+  <!-- @if (isDataLoaded | async) { -->
   <div class="stepper border-b">
     <form-stepper [completedStepInfo]="completedStep" class="w-full"></form-stepper>
   </div>
   <div class="forms-container flex-grow h-full overflow-hidden">
-      <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
   </div>
-  }
+  <!-- } -->
 </div>

@@ -11,7 +11,7 @@ import { CustomerRegistrationService } from 'src/app/services/customer-registrat
 import { EducationService } from 'src/app/services/education/education.service';
 import { HeightService } from 'src/app/services/height/height.service';
 import { SharedService } from 'src/app/services/shared.service';
-import { COLOR_SCHEME, TITHI_LIST, findInvalidControlsRecursive, getRandomNumber, inputThemeVariables } from 'src/util/util';
+import { COLOR_SCHEME, StepPath, TITHI_LIST, findInvalidControlsRecursive, getRandomNumber, inputThemeVariables } from 'src/util/util';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -37,6 +37,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   showPatrika: boolean = false;
   spectacles: boolean = false;
   isEditMode: boolean = false;
+  isPersonalInfoFilled: boolean = false;
   isPhysicallyAbled: boolean = false;
   personalData: any;
 
@@ -67,6 +68,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   colorScheme: any = COLOR_SCHEME;
   colorVarients: any;
   key = uuidv4();
+  activePath: string = StepPath.PERSONAL;
 
   constructor(
     private fb: FormBuilder,
@@ -105,12 +107,38 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.activeRouter.params.subscribe((params: any) => {
-      this.customerId = history.state.customerId ? history.state.customerId : 0;
-      if (this.customerId > 0) this.getCustomerDetails();
+      const urlPath = window.location.pathname;
+      const splittedUrl = urlPath.split('/');
+      this.activePath = splittedUrl[4];
+      const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+      this.customerId = extractCustomerId;
+      if (extractCustomerId > 0) this.getCustomerDetails(extractCustomerId);
       else this.isDataLoaded = true;
     })
     if (this.isEditMode) this.passwordActive = false;
     this.cdref.detectChanges();
+  }
+
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+    const props: FormStep = {
+      source: StepPath.PERSONAL,
+      data: {},
+      formId: 1,
+      active: this.activePath === StepPath.PERSONAL,
+      isCompleted: isPersonInfoFill,
+      previous: null,
+      completeKey: StepPath.PERSONAL,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
+      next: {
+        source: StepPath.FAMILY,
+        data: {},
+        formId: 2,
+        active: this.activePath === StepPath.FAMILY,
+        action: ActionValue.next,
+        isCompleted: this.isPersonalInfoFilled
+      }
+    }
+    this.sharedService.stepData.next(props);
   }
 
   initFormGroup() {
@@ -151,7 +179,8 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   patchValue() {
     this.formGroup.patchValue({
       ...this.personalData,
-      dateOfBirth: new Date(this.personalData['dateOfBirth'])
+      dateOfBirth: new Date(this.personalData['dateOfBirth']),
+      physicalStatus: this.personalData['isPhysicallyAbled']
     });
     this.spectacles = this.personalData['spectacles'];
     this.showPatrika = this.personalData['isPatrika'];
@@ -175,17 +204,16 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     const formVal = this.formGroup.value;
     formVal['specializationId'] = this.specializationId ? this.specializationId : null;
     formVal['occupationDetailId'] = this.occupationDetailId ? this.occupationDetailId : null;
-    // formVal['customerPassword'] = formVal['customerPassword'] ? formVal['customerPassword'] : "";
     formVal['bloodGroupId'] = formVal['bloodGroupId'] ? formVal['bloodGroupId'] : null;
     formVal['handycapId'] = this.isPhysicallyAbled ? formVal['handycapId'] : null;
     formVal['hobbies'] = formVal['hobbies'] ? formVal['hobbies'] : "";
-    formVal['dateOfBirth'] = moment(formVal['dateOfBirth']).format();
+    formVal['dateOfBirth'] = formVal['dateOfBirth'] ? moment(formVal['dateOfBirth']).format() : '';
+    formVal['timeOfBirth'] = formVal['timeOfBirth'] ? moment(formVal['timeOfBirth']).format() : '';
     formVal['shakeDate'] = formVal['shakeDate'] ? moment(formVal['shakeDate']).format() : null;
     formVal['customerId'] = this.customerData?.customerId;
     formVal['spectacles'] = this.spectacles;
     formVal['isPatrika'] = this.showPatrika;
     formVal['isPhysicallyAbled'] = this.isPhysicallyAbled;
-
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src)
       else this.saveNewCustomerInfo(formVal, src)
@@ -193,8 +221,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       const invalidFields = findInvalidControlsRecursive(this.formGroup);
       invalidFields.forEach((item: any) => {
         const itemName = this.transformString(item);
-        // this.showToast(`${itemName} is required`, AlertType.error);
-        // this.alert.setAlertMessage(`${itemName} is required`, AlertType.error);
       })
     }
   }
@@ -236,35 +262,19 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    let payload = { ...formVal, personalInfoId: 0, occupation: "" };
+    const customerId = this.customerData?.customerId;
+    let payload = { ...formVal, customerId, personalInfoId: 0, occupation: "" };
     this.tithiList.forEach((item: any) => {
       payload = { ...payload, [item.title]: item.value ? item.value : "" }
     });
     this.customerRegistrationService.savePersonalInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, customerId: data?.id },
-            formId: 1,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: null,
-            next: {
-              source: 'family',
-              data: {},
-              formId: 2,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.personalInfoData.emit(props);
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl('customers/add/family',);
+          this.router.navigateByUrl(`customers/edit/${customerId}/family`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
       }
     })
@@ -279,28 +289,11 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.customerRegistrationService.updatePersonalInformation(payload, customerId).subscribe({
       next: (data: any) => {
         if (data) {
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, customerId: customerId },
-            formId: 1,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: null,
-            next: {
-              source: 'family',
-              data: {},
-              formId: 2,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.personalInfoData.emit(props);
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl(`customers/edit/${customerId}/family`,{ state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${customerId}/family`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Personal Info: ' + error?.statusText, AlertType.error);
       }
     })
@@ -356,7 +349,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
           this.cdref.detectChanges();
         },
         error: (error: Error) => {
-          console.log('error: ', error);
           this.alert.setAlertMessage('Error while processing request', AlertType.error);
         }
       })
@@ -366,7 +358,6 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     switch (src) {
       case 'educationId':
         this.hasSpecialization = event?.hasSpecialization;
-        // console.log(this.hasSpecialization);
         if (this.hasSpecialization) this.getSpecialization(event?.id);
         break;
       case 'specializationId':
@@ -461,19 +452,21 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     })
   }
 
-  getCustomerDetails(): void {
-    this.customerService.getCustomerDetailsById(this.customerId).subscribe({
+  getCustomerDetails(customerId: any): void {
+    this.customerService.getCustomerDetailsById(customerId).subscribe({
       next: (data: any) => {
         if (data) {
           this.customerData = data;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = data;
           this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
-          this.isEditMode = this.customerData ? this.customerData['isPersonInfoFill'] : false;
+          this.isPersonalInfoFilled = isPersonInfoFill;
+          this.isEditMode = isPersonInfoFill;
+          this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
           if (this.isEditMode) this.patchValue();
           this.isDataLoaded = true;
         }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Error: ' + error, AlertType.error);
       }
     })

@@ -6,7 +6,7 @@ import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { SharedService } from 'src/app/services/shared.service';
-import { findInvalidControlsRecursive } from 'src/util/util';
+import { StepPath, findInvalidControlsRecursive } from 'src/util/util';
 
 @Component({
   selector: 'other-info',
@@ -33,6 +33,7 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   customerId = 0;
   isDataLoaded: boolean = false;
+  activePath: string = StepPath.OTHER;
 
   constructor(
     private fb: FormBuilder,
@@ -61,45 +62,46 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       next: (response) => {
         if (response) {
           this.customerData = response;
-          const isContactInfoFill = response?.isContactInfoFill;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
           if (isContactInfoFill) {
             this.customerData = response;
             this.isEditMode = response?.isOtherInfoFill;
             this.otherData = response?.otherInfoModel;
             if (this.isEditMode) this.patchFormData();
-            this.setStepperData();
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
           }
         }
       },
       error: (error) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Something went wrong', AlertType.error);
       }
     })
   }
 
-  setStepperData() {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
     const props: FormStep = {
-      source: 'other',
+      source: StepPath.OTHER,
       data: {},
       formId: 4,
-      action: ActionValue.next,
-      isCompleted: false,
+      active: this.activePath === StepPath.OTHER,
+      isCompleted: isOtherInfoFill,
+      completeKey: StepPath.OTHER,
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
       previous: {
-        source: 'contact',
+        source: StepPath.CONTACT,
         data: {},
         formId: 3,
-        action: ActionValue.previous,
-        isCompleted: true
+        active: this.activePath === StepPath.CONTACT,
+        isCompleted: isContactInfoFill
       },
       next: {
-        source: 'photos',
+        source: StepPath.PHOTOS,
         data: {},
         formId: 5,
-        action: ActionValue.next,
-        isCompleted: false
+        active: StepPath.PHOTOS === StepPath.PHOTOS,
+        isCompleted: isImagesAdded
       }
     }
     this.sharedService.stepData.next(props);
@@ -124,18 +126,6 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
     return this.formGroup.controls as { [key: string]: FormControl };
   }
 
-  handleClickOnPrevious(src: string) {
-    const formVal = this.formGroup.value;
-    const props: FormStep = {
-      source: src,
-      data: formVal,
-      formId: 4,
-      action: ActionValue.previous,
-      isCompleted: false
-    }
-    this.otherInfoData.emit(props);
-  }
-
   handleClickOnNext(src: string) {
     const formVal = { ...this.formGroup.value, customerId: this.completedStep?.data?.customerId, otherInfoId: 0 };
     if (this.formGroup.valid) {
@@ -157,38 +147,16 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
   }
 
   saveNewCustomerInfo(formVal: any, src: string): void {
-    const payload = { ...formVal, otherInfoId: 0 };
+    const customerId = this.customerData?.customerId;
+    const payload = { ...formVal, customerId, otherInfoId: 0 };
     this.customerRegistrationService.saveOtherInformation(payload).subscribe({
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, otherInfoId: data?.id },
-            formId: 4,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'photos',
-              data: {},
-              formId: 5,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.otherInfoData.emit(props);
-          this.router.navigateByUrl(`customers/add/photos`);
+          this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
       }
     })
@@ -202,33 +170,10 @@ export class OtherInfoComponent implements OnInit, AfterViewInit {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          const props: FormStep = {
-            source: src,
-            data: { ...formVal, otherInfoId: data?.id },
-            formId: 4,
-            action: ActionValue.next,
-            isCompleted: data?.status,
-            previous: {
-              source: 'contact',
-              data: {},
-              formId: 3,
-              action: ActionValue.previous,
-              isCompleted: true
-            },
-            next: {
-              source: 'photos',
-              data: {},
-              formId: 5,
-              action: ActionValue.next,
-              isCompleted: false
-            }
-          }
-          this.otherInfoData.emit(props);
-          this.router.navigateByUrl(`customers/edit/${customerId}/photos`, { state: { route: 'edit', pageName: 'Edit Customer', title: 'Edit Customer', customerId: this.customerId } });
+          this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
         }
       },
       error: (error: any) => {
-        console.log('error: ', error);
         this.alert.setAlertMessage('Other Info: ' + error?.statusText, AlertType.error);
       }
     })

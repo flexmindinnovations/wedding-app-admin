@@ -40,7 +40,6 @@ export class CheckboxComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-
   }
 
   setCurrentClass() {

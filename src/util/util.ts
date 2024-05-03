@@ -176,3 +176,11 @@ export const TITHI_LIST = [
     { title: 'Nadi', value: '' },
     { title: 'Gana', value: '' }
 ];
+
+export enum StepPath {
+    PERSONAL = 'personal',
+    FAMILY = 'family',
+    CONTACT = 'contact',
+    OTHER = 'other',
+    PHOTOS = 'photos',
+}

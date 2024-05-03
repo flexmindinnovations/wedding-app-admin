@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChange, SimpleChanges, inject } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
 import { StepperFormItem } from 'src/app/interfaces/stepper-form';
 import { FormStepperService } from 'src/app/services/form-stepper.service';
 import { SharedService } from 'src/app/services/shared.service';
-import { COLOR_SCHEME, stepperThemeVariables } from 'src/util/util';
+import { COLOR_SCHEME, StepPath, stepperThemeVariables } from 'src/util/util';
 
 @Component({
   selector: 'form-stepper',
@@ -23,34 +23,51 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   currentStepData!: FormStep;
   themesParams = stepperThemeVariables['lastItem'];
 
+  stepperId: any;
   stepperRoutes = ['personal', 'family', 'contact', 'other', 'photos'];
+  customerId: any;
+  isAddMode: boolean = false;
 
   colorVarients: any;
   constructor(
     public router: Router,
+    private activedRoute: ActivatedRoute,
     public cdref: ChangeDetectorRef
   ) {
     this.setCurrentClass();
+    this.getFormStepperItems();
   }
 
   @Input() template: any;
   active: number = 0;
   ngOnInit() {
-    this.getFormStepperItems();
+    this.activedRoute.params.subscribe((params) => {
+      const urlPath = window.location.pathname;
+      const splittedUrl: any = urlPath.split('/');
+      this.isAddMode = splittedUrl.includes['add'];
+      if (this.isAddMode) {} else {
+        const extractCustomerId = Number(splittedUrl[splittedUrl.length - 2]);
+        if (extractCustomerId && typeof extractCustomerId === 'number') {
+          this.customerId = extractCustomerId;
+        }
+      }
+    })
+
     this.router.events.subscribe((events: any) => {
       this.getCurrentRoute();
     })
 
-    this.sharedService.getStepData().subscribe((stepData: any) => {
-      this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
+    this.sharedService.getStepData().subscribe((stepData: FormStep) => {
+      this.registrationSteps.forEach((item: StepperFormItem, index: number) => {
+        if (index === stepData.formId - 1) item.isActive = stepData.active;
+        else item.isActive = !stepData.active;
+        Object.keys(stepData.steps).forEach((key) => {
+          if (item.key === key) {
+            item.isCompleted = stepData.steps[key];
+          }
+        });
+      });
       this.getCurrentRoute();
-      const totalSteps = this.registrationSteps.length;
-      const nextPage: any = stepData?.formId < totalSteps ? stepData?.formId - 1 : stepData?.formId;
-      for (let iterator = 0; iterator < nextPage; iterator++) {
-        if (!this.registrationSteps[iterator].isActive) {
-          this.registrationSteps[iterator].isCompleted = true;
-        }
-      }
     })
   }
 
@@ -62,11 +79,7 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
 
   setActiveStep(activeRoute: string) {
     this.registrationSteps.forEach((item: StepperFormItem) => item.isActive = false);
-    // console.log('registrationSteps: ', this.registrationSteps);
-
     const activeItemIndex = this.registrationSteps.findIndex((item: StepperFormItem) => item.route === activeRoute);
-    // console.log('activeItemIndex: ', activeItemIndex);
-
     if (activeItemIndex > -1) this.registrationSteps[activeItemIndex].isActive = true;
   }
 
@@ -120,8 +133,11 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   handleOnStepperClick(step: StepperFormItem) {
-    // console.log('step: ', step);
-
+    if (this.isAddMode) {
+      this.router.navigateByUrl(`customers/add/${step.route}`);
+    } else {
+      this.router.navigateByUrl(`customers/edit/${this.customerId}/${step.route}`);
+    }
   }
 
   ngOnDestroy(): void {

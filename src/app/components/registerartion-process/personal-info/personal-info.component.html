@@ -88,7 +88,7 @@
           @for (item of tithiList; track $index) {
           <li class="flex items-center justify-start gap-4 ml-5" [ngClass]="$index > 0 ? 'my-2' : '0'">
             <label [for]="$index" class="min-w-28 select-none">{{item?.title}}</label>
-            <input type="text" [placeholder]="item?.title" [ngClass]="colorVarients" [value]="item?.value"
+            <input type="text" pInputText [placeholder]="item?.title" [ngClass]="colorVarients" [value]="item?.value"
               [name]="item?.title" [id]="$index" (change)="handleOnTithiChange($event, item)" class="p-2.5 !w-2/6">
           </li>
           }

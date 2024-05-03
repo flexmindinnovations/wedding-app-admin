@@ -49,18 +49,18 @@ export class LayoutPage implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const token = localStorage.getItem('token') || '';
-    const exp = this.authService.decodeToken(token);
-    if (exp && exp * 1000 < Date.now()) {
-      this.idleState = "TIMED_OUT";
-      this.authService.logoutUser();
-      setTimeout(() => {
-        this.isTimeOut = false;
-        this.cdref.detectChanges();
-        this.modalController.dismiss();
-        setTimeout(() => { this.router.navigateByUrl('login'); }, 100)
-      }, 1000)
-    }
-    this.reset();
+    // const exp = this.authService.decodeToken(token);
+    // if (exp && exp * 1000 < Date.now()) {
+    //   this.idleState = "TIMED_OUT";
+    //   this.authService.logoutUser();
+    //   setTimeout(() => {
+    //     this.isTimeOut = false;
+    //     this.cdref.detectChanges();
+    //     this.modalController.dismiss();
+    //     setTimeout(() => { this.router.navigateByUrl('login'); }, 100)
+    //   }, 1000)
+    // }
+    // this.reset();
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         if (event.navigationTrigger === 'popstate') {

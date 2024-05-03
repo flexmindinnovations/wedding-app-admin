@@ -1,10 +1,10 @@
 <div class="stepper-container max-w-[90%] flex items-center justify-center px-3 pt-0 pb-3">
-  <ol class="flex items-center w-full mb-4 sm:mb-5">
+  <ul class="flex items-center w-full mb-5 lg:xl:mb-4">
     @for (item of registrationSteps; track item.id) {
     <li (click)="handleOnStepperClick(item)" class="select-none cursor-pointer"
-      [ngClass]="item.id !== registrationSteps.length ? item?.isCompleted ? colorVarients.line.complete : item?.isActive ? colorVarients.line.active : colorVarients.line.inactive : item?.isActive ? themesParams.line.active : themesParams.line.inactive">
+      [ngClass]="item.id !== registrationSteps.length ? item.isActive && item.isCompleted ? colorVarients.line.active : item?.isCompleted ? colorVarients.line.complete : item?.isActive ? colorVarients.line.active : colorVarients.line.inactive : item?.isActive ? themesParams.line.active : themesParams.line.inactive">
       <div
-        [ngClass]="item?.isCompleted ? colorVarients.bg.complete : item?.isActive ? colorVarients.bg.active : colorVarients.bg.inactive">
+        [ngClass]="item?.isActive && item?.isCompleted ? colorVarients.bg.active : item?.isCompleted ? colorVarients.bg.complete : item?.isActive ? colorVarients.bg.active : colorVarients.bg.inactive">
         <div class="info-container flex-col relative flex items-center justify-center">
           <ion-icon [name]="item.isCompleted ? 'checkmark-outline' : item.icon" />
           <div class="title">
@@ -16,5 +16,5 @@
       </div>
     </li>
     }
-  </ol>
+  </ul>
 </div>
