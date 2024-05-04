@@ -23,6 +23,10 @@
   <master-data [title]="'User'" [canAdd]="canUserAdd" (gridAction)="handleGridAddAction($event)"
     [rowData]="userMasterRowData" [columnDefs]="userMasterColumnDefs" />
   }
+  @if (isUserActive) {
+  <master-data [title]="'Subscription Plan'" [canAdd]="canUserAdd" (gridAction)="handleGridAddAction($event)"
+    [rowData]="subscriptionPlansMasterRowData" [columnDefs]="subscriptionPlansMasterColumnDefs" />
+  }
   <!-- 
   <master-data [title]="'Specialization'" [canAddItem]="false" (gridAction)="handleGridAddAction($event)" [rowData]="specializationMasterRowData"
     [columnDefs]="specializationMasterColumnDefs" /> -->

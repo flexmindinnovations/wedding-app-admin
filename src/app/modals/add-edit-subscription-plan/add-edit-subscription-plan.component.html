@@ -1,0 +1,46 @@
+<div class="subscription-plan-modal flex flex-col h-full">
+  <div class="header border-b dark:bg-dark-950 flex items-center justify-start">
+    <div class="modal-title">
+      <h1 class="m-0 text-base dark:text-white">{{data?.title}}</h1>
+    </div>
+  </div>
+  <div class="body min-h-64 ion-padding border-b dark:bg-dark-950">
+    @if(!isLoading) {
+    <form [formGroup]="formGroup" class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="dark:text-white">Status</label>
+          <p-inputSwitch formControlName="isActive"></p-inputSwitch>
+        </div>
+
+        <app-input label="Plan Name" type="text" id="planName" [control]="formGroupControl['planName']"
+          formControlName="planName" [controlValue]="formGroup.get('planName')?.value" class="" />
+
+        <app-input label="Original Amount" type="number" id="originalAmount"
+          [control]="formGroupControl['originalAmount']" formControlName="originalAmount"
+          [controlValue]="formGroup.get('originalAmount')?.value" class="" />
+
+        <app-input label="Discount Amount" type="number" id="discountAmount"
+          [control]="formGroupControl['discountAmount']" formControlName="discountAmount"
+          [controlValue]="formGroup.get('discountAmount')?.value" class="" />
+
+        <app-input label="Actual Amount" type="number" id="actualAmount" [control]="formGroupControl['actualAmount']"
+          formControlName="actualAmount" [controlValue]="formGroup.get('actualAmount')?.value" class="" />
+
+        <app-input label="Plan Start Date" presentaion="date" type="date" [control]="formGroupControl['planStartDate']"
+          formControlName="planStartDate" [controlValue]="formGroup.get('planStartDate')?.value || ''" />
+      </div>
+    </form>
+    } @else {
+    <div class="h-64 w-full flex items-center justify-center">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+    }
+  </div>
+  <div class="actions flex items-center h-16 justify-end p-3 gap-4 dark:bg-dark-950">
+    <mt-button [title]="'Cancel'" size="small" [isCancel]="true" [textOnly]="true"
+      (action)="handleButtonClick($event)" />
+    <mt-button [disabled]="formGroup.invalid || isLoading" [title]="isEditMode ? 'Update' : 'Save'" size="small"
+      [icon]="'pi pi-save'" (action)="handleButtonClick($event)" />
+  </div>
+</div>

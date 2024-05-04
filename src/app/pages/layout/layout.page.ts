@@ -8,6 +8,7 @@ import { Keepalive } from '@ng-idle/keepalive';
 import { AuthService } from 'src/app/services/auth.service';
 import { ModalController } from '@ionic/angular';
 import { SharedService } from 'src/app/services/shared.service';
+import { delay, of } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -138,12 +139,16 @@ export class LayoutPage implements OnInit, AfterViewInit {
     this.authService.logoutUser();
     this.showLogoutModal = true;
     this.sharedService.isLoggedOutCompleted.next(true);
-    setTimeout(() => {
-      this.isTimeOut = false;
-      setTimeout(() => {
-        this.router.navigateByUrl('/');
-      })
-    })
+    of(true)
+      .pipe(
+        delay(1500)
+      ).subscribe(() => {
+        this.isTimeOut = false;
+        this.showLogoutModal = false;
+        setTimeout(() => {
+          this.router.navigateByUrl('/');
+        })
+      });
   }
 
   ngOnDestroy() {
