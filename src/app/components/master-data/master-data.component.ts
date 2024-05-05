@@ -20,7 +20,7 @@ export class MasterDataComponent implements OnInit {
   handleActionClick(event: any) {
     const props = {
       action: 'add',
-      type: this.gridTitle
+      type: this.gridTitle.trim().replace(/\s/g, '')
     };
     this.gridAction.emit(props);
   }

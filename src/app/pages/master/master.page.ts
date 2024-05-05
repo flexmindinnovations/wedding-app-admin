@@ -20,6 +20,8 @@ import { AddEditUserComponent } from 'src/app/modals/add-edit-user/add-edit-user
 import { ThemeService } from 'src/app/services/theme.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { RolesService } from 'src/app/services/role/roles.service';
+import { SubscriptionPlanService } from 'src/app/services/subscription-plan/subscription-plan.service';
+import { AddEditSubscriptionPlanComponent } from 'src/app/modals/add-edit-subscription-plan/add-edit-subscription-plan.component';
 
 @Component({
   selector: 'app-master',
@@ -38,6 +40,7 @@ export class MasterPage implements OnInit {
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
   alert = inject(AlertService);
+  subscriptionPlanService = inject(SubscriptionPlanService);
 
   heightMasterRowData: any = [];
   heightMasterColumnDefs: ColDef[] = [];
@@ -59,6 +62,10 @@ export class MasterPage implements OnInit {
 
   specializationMasterRowData: any = [];
   specializationMasterColumnDefs: ColDef[] = [];
+
+  subscriptionPlansMasterRowData: any = [];
+  subscriptionPlansMasterColumnDefs: ColDef[] = [];
+
   idColWidth = 80;
   isRoleActive: boolean = false;
   canRoleAdd: boolean = false;
@@ -355,6 +362,30 @@ export class MasterPage implements OnInit {
     this.getSpecializationTableData();
   }
 
+  setSubscriptionPlansTableMasterGridData() {
+    this.subscriptionPlansMasterColumnDefs = [
+      { field: 'id', headerName: 'Id', width: this.idColWidth },
+      { field: 'planName', width: 200 },
+      { field: 'originalAmount', width: 235 },
+      { field: 'discountAmount', width: 235 },
+      { field: 'actualAmount', width: 235 },
+      { field: 'planStartDate', width: 235 },
+      { field: 'isActive', width: 235 },
+      {
+        field: "action",
+        colId: 'subscriptionplan',
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+
+    this.getSpecializationTableData();
+  }
+
   getSpecializationTableData() {
     this.educationService.getSpecializationList().subscribe({
       next: (data: any) => {
@@ -372,6 +403,25 @@ export class MasterPage implements OnInit {
         this.alert.setAlertMessage('Education List: ' + error?.statusText, AlertType.error);
       }
     })
+  }
+
+  getSubscriptionPlansTableData() {
+    // this.subscriptionPlanService.getSubscriptionPlansList().subscribe({
+    //   next: (data: any) => {
+    //     if (data) {
+    //       this.subscriptionPlansMasterRowData = data.map((item: any) => {
+    //         const filteredItem = this.subscriptionPlansMasterRowData.filter((ed: any) => ed?.educationId === item?.educationId);
+    //         item['id'] = item?.specializationId;
+    //         item['course'] = filteredItem.length ? filteredItem[0]?.educationName : '';
+    //         return item;
+    //       });
+    //     }
+    //   },
+    //   error: (error: any) => {
+    //     console.log('error: ', error);
+    //     this.alert.setAlertMessage('Subscription Plans List: ' + error?.statusText, AlertType.error);
+    //   }
+    // })
   }
 
   handleGridAddAction(event: any) {
@@ -394,6 +444,9 @@ export class MasterPage implements OnInit {
         break;
       case 'user':
         this.openAddEditUserModal();
+        break;
+      case 'subscriptionplan':
+        this.openAddEditSubscriptionPlansModal();
         break;
     }
   }
@@ -597,6 +650,32 @@ export class MasterPage implements OnInit {
     }
   }
 
+  async openAddEditSubscriptionPlansModal(event?: any) {
+    this.canShowModal = true;
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    // let alreadyUserList = [...this.userMasterRowData?.map((user: any) => user?.mobileNo)];
+    const modal = await this.modalCtrl.create({
+      component: AddEditSubscriptionPlanComponent,
+      cssClass: 'subscription-plan-modal',
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: Subscription Plan ' : 'Add New Subscription Plan',
+          data: { ...event, isEditMode }
+        }
+      }
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getSubscriptionPlansTableData();
+    }
+  }
+
   getHeightList(): any {
     this.heightService.getHeightList().subscribe({
       next: (data: any[]) => {
@@ -616,6 +695,7 @@ export class MasterPage implements OnInit {
     })
 
   }
+
   getCastList(): any {
     this.castService.getCastList().subscribe({
       next: (data: any) => {
