@@ -20,8 +20,11 @@ export class GridCellStatusComponent implements OnInit, ICellRendererAngularComp
 
   agInit(params: ICellRendererParams<any, any, any>): void {
     this.params = params;
-    const { canEdit, canDelete } = params['data']['refData'];
-    this.canEdit = canEdit;
+    const refData = params?.data?.refData;
+    if (refData) {
+      const { canEdit, canDelete } = params['data']['refData'];
+      this.canEdit = canEdit;
+    }
     this.rowData = this.params?.data;
     this.label = this.rowData?.isActive || null;
     this.isActive = this.label;
@@ -32,7 +35,7 @@ export class GridCellStatusComponent implements OnInit, ICellRendererAngularComp
 
   onItemChange(event: any) {
     const { customerId } = this.rowData;
-    
+
   }
 
 }
