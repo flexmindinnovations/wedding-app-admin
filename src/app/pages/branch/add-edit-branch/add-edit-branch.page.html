@@ -38,7 +38,7 @@
   </form>
 
   <div class="action-buttons flex items-center px-3 py-2 justify-end">
-    <mt-button [disabled]="formGroup.invalid" [title]="branchId > 0 ? 'Update Branch' : 'Save Branch'"
+    <mt-button [disabled]="formGroup.invalid || !selectedImage.length" [title]="branchId > 0 ? 'Update Branch' : 'Save Branch'"
       [icon]="branchId > 0 ? 'pi pi-file-plus' : 'pi pi-save'" [iconSlot]="'end'" (action)="handleSubmitClick()" />
 
       
