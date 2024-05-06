@@ -59,6 +59,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     {
       field: "isActiive",
       width: 100,
+      pinned: 'right',
       cellRenderer: 'agGroupCellRenderer',
       cellRendererParams: {
         innerRenderer: GridCellStatusComponent,
@@ -82,7 +83,6 @@ export class CustomersPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getCustomerList();
-    this.getPermissionListByRoleId();
   }
 
   ngAfterViewInit(): void {
@@ -98,7 +98,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     });
   }
 
-  getPermissionListByRoleId() {
+  getPermissionListByRoleId(): any {
     const roleId = localStorage.getItem('role');
     this.roleService.getPermissionListById(roleId).subscribe({
       next: (permissionList: any) => {
@@ -110,6 +110,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
             item['refData'] = refData;
             return item;
           })
+          this.filteredRowData = [...this.rowData];
         }
       },
       error: (error) => {
@@ -119,9 +120,9 @@ export class CustomersPage implements OnInit, AfterViewInit {
     })
   }
 
-  getCustomerList(): void {
+  getCustomerList() {
     this.customerService.getCustomerList().subscribe({
-      next: (data: any) => {
+      next: async (data: any) => {
         if (data) {
           this.rowData = data.map((item: any) => {
             return {
@@ -130,7 +131,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
               registrationDate: moment(item['registrationDate']).format('DD/MM/YYYY')
             }
           });
-          this.filteredRowData = [...this.rowData];
+          this.getPermissionListByRoleId();
         }
       },
       error: (error) => {
