@@ -49,6 +49,9 @@ export class FamilyInfoComponent implements OnInit {
   isFamilyInfoFill: boolean = false;
   activePath: string = StepPath.FAMILY;
   isAddMode: boolean = false;
+  castIdValue:any;
+  subCastIdValue:any;
+  religionIdValue:any;
 
   constructor(
     private fb: FormBuilder,
@@ -143,12 +146,15 @@ export class FamilyInfoComponent implements OnInit {
       noOfSisters: ['', [Validators.required]],
       noOfMarriedSisters: ['', [Validators.required]],
       religionId: ['', [Validators.required]],
-      castId: ['', [Validators.required]],
-      subCastId: ['', [Validators.required]]
+      castId: [null],
+      subCastId: [null]
     })
   }
 
   patchFormData() {
+    this.religionIdValue = this.familyData.religionId;
+    this.castIdValue = this.familyData?.castId;
+    this.subCastIdValue = this.familyData?.subCastId;
     this.formGroup.patchValue(this.familyData);
     this.cdref.detectChanges();
   }
@@ -160,6 +166,11 @@ export class FamilyInfoComponent implements OnInit {
   handleClickOnNext(src: string) {
     const customerId = localStorage.getItem('customer')
     const formVal = { ...this.formGroup.value, customerId: this.customerId };
+    if(this.religionId !== this.religionIdValue) {
+      if(formVal['castId'] !== this.castIdValue && !this.hasSubCast) {
+          formVal['subCastId'] = null;
+      }
+    }
     if (this.formGroup.valid) {
       if (this.isEditMode) this.updateCustomerInfo(formVal, src);
       else this.saveNewCustomerInfo(formVal, src);
