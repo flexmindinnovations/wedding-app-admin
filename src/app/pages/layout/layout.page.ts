@@ -35,6 +35,7 @@ export class LayoutPage implements OnInit, AfterViewInit {
 
   showLogoutModal = false;
   showSessionExpiredDialog = false;
+  isRedirecting = false;
 
   constructor(
     private idle: Idle,
@@ -128,7 +129,16 @@ export class LayoutPage implements OnInit, AfterViewInit {
   }
 
   handleSignIn() {
-    this.logoutUser();
+    this.authService.logoutUser();
+    this.isRedirecting = true;
+    of(true)
+    .pipe(
+      delay(1500)
+    ).subscribe(() => {
+      this.router.navigateByUrl('login');
+      this.showSessionExpiredDialog = false;
+      this.isRedirecting = false;
+    })
   }
 
   handleIsCollapsed(isCollapsed: boolean) {
@@ -146,7 +156,7 @@ export class LayoutPage implements OnInit, AfterViewInit {
         this.isTimeOut = false;
         this.showLogoutModal = false;
         setTimeout(() => {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('login');
         })
       });
   }
