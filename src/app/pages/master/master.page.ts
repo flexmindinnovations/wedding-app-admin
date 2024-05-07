@@ -315,6 +315,7 @@ export class MasterPage implements OnInit {
       },
       {
         field: "action",
+        colId: 'branch',
         width: 90,
         pinned: 'right',
         cellRenderer: 'agGroupCellRenderer',

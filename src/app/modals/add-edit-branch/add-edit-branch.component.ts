@@ -25,7 +25,7 @@ export class AddEditBranchComponent  implements OnInit {
   countryList: any;
   stateList: any;
   cityList: any;
-  isActive: boolean = true;
+  isActive: boolean = false;
   cssClass: any;
   selectedImage: any[] = [];
   branchId: number = 0;
@@ -46,37 +46,31 @@ export class AddEditBranchComponent  implements OnInit {
 
   ngOnInit() {
     this.initFormGroup();
+    this.getCountryList();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
-    this.alreadyBranchList = data?.alreadyBranchList;
-    this.getCountryList();
+    this.alreadyBranchList = data?.alreadyBranchList; 
+  }
+
+  ngAfterViewInit(): void {
+    const modalData = this.data?.data?.rowData;
+    this.branchId = modalData?.id;
     if (this.branchId > 0) this.getBranchDetails();
-    else this.isDataLoaded = true;
   }
 
   getBranchDetails() {
-    this.branchService.getBranchByBranchId(this.branchId).subscribe({
-      next: (data: any) => {
-        if (data) {
-          // console.log('branchdata', data);
-          this.branchDetails = data;
-          this.imagePath = environment.endpoint + '/' + data?.branchImagePath;
-          const imageNameIndex = data?.branchImagePath.lastIndexOf('/') + 1;
-          this.imageName = data?.branchImagePath.substring(imageNameIndex, data?.branchImagePath.length);
-          this.isActive = data?.isActive;
-          this.formGroup.patchValue(data);
+         const modalData = this.data?.data?.rowData;
+          this.branchDetails = modalData;
+          this.imagePath = environment.endpoint + '/' + modalData?.branchImagePath;
+          const imageNameIndex = modalData?.branchImagePath.lastIndexOf('/') + 1;
+          this.imageName = modalData?.branchImagePath.substring(imageNameIndex, modalData?.branchImagePath.length);
+          this.isActive = modalData?.isActive;
+          this.formGroup.patchValue(modalData);
           if(this.imagePath){
             this.selectedImage.push(this.imagePath);
           }
           this.cdref.detectChanges();
           this.isDataLoaded = true;
-        }
-      },
-      error: (error) => {
-        console.log('error: ', error);
-        this.alert.setAlertMessage(error?.message, AlertType.error);
-      }
-    })
   }
 
   
@@ -89,6 +83,7 @@ export class AddEditBranchComponent  implements OnInit {
       stateId: ['', [Validators.required]],
       // order: ['', [Validators.required]],
     })
+    this.formGroup.get('isActive')?.setValue(true);
   }
   
   get formGroupControl(): { [key: string]: FormControl } {
@@ -102,9 +97,12 @@ export class AddEditBranchComponent  implements OnInit {
   onSelectionChange(event: any, src: string) {
     switch (src) {
       case 'countryId':
+        this.stateList = [];
+        this.cityList = [];
         this.getStateByCountry(event?.id);
         break;
       case 'stateId':
+        this.cityList = [];
         this.getCityByState(event?.id);
         break;
     }
@@ -115,7 +113,6 @@ export class AddEditBranchComponent  implements OnInit {
       this.modalControllerService.dismiss({ event: 'cancel' });
       return;
     }
-
     if (this.branchId > 0) this.updateBranch();
     else this.saveBranch();
 
@@ -149,7 +146,7 @@ export class AddEditBranchComponent  implements OnInit {
     formVal = { ...formVal, branchId, isActive: this.isActive, branchImagePath: this.branchDetails['branchImagePath'] }
     const formData: FormData = new FormData();
     formData.append('branchModel', JSON.stringify(formVal));
-    if (this.selectedImage) formData.append('file', this.selectedImage[0], this.selectedImage[0].name);
+    // if (this.selectedImage) formData.append('file', this.selectedImage[0], this.selectedImage[0].name);
     this.branchService.updateBranch(formData).subscribe({
       next: (data: any) => {
         if (data) {
@@ -169,7 +166,6 @@ export class AddEditBranchComponent  implements OnInit {
   toggleActive() {
     this.isActive = !this.isActive;
     this.formGroup.patchValue({ isActive: this.isActive });
-
   }
 
   getCountryList() {
@@ -191,8 +187,6 @@ export class AddEditBranchComponent  implements OnInit {
   }
   getStateByCountry(countryId: number) {
     if (countryId) {
-      this.stateList = [];
-      this.cityList = [];
       this.sharedService.getStatByCountry(countryId).subscribe({
         next: (data: any[]) => {
           this.stateList = data?.map((item: any) => {
@@ -213,7 +207,6 @@ export class AddEditBranchComponent  implements OnInit {
   }
   getCityByState(stateId: number) {
     if (stateId) {
-      this.cityList = [];
       this.sharedService.getCityByState(stateId).subscribe({
         next: (data: any[]) => {
           this.cityList = data?.map((item: any) => {
@@ -232,6 +225,5 @@ export class AddEditBranchComponent  implements OnInit {
       })
     }
   }
-
 
 }
