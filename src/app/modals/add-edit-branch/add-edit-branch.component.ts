@@ -61,7 +61,7 @@ export class AddEditBranchComponent  implements OnInit {
   getBranchDetails() {
          const modalData = this.data?.data?.rowData;
           this.branchDetails = modalData;
-          this.imagePath = environment.endpoint + '/' + modalData?.branchImagePath;
+          this.imagePath = `${environment.endpoint}/${modalData?.branchImagePath}`;
           const imageNameIndex = modalData?.branchImagePath.lastIndexOf('/') + 1;
           this.imageName = modalData?.branchImagePath.substring(imageNameIndex, modalData?.branchImagePath.length);
           this.isActive = modalData?.isActive;
@@ -91,6 +91,7 @@ export class AddEditBranchComponent  implements OnInit {
 
   handleSelectedImage(event: any) {
     this.selectedImage.push(event?.file);
+    this.imageName = event?.file.name;
   }
 
   onSelectionChange(event: any, src: string) {

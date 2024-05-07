@@ -15,27 +15,20 @@ export const SIDEBAR_ITEMS = [
     },
     {
         "id": 3,
-        "title": "Branch",
-        "route": "branch",
-        "isActive": false,
-        "icon": "",
-    },
-    {
-        "id": 4,
         "title": "Events",
         "route": "events",
         "isActive": false,
         "icon": "code-outline"
     },
     {
-        "id": 5,
+        "id": 4,
         "title": "Blogs",
         "route": "blog",
         "isActive": false,
         "icon": "document-outline"
     },
     {
-        "id": 6,
+        "id": 5,
         "title": "Master Data",
         "route": "master",
         "isActive": false,

@@ -23,11 +23,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('../../pages/events/events.module').then(m => m.EventsPageModule)
       },
-      {
-        path: 'branch',
-        loadChildren: () =>
-          import('../../pages/branch/branch.module').then(m => m.BranchPageModule)
-      },
+      // {
+      //   path: 'branch',
+      //   loadChildren: () =>
+      //     import('../../pages/branch/branch.module').then(m => m.BranchPageModule)
+      // },
       {
         path: 'blog',
         loadChildren: () =>

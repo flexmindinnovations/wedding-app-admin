@@ -34,15 +34,18 @@
         </div>
       </div>
       <div class="w-full flex justify-center lg:my-5 items-center">
-        <image-picker label="Add Image" [fileName]="imageName" [src]="imagePath"
-          (selectedImage)="handleSelectedImage($event)" />
+        @if(imageName){
+          <image-picker [src]="imagePath" [fileName]="imageName" (selectedImage)="handleSelectedImage($event)"
+          label="Add Image" />
+        }
       </div>
+     
       <!-- </div> -->
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'pi pi-save'"
+    <mt-button [disabled]="formGroup.invalid || !selectedImage.length" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'pi pi-save'"
       (action)="handleButtonClick($event)" />
   </div>
 </div>
