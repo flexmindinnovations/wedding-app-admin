@@ -1,7 +1,9 @@
-<!-- <p class="m-0 py-1 min-w-16 px-2 h-6 w-full flex items-center justify-center rounded-md shadow-md text-white text-xs font-semibold"
-  [ngClass]="label ? 'bg-green-500' : 'bg-red-500'">{{label ? 'Active' :
-  'Inactive'}} </p> -->
-
+@if(fromCustomerPage){
 <div class="flex flex-col gap-2 col-span-4">
   <p-inputSwitch [(ngModel)]="isActive" [disabled]="!canEdit" (ngModelChange)="onItemChange($event)"></p-inputSwitch>
 </div>
+}@else{
+<p class="m-0 py-1 min-w-16 px-2 h-6 w-full flex items-center justify-center rounded-md shadow-md text-white text-xs font-semibold"
+  [ngClass]="label ? 'bg-green-500' : 'bg-red-500'">{{label ? 'Active' :
+  'Inactive'}} </p>
+}

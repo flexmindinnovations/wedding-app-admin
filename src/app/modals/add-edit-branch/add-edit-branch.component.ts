@@ -25,7 +25,7 @@ export class AddEditBranchComponent  implements OnInit {
   countryList: any;
   stateList: any;
   cityList: any;
-  isActive: boolean = false;
+  isActive: boolean = true;
   cssClass: any;
   selectedImage: any[] = [];
   branchId: number = 0;
@@ -83,7 +83,6 @@ export class AddEditBranchComponent  implements OnInit {
       stateId: ['', [Validators.required]],
       // order: ['', [Validators.required]],
     })
-    this.formGroup.get('isActive')?.setValue(true);
   }
   
   get formGroupControl(): { [key: string]: FormControl } {
