@@ -85,6 +85,10 @@
     gap: 0 !important;
   }
 
+  p-inputswitch {
+    @apply flex items-center justify-start shadow-none outline-none border-none;
+  }
+
   .p-datepicker:not(.p-datepicker-inline) {
     @apply bg-white text-dark-800 dark:bg-dark-700 dark:text-white;
   }
