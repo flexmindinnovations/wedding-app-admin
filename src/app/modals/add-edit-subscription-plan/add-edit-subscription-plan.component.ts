@@ -34,7 +34,7 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
     this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
-    if(this.isEditMode) this.patchFormData();
+    if (this.isEditMode) this.patchFormData();
   }
 
   patchFormData() {
@@ -42,7 +42,7 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
     this.subscriptionPlanId = modalData?.planId;
     const props = {
       ...modalData,
-      planStartDate:new Date(modalData?.planStartDate), 
+      planStartDate: new Date(modalData?.planStartDate),
     }
     this.formGroup.patchValue(modalData);
     this.cdref.detectChanges();
@@ -82,7 +82,7 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
   saveSubscriptionPlan() {
     const formValue = this.formGroup.value;
     const planStartDate = new Date(formValue['planStartDate']);
-    const payload = {...formValue,planId:this.subscriptionPlanId,planStartDate}
+    const payload = { ...formValue, planId: this.subscriptionPlanId, planStartDate }
     this.subscriptionPlanService.saveNewSubscriptionPlan(payload).subscribe({
       next: (data: any) => {
         if (data) {
@@ -99,8 +99,8 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
 
   updateSubscriptionPlan() {
     const formValue = this.formGroup.value;
-    const planStartDate = new Date(formValue['planStartDate']);
-    const payload = {...formValue,planId:this.subscriptionPlanId,planStartDate}
+    const planStartDate = moment(formValue['planStartDate']).add(1, 'days');
+    const payload = { ...formValue, planId: this.subscriptionPlanId, planStartDate }
     this.subscriptionPlanService.updateSubscriptionPlan(payload).subscribe({
       next: (data: any) => {
         if (data) {
