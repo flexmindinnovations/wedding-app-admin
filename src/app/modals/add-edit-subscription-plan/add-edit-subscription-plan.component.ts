@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import * as moment from 'moment';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { SubscriptionPlanService } from 'src/app/services/subscription-plan/subscription-plan.service';
 
 @Component({
   selector: 'app-add-edit-subscription-plan',
@@ -16,10 +18,11 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
   @Input() data: any;
 
   subscriptionPlanId = 0;
-
+  cdref = inject(ChangeDetectorRef);
   isEditMode: boolean = false;
   isActive: boolean = false;
   isLoading: boolean = false;
+  subscriptionPlanService = inject(SubscriptionPlanService)
 
   constructor(
     private fb: FormBuilder,
@@ -28,9 +31,21 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.initFormGroup();
     const data = this.data?.data;
     this.isEditMode = data?.isEditMode;
-    this.initFormGroup();
+    if(this.isEditMode) this.patchFormData();
+  }
+
+  patchFormData() {
+    const modalData = this.data?.data?.rowData;
+    this.subscriptionPlanId = modalData?.planId;
+    const props = {
+      ...modalData,
+      planStartDate:new Date(modalData?.planStartDate), 
+    }
+    this.formGroup.patchValue(modalData);
+    this.cdref.detectChanges();
   }
 
   initFormGroup() {
@@ -66,12 +81,38 @@ export class AddEditSubscriptionPlanComponent implements OnInit {
 
   saveSubscriptionPlan() {
     const formValue = this.formGroup.value;
-    console.log('formValue: ', formValue);
+    const planStartDate = new Date(formValue['planStartDate']);
+    const payload = {...formValue,planId:this.subscriptionPlanId,planStartDate}
+    this.subscriptionPlanService.saveNewSubscriptionPlan(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alertService.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalController.dismiss({ event: 'add' });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
   updateSubscriptionPlan() {
     const formValue = this.formGroup.value;
-    console.log('formValue: ', formValue);
+    const planStartDate = new Date(formValue['planStartDate']);
+    const payload = {...formValue,planId:this.subscriptionPlanId,planStartDate}
+    this.subscriptionPlanService.updateSubscriptionPlan(payload).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.alertService.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
+          this.modalController.dismiss({ event: 'update' });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alertService.setAlertMessage(error?.message, AlertType.error);
+      }
+    })
   }
 
 }

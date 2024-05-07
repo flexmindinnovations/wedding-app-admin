@@ -1,4 +1,8 @@
 <div class="users-content main ion-padding grid grid-cols-2 gap-y-10 gap-x-5">
+  @if (isBranchActive) {
+    <master-data [title]="'Branch'" [canAdd]="canBranchAdd" (gridAction)="handleGridAddAction($event)"
+      [rowData]="branchMasterRowData" [columnDefs]="branchMasterColumnDefs" />
+    }
   @if (isRoleActive) {
   <master-data [title]="'Role'" [canAdd]="canRoleAdd" (gridAction)="handleGridAddAction($event)"
     [rowData]="roleMasterRowData" [columnDefs]="roleMasterColumnDefs" />

@@ -22,6 +22,11 @@ import { UserService } from 'src/app/services/user/user.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 import { SubscriptionPlanService } from 'src/app/services/subscription-plan/subscription-plan.service';
 import { AddEditSubscriptionPlanComponent } from 'src/app/modals/add-edit-subscription-plan/add-edit-subscription-plan.component';
+import * as moment from 'moment';
+import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-cell-image.component';
+import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
+import { BranchService } from 'src/app/services/branch/branch.service';
+import { AddEditBranchComponent } from 'src/app/modals/add-edit-branch/add-edit-branch.component';
 
 @Component({
   selector: 'app-master',
@@ -36,6 +41,7 @@ export class MasterPage implements OnInit {
   handycapService = inject(HandycapService);
   userService = inject(UserService);
   roleService = inject(RolesService);
+  branchService = inject(BranchService);
   canShowModal: boolean = false;
   modalCtrl = inject(ModalController);
   heightService = inject(HeightService);
@@ -50,6 +56,9 @@ export class MasterPage implements OnInit {
 
   roleMasterRowData: any = [];
   roleMasterColumnDefs: ColDef[] = [];
+
+  branchMasterRowData: any = [];
+  branchMasterColumnDefs: ColDef[] = [];
 
   castMasterRowData: any = [];
   castMasterColumnDefs: ColDef[] = [];
@@ -68,6 +77,7 @@ export class MasterPage implements OnInit {
 
   idColWidth = 80;
   isRoleActive: boolean = false;
+  canBranchAdd: boolean = false;
   canRoleAdd: boolean = false;
   isHeightActive: boolean = false;
   canHeightAdd: boolean = false;
@@ -78,6 +88,7 @@ export class MasterPage implements OnInit {
   isUserActive: boolean = false;
   canUserAdd: boolean = false;
   isCastActive: boolean = false;
+  isBranchActive: boolean = false;
   canCastAdd: boolean = false;
 
   ngOnInit() {
@@ -98,6 +109,15 @@ export class MasterPage implements OnInit {
               const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
               this.canRoleAdd = list?.canAdd;
               this.roleMasterRowData = this.roleMasterRowData?.map((item: any) => {
+                item['refData'] = refData;
+                return item;
+              })
+            }
+            if (list?.moduleName === 'Branch') {
+              this.isBranchActive = true;
+              const refData = { canEdit: list?.canEdit, canDelete: list?.canDelete };
+              this.canBranchAdd = list?.canAdd;
+              this.branchMasterRowData = this.branchMasterRowData?.map((item: any) => {
                 item['refData'] = refData;
                 return item;
               })
@@ -159,12 +179,14 @@ export class MasterPage implements OnInit {
 
   setMasterData() {
     this.setHeightMasterGridData();
+    this.setBranchMasterGridData();
     this.setRoleMasterGridData();
     this.setEducationMasterGridData();
     this.setCastMasterGridData();
     this.setHandycapMasterGridData();
     this.setSpecializationMasterGridData();
     this.setUserMasterGridData();
+    this.setSubscriptionPlansTableMasterGridData();
   }
 
   setHeightMasterGridData() {
@@ -262,6 +284,65 @@ export class MasterPage implements OnInit {
       },
     ];
     this.getUserList();
+  }
+
+  setBranchMasterGridData() {
+    this.branchMasterRowData = [];
+    this.branchMasterColumnDefs = [
+      { field: "id", headerName: 'Id', width: this.idColWidth },
+      {
+        field: "branchImagePath",
+        headerName: 'Image',
+        wrapText: true,
+        autoHeaderHeight: true,
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridCellImageComponent,
+        } as IGroupCellRendererParams
+      },
+      { field: "branchName", width: 200 },
+      { field: "countryName", headerName: 'Country', width: 150 },
+      { field: "stateName", headerName: 'State', width: 150 },
+      { field: "cityName", headerName: 'City', width: 150 },
+      {
+        field: "isActive",
+        width: 100,
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridCellStatusComponent,
+        } as IGroupCellRendererParams
+      },
+      {
+        field: "action",
+        width: 90,
+        pinned: 'right',
+        cellRenderer: 'agGroupCellRenderer',
+        cellRendererParams: {
+          innerRenderer: GridButtonsComponent,
+          onClick: this.handleGridActionButtonClick.bind(this)
+        } as IGroupCellRendererParams
+      },
+    ];
+
+    this.getBranchTableData();
+  }
+
+  getBranchTableData() {
+    this.branchService.getBranchList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.branchMasterRowData = data.map((item: any) => {
+            item['id'] = item?.branchId;
+            return item;
+          });
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Branch List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   setRoleMasterGridData() {
@@ -366,14 +447,15 @@ export class MasterPage implements OnInit {
     this.subscriptionPlansMasterColumnDefs = [
       { field: 'id', headerName: 'Id', width: this.idColWidth },
       { field: 'planName', width: 200 },
-      { field: 'originalAmount', width: 235 },
-      { field: 'discountAmount', width: 235 },
-      { field: 'actualAmount', width: 235 },
+      { field: 'originalAmount', width: 150 },
+      { field: 'discountAmount', width: 150 },
+      { field: 'actualAmount', width: 150 },
       { field: 'planStartDate', width: 235 },
-      { field: 'isActive', width: 235 },
+      { field: 'isActive', width: 150, pinned: 'right', },
       {
         field: "action",
         colId: 'subscriptionplan',
+        pinned: 'right',
         width: 100,
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -383,7 +465,7 @@ export class MasterPage implements OnInit {
       },
     ];
 
-    this.getSpecializationTableData();
+    this.getSubscriptionPlansTableData();
   }
 
   getSpecializationTableData() {
@@ -406,22 +488,21 @@ export class MasterPage implements OnInit {
   }
 
   getSubscriptionPlansTableData() {
-    // this.subscriptionPlanService.getSubscriptionPlansList().subscribe({
-    //   next: (data: any) => {
-    //     if (data) {
-    //       this.subscriptionPlansMasterRowData = data.map((item: any) => {
-    //         const filteredItem = this.subscriptionPlansMasterRowData.filter((ed: any) => ed?.educationId === item?.educationId);
-    //         item['id'] = item?.specializationId;
-    //         item['course'] = filteredItem.length ? filteredItem[0]?.educationName : '';
-    //         return item;
-    //       });
-    //     }
-    //   },
-    //   error: (error: any) => {
-    //     console.log('error: ', error);
-    //     this.alert.setAlertMessage('Subscription Plans List: ' + error?.statusText, AlertType.error);
-    //   }
-    // })
+    this.subscriptionPlanService.getSubscriptionPlansList().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.subscriptionPlansMasterRowData = data.map((item: any) => {
+            item['id'] = item?.planId;
+            item['planStartDate'] = moment(item?.planStartDate).format("MM/DD/YYYY");
+            return item;
+          });
+        }
+      },
+      error: (error: any) => {
+        console.log('error: ', error);
+        this.alert.setAlertMessage('Subscription Plans List: ' + error?.statusText, AlertType.error);
+      }
+    })
   }
 
   handleGridAddAction(event: any) {
@@ -429,6 +510,9 @@ export class MasterPage implements OnInit {
     switch (modelType) {
       case 'role':
         this.openAddEditRoleModal();
+        break;
+      case 'branch':
+        this.openAddEditBranchModal();
         break;
       case 'height':
         this.openAddEditHeightModal();
@@ -458,6 +542,9 @@ export class MasterPage implements OnInit {
         case 'role':
           this.openAddEditRoleModal(event);
           break;
+        case 'branch':
+          this.openAddEditBranchModal(event);
+          break;
         case 'height':
           this.openAddEditHeightModal(event);
           break;
@@ -472,6 +559,9 @@ export class MasterPage implements OnInit {
           break;
         case 'user':
           this.openAddEditUserModal(event);
+          break;
+        case 'subscriptionplan':
+          this.openAddEditSubscriptionPlansModal(event);
           break;
       }
     } else {
@@ -513,6 +603,33 @@ export class MasterPage implements OnInit {
     const eventType = data?.data?.event;
     if (actionEvents.includes(eventType)) {
       this.getRolesTableData();
+    }
+  }
+
+  async openAddEditBranchModal(event?: any) {
+    this.canShowModal = true;
+
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    const alreadyBranchList = [...this.branchMasterRowData?.map((branch: any) => branch?.branchName.toLowerCase())]
+    const modal = await this.modalCtrl.create({
+      component: AddEditBranchComponent,
+      componentProps: {
+        data: {
+          title: isEditMode ? 'Edit: Branch ' : 'Add New Branch',
+          data: { ...event, alreadyBranchList, isEditMode }
+        }
+      },
+      cssClass: 'branch-modal'
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const actionEvents = ['add', 'update'];
+    const eventType = data?.data?.event;
+    if (actionEvents.includes(eventType)) {
+      this.getBranchTableData();
     }
   }
 

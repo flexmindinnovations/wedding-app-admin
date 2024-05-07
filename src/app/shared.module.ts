@@ -76,6 +76,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AddEditSubscriptionPlanComponent } from "./modals/add-edit-subscription-plan/add-edit-subscription-plan.component";
+import { AddEditBranchComponent } from "./modals/add-edit-branch/add-edit-branch.component";
 
 
 
@@ -156,7 +157,8 @@ const modules: any = [
         RegisterCustomerComponent,
         CustomLoaderComponent,
         CheckboxComponent,
-        AddEditSubscriptionPlanComponent
+        AddEditSubscriptionPlanComponent,
+        AddEditBranchComponent
     ],
     imports: [
         CommonModule,
@@ -214,6 +216,7 @@ const modules: any = [
         CustomLoaderComponent,
         CheckboxComponent,
         AddEditSubscriptionPlanComponent,
+        AddEditBranchComponent,
         ...modules
     ],
     providers: [
