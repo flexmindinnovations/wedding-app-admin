@@ -17,12 +17,14 @@ export class GridCellStatusComponent implements OnInit, ICellRendererAngularComp
   ngOnInit() { }
   rowData: any;
   canEdit: any = true;
+  fromCustomerPage:boolean=false;
 
   agInit(params: ICellRendererParams<any, any, any>): void {
     this.params = params;
     const refData = params?.data?.refData;
     if (refData) {
-      const { canEdit, canDelete } = params['data']['refData'];
+      this.fromCustomerPage = refData?.fromCustomerPage;
+      const { canEdit, canDelete } = refData;
       this.canEdit = canEdit;
     }
     this.rowData = this.params?.data;

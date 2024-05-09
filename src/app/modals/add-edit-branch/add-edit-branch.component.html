@@ -6,44 +6,46 @@
   </div>
   <div class="body ion-padding border-b border-b-gray-200">
     <form [formGroup]="formGroup" class="flex-grow">
-        <div class="w-full flex flex-col gap-3">
-          <div class="flex gap-2">
-            <label>Status</label>
-            <p-inputSwitch formControlName="isActive" [(ngModel)]="isActive"></p-inputSwitch>
-          </div>
-         <div class="grid grid-cols-2 gap-2">
-          <app-input label="Name" type="text" class="" [control]="formGroupControl['branchName']"
-            formControlName="branchName" [required]="true" />
-  
+      <div class="w-full flex flex-col gap-3">
+        <div class="flex flex-col gap-2">
+          <label>Status</label>
+          <p-inputSwitch [(ngModel)]="isActive" [ngModelOptions]="{standalone: true}"></p-inputSwitch>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <app-input label="Name" type="text" id="branchName" [controlValue]="formGroup.get('branchName')?.value"
+            [control]="formGroupControl['branchName']" formControlName="branchName" />
           @if (countryList?.length) {
-          <app-dropdown label="Country" (onSelectionChange)="onSelectionChange($event, 'countryId')" class=""
+          <app-dropdown label="Country" id="country" (onSelectionChange)="onSelectionChange($event, 'countryId')" class=""
             [control]="formGroupControl['countryId']" [controlValue]="formGroup.get('countryId')?.value"
             formControlName="countryId" [options]="countryList" />
           }
-  
+
           @if (stateList?.length) {
-          <app-dropdown label="State" (onSelectionChange)="onSelectionChange($event, 'stateId')" class=""
+          <app-dropdown label="State" id="state" (onSelectionChange)="onSelectionChange($event, 'stateId')" class=""
             [control]="formGroupControl['stateId']" [controlValue]="formGroup.get('stateId')?.value"
             formControlName="stateId" [options]="stateList" />
           }
-  
+
           @if (cityList?.length) {
-          <app-dropdown label="City" (onSelectionChange)="onSelectionChange($event, 'cityId')" class=""
+          <app-dropdown label="City" id="state" (onSelectionChange)="onSelectionChange($event, 'cityId')" class=""
             [control]="formGroupControl['cityId']" [controlValue]="formGroup.get('cityId')?.value"
             formControlName="cityId" [options]="cityList" />
           }
         </div>
-        </div>
-        <div class="w-full flex justify-center lg:my-5 items-center">
-          <image-picker label="Add Image" [fileName]="imageName" [src]="imagePath"
-            (selectedImage)="handleSelectedImage($event)" />
-        </div>
+      </div>
+      <div class="w-full flex justify-center lg:my-5 items-center">
+        @if(imageName){
+          <image-picker [src]="imagePath" [fileName]="imageName" (selectedImage)="handleSelectedImage($event)"
+          label="Add Image" />
+        }
+      </div>
+     
       <!-- </div> -->
     </form>
   </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
     <mt-button [title]="'Cancel'" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button [disabled]="formGroup.invalid" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'pi pi-save'"
+    <mt-button [disabled]="formGroup.invalid || !selectedImage.length" [title]="isEditMode ? 'Update' : 'Save'" [icon]="'pi pi-save'"
       (action)="handleButtonClick($event)" />
   </div>
 </div>

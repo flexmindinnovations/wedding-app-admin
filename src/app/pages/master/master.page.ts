@@ -266,11 +266,11 @@ export class MasterPage implements OnInit {
       { field: "firstName", minWidth: 235 },
       { field: "middleName", minWidth: 235 },
       { field: "lastName", minWidth: 235 },
-      { field: "isActive", minWidth: 235 },
       { field: "emailId", minWidth: 235 },
       { field: 'mobileNo', width: 235 },
       { field: 'roleName', width: 235 },
       { field: "userAddress", minWidth: 235 },
+      { field: "isActive", pinned:'right',width:90 },
       {
         field: "action",
         colId: 'user',
@@ -307,7 +307,8 @@ export class MasterPage implements OnInit {
       { field: "cityName", headerName: 'City', width: 150 },
       {
         field: "isActive",
-        width: 100,
+        width: 90,
+        pinned:'right',
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
           innerRenderer: GridCellStatusComponent,
@@ -315,7 +316,8 @@ export class MasterPage implements OnInit {
       },
       {
         field: "action",
-        width: 90,
+        colId: 'branch',
+        width: 100,
         pinned: 'right',
         cellRenderer: 'agGroupCellRenderer',
         cellRendererParams: {
@@ -387,8 +389,8 @@ export class MasterPage implements OnInit {
     this.educationMasterColumnDefs = [
       { field: 'id', headerName: 'Id', width: this.idColWidth },
       { field: 'educationName', width: 300 },
-      { field: 'hasSpecialization', width: 155 },
       { field: 'specializationCount', width: 80 },
+      { field: 'hasSpecialization', width: 145, pinned:'right' },
       {
         field: "action",
         colId: 'education',
@@ -451,7 +453,7 @@ export class MasterPage implements OnInit {
       { field: 'discountAmount', width: 150 },
       { field: 'actualAmount', width: 150 },
       { field: 'planStartDate', width: 235 },
-      { field: 'isActive', width: 150, pinned: 'right', },
+      { field: 'isActive', width: 90, pinned: 'right', },
       {
         field: "action",
         colId: 'subscriptionplan',
