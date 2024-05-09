@@ -1,18 +1,24 @@
 <div>
-  @if (showFilter || showAddButton) {
+  @if (showFilter || showAddButton || showExport) {
   <div class="w-full my-2 mr-auto flex items-center justify-between gap-5">
     @if (showFilter) {
     <input type="text" name="filter" [id]="id" (keyup)="onFilterTextBoxChanged($event)" pInputText pKeyFilter="int"
       class="w-full max-w-96 !text-sm" placeholder="Filter query" />
     }
 
-    @if (showAddButton) {
-    <mt-button class="text-sm" [hybrid]="true" [title]="addButtonTitle" [icon]="'pi pi-plus'"
-      (action)="handleClick()"></mt-button>
-    }
+    <div class="flex items-center justify-end gap-5">
+      @if (showExport && rowDefs.length) {
+      <mt-button class="text-sm" [pTooltip]="isLoading ? 'Exporting...' : 'Export To PDF'" [hybrid]="true" [title]="isLoading ? 'Exporting...' : 'Export To PDF'"
+        [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-file-pdf'" (action)="exportToPDF()"></mt-button>
+      }
+      @if (showAddButton) {
+      <mt-button class="text-sm" [hybrid]="true" [title]="addButtonTitle" [icon]="'pi pi-plus'"
+        (action)="handleClick()"></mt-button>
+      }
+    </div>
   </div>
   }
-  <ag-grid-angular [className]="themeName" [rowData]="rowDefs" class="ag-theme-material" [columnDefs]="columnDefs"
+  <ag-grid-angular #grid [className]="themeName" [rowData]="rowDefs" class="ag-theme-material" [columnDefs]="columnDefs"
     [pagination]="true" [style]="{'height': gridSize === 'sm' ? '300px' : '500px'}" [rowHeight]="35"
     [cacheQuickFilter]="true" [quickFilterParser]="quickFilterParser" [quickFilterMatcher]="quickFilterMatcher"
     (gridReady)="onGridReady($event)">

@@ -132,13 +132,15 @@ export class LayoutPage implements OnInit, AfterViewInit {
     this.authService.logoutUser();
     this.isRedirecting = true;
     of(true)
-    .pipe(
-      delay(1500)
-    ).subscribe(() => {
-      this.router.navigateByUrl('login');
-      this.showSessionExpiredDialog = false;
-      this.isRedirecting = false;
-    })
+      .pipe(
+        delay(1500)
+      ).subscribe(() => {
+        this.showSessionExpiredDialog = false;
+        this.isRedirecting = false;
+        setTimeout(() => {
+          this.router.navigateByUrl('login');
+        })
+      })
   }
 
   handleIsCollapsed(isCollapsed: boolean) {

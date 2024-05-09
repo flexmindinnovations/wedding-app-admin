@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { GridButtonsComponent } from 'src/app/components/grid-buttons/grid-buttons.component';
 import { GridActions } from 'src/app/enums/grid-actions';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
-import { ColDef, IGroupCellRendererParams } from 'ag-grid-community';
+import { ColDef, IGroupCellRendererParams, GridApi } from 'ag-grid-community';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { AlertType } from 'src/app/enums/alert-types';
@@ -16,7 +16,6 @@ import { ModalController } from '@ionic/angular';
 import { FormStep } from 'src/app/interfaces/form-step-item';
 import { StepPath } from 'src/util/util';
 import { SharedService } from 'src/app/services/shared.service';
-
 
 
 @Component({
@@ -57,7 +56,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
     { field: "emailId", width: 205 },
     { field: "registrationDate", headerName: 'Registered On', width: 120 },
     {
-      field: "isActiive",
+      field: "isActive",
       width: 100,
       pinned: 'right',
       cellRenderer: 'agGroupCellRenderer',
