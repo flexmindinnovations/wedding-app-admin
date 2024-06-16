@@ -13,6 +13,7 @@ import { FamilyInfoComponent } from 'src/app/components/registerartion-process/f
 import { OtherInfoComponent } from 'src/app/components/registerartion-process/other-info/other-info.component';
 import { PersonalInfoComponent } from 'src/app/components/registerartion-process/personal-info/personal-info.component';
 import { PhotosComponent } from 'src/app/components/registerartion-process/photos/photos.component';
+import { PaymentInfoComponent } from 'src/app/components/registerartion-process/payment-info/payment-info.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { PhotosComponent } from 'src/app/components/registerartion-process/photo
       FamilyInfoComponent,
       ContactInfoComponent,
       OtherInfoComponent,
-      PhotosComponent
+      PhotosComponent,
+      PaymentInfoComponent
     ]
 })
 export class AddEditCustomerPageModule { }

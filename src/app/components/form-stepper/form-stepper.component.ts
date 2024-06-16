@@ -24,7 +24,7 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   themesParams = stepperThemeVariables['lastItem'];
 
   stepperId: any;
-  stepperRoutes = ['personal', 'family', 'contact', 'other', 'photos'];
+  stepperRoutes = ['personal', 'family', 'contact', 'other', 'photos','payment'];
   customerId: any;
   isAddMode: boolean = false;
 

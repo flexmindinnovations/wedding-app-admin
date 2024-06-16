@@ -69,7 +69,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
           this.customerData = response;
           const isOtherInfoFill = response?.isOtherInfoFill;
           if (isOtherInfoFill) {
-            const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
+            const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill } = response;
             this.customerData = response;
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
@@ -160,7 +160,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl('customers');
+          this.router.navigateByUrl(`customers/edit/${customerId}/payment`);
           this.customerRegistrationService.setRequestStatus(true, 'add');
         }
       },
@@ -181,7 +181,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
       next: (data: any) => {
         if (data) {
           this.alert.setAlertMessage(data?.message, data?.status === true ? AlertType.success : AlertType.warning);
-          this.router.navigateByUrl('customers');
+          this.router.navigateByUrl(`customers/edit/${customerId}/payment`);
           this.customerRegistrationService.setRequestStatus(true, 'update');
         }
       },
