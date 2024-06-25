@@ -17,6 +17,7 @@ export class PaymentInfoComponent implements OnInit {
   formGroup!: FormGroup;
   userData = signal<any>({});
   customerId = 0;
+  paymentMode:string='cash';
 
 
   constructor(
@@ -118,6 +119,10 @@ export class PaymentInfoComponent implements OnInit {
     } else {
       return { width: '30vw', padding: '0' }; // Default to 25% of screen width on larger screens
     }
+  }
+
+  handleSubmit(){
+
   }
 
 }
