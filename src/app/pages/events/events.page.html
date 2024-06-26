@@ -1,13 +1,8 @@
 <div class="events-content main ion-padding">
-  <div class="header">
-    <div class="static"></div>
-    @if(isAddActive){
-    <div class="action">
-      <mt-button size="small" [hybrid]="true" [title]="'Add Events'" [icon]="'pi pi-plus'" (action)="handleClick()"></mt-button>
-    </div>
-    }
-  </div>
   <div class="data-grid">
-    <app-data-grid gridSize="lg" [rowDefs]="rowData" height="500" [columnDefs]="colDefs" />
+    <app-data-grid [showExport]="false"
+    [showFilter]="rowData.length ? true : false" [showAddButton]="isAddActive" [addButtonTitle]="'Add Events'"
+    (buttonAction)="handleClick()"
+    gridSize="lg" [rowDefs]="rowData" height="500" [columnDefs]="colDefs" />
   </div>
 </div>

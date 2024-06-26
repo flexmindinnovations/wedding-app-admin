@@ -1,14 +1,17 @@
 <div>
   @if (showFilter || showAddButton || showExport) {
   <div class="w-full my-2 mr-auto flex items-center justify-between gap-5">
-    @if (showFilter) {
-    <input type="text" name="filter" [id]="id" (keyup)="onFilterTextBoxChanged($event)" pInputText pKeyFilter="int"
-      class="w-full max-w-96 !text-sm" placeholder="Filter query" />
-    }
+    <div class="flex items-center justify-start">
+      @if (showFilter) {
+      <input type="text" name="filter" [id]="id" (keyup)="onFilterTextBoxChanged($event)" pInputText pKeyFilter="int"
+        class="w-full max-w-96 !text-sm" placeholder="Filter query" />
+      }
+    </div>
 
     <div class="flex items-center justify-end gap-5">
       @if (showExport && rowDefs.length) {
-      <mt-button class="text-sm" [pTooltip]="isLoading ? 'Exporting...' : 'Export To PDF'" [hybrid]="true" [title]="isLoading ? 'Exporting...' : 'Export To PDF'"
+      <mt-button class="text-sm" [pTooltip]="isLoading ? 'Exporting...' : 'Export To PDF'" [hybrid]="true"
+        [title]="isLoading ? 'Exporting...' : 'Export To PDF'"
         [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-file-pdf'" (action)="exportToPDF()"></mt-button>
       }
       @if (showAddButton) {

@@ -208,6 +208,8 @@ export class DataGridComponent implements OnInit {
   }
 
   async getTableData() {
+    console.log('columnDefs: ', this.columnDefs);
+    
     const columns = this.columnDefs.map((col: any) => {
       let fieldName = col.field;
       if (fieldName === 'imagePath1') fieldName = 'Photo';
@@ -215,6 +217,8 @@ export class DataGridComponent implements OnInit {
       colName = colName.replace(/([a-z])([A-Z])/g, '$1 $2');
       return colName;
     }).filter((col) => col !== 'Action' && col !== 'Photo');
+    console.log('columns: ', columns);
+    
     let rowsData: any[] = [];
     await new Promise((resolve, reject) => {
       this.rowDefs.forEach(async (row: any) => {
