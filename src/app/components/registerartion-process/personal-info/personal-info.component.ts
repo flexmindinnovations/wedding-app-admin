@@ -6,6 +6,7 @@ import { MessageService } from 'primeng/api';
 import { forkJoin, map } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { ActionValue, FormStep } from 'src/app/interfaces/form-step-item';
+import { Payment } from 'src/app/pages/payment/payment.page';
 import { AlertService } from 'src/app/services/alert/alert.service';
 import { CustomerRegistrationService } from 'src/app/services/customer-registration.service';
 import { EducationService } from 'src/app/services/education/education.service';
@@ -119,7 +120,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
     this.cdref.detectChanges();
   }
 
-  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean,isPaymentInfoFill:boolean) {
     const props: FormStep = {
       source: StepPath.PERSONAL,
       data: {},
@@ -128,7 +129,7 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       isCompleted: isPersonInfoFill,
       previous: null,
       completeKey: StepPath.PERSONAL,
-      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded },
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded,payment:isPaymentInfoFill },
       next: {
         source: StepPath.FAMILY,
         data: {},
@@ -457,11 +458,11 @@ export class PersonalInfoComponent implements OnInit, OnChanges, AfterViewInit {
       next: (data: any) => {
         if (data) {
           this.customerData = data;
-          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = data;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill } = data;
           this.personalData = JSON.parse(JSON.stringify(this.customerData['personalInfoModel']));
           this.isPersonalInfoFilled = isPersonInfoFill;
           this.isEditMode = isPersonInfoFill;
-          this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
+          this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill);
           if (this.isEditMode) this.patchValue();
           this.isDataLoaded = true;
         }

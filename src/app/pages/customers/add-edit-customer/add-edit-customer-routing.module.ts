@@ -7,6 +7,7 @@ import { FamilyInfoComponent } from 'src/app/components/registerartion-process/f
 import { ContactInfoComponent } from 'src/app/components/registerartion-process/contact-info/contact-info.component';
 import { OtherInfoComponent } from 'src/app/components/registerartion-process/other-info/other-info.component';
 import { PhotosComponent } from 'src/app/components/registerartion-process/photos/photos.component';
+import { PaymentInfoComponent } from 'src/app/components/registerartion-process/payment-info/payment-info.component';
 
 
 const route = window.location.href;
@@ -41,6 +42,10 @@ const routes: Routes = [
       {
         path: 'photos',
         component: PhotosComponent
+      },
+      {
+        path: 'payment',
+        component: PaymentInfoComponent
       }
     ]
   }

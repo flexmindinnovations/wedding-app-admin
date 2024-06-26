@@ -1,11 +1,21 @@
+import { isDevMode } from "@angular/core";
 import { FormArray, FormGroup } from "@angular/forms";
 import * as bcrypt from 'bcryptjs';
-
+import * as CryptoJs from 'crypto-js';
 export const DOMAIN = 'Susangam';
-
+import { environment } from 'src/environments/environment';
 export const getSalt = (length: number) => {
     return bcrypt.genSaltSync(length);
 }
+
+export let HASH_STRING = '';
+export const SECRET_KEY = 'JPM7Fg';
+export const MERCHANT_KEY_TEST = 'B15aom';
+export const MERCHANT_KEY_LIVE = 'WA6Kpg';
+export let SALT_KEY_TEST = 'XDbX0tFwbufYsXjSrVWjxTgaB64RVnB3';
+export let SALT_KEY_LIVE = 'X4Y3GsJwPYB8OM34PrgIah1n0K8zYI2P';
+export let PAYMENT_OBJECT: any = {};
+
 
 export const COLOR_SCHEME = 'br';
 
@@ -183,4 +193,142 @@ export enum StepPath {
     CONTACT = 'contact',
     OTHER = 'other',
     PHOTOS = 'photos',
+    PAYMENT = 'payment'
+}
+
+export function setPaymentObject(payment: Payment) {
+    const paymentResponse = `${window.location.href}response`;
+    const { txnid, amount, productinfo, email, firstname, lastname, phone } = payment;
+    genertateHash({ txnid, amount, productinfo, firstname, email, phone });
+    PAYMENT_OBJECT = payment;
+    PAYMENT_OBJECT['hash'] = HASH_STRING;
+}
+
+
+export const paymentHtmlPayload = (payment: Payment, appEnv: string) => {
+    const paymentResponse = `http://localhost:4200/payment`;
+    // const paymentResponse = `https://8d45-106-51-37-15.ngrok-free.app/payment/payu-confirm/RMAXZ4/`;
+    const { txnid, amount, productinfo, email, firstname, phone, surl, furl, hash } = payment;
+    const merchantKey = appEnv === 'local' ? MERCHANT_KEY_TEST : MERCHANT_KEY_LIVE;
+    const actionUrl  = appEnv === 'local' ? environment.paymentTestingUrl : environment.paymentProdingUrl;
+    // key, txnid, amount, productinfo, firstname, email, phone, surl, furl, hash
+    const htmlBody = `
+    <html>
+    <body>
+    <form action='${actionUrl}' method="POST" id="payu_form">
+    <input type="hidden" name="key" value="${merchantKey}" />
+    <input type="hidden" name="txnid" value="${txnid}" />
+    <input type="hidden" name="amount" value="${amount}" />
+    <input type="hidden" name="productinfo" value="${productinfo}" />
+    <input type="hidden" name="firstname" value="${firstname}" />
+    <input type="hidden" name="email" value="${email}" />
+    <input type="hidden" name="phone" value="${phone}” />
+    <input type="hidden" name="furl" value="${furl}" />
+    <input type="hidden" name="surl" value="${surl}" />
+    <input type="hidden" name="udf1" value="data1" />
+    <input type="hidden" name="udf2" value="data2" />
+    <input type="hidden" name="udf3" value="data3" />
+    <input type="hidden" name="udf4" value="data4" />
+    <input type="hidden" name="udf5" value="data5" />
+    <input type="hidden" name="hash" value="${hash}" />
+    </form>
+    <p>Redirecting....</p>
+    <script type="text/javascript">
+            document.getElementById("payu_form").submit();
+    </script>
+    </body>
+    </html>
+    `;
+
+    return htmlBody;
+}
+
+const genertateHash = ({ txnid, amount, productinfo, firstname, email, phone }: { txnid: string, amount: string, productinfo: string, firstname: string, email: string, phone: string }) => {
+    const appEnv = isDevMode() ? 'local' : 'prod';
+    const merchantKey = appEnv === 'local' ? MERCHANT_KEY_TEST : MERCHANT_KEY_LIVE;
+    const saltKey = appEnv === 'local' ? SALT_KEY_TEST : SALT_KEY_LIVE;
+    const hashInput = `${merchantKey}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${saltKey}`;
+    console.log('hashInput: ', hashInput);
+    HASH_STRING = CryptoJs.SHA512(hashInput).toString();
+}
+
+export function verifyPaymentHash({ command, txnid }: { command: string, txnid: string }): string {
+    const appEnv = isDevMode() ? 'local' : 'prod';
+    const merchantKey = appEnv === 'local' ? MERCHANT_KEY_TEST : MERCHANT_KEY_LIVE;
+    const saltKey = appEnv === 'local' ? SALT_KEY_TEST : SALT_KEY_LIVE;
+    const hashInput = merchantKey + "|" + command + "|" + txnid + "|" + saltKey;
+
+    const hashStringHex = CryptoJs.SHA512(hashInput).toString(CryptoJs.enc.Hex);
+
+    return hashStringHex;
+}
+
+export const generateTxnId = (firstName?: string, email?: string) => {
+    const timestamp = Date.now();
+    const combinedString = `${generateSecureRandomString(16)}${generateRandomEmailWithUUID()}${timestamp}`;
+    const hashString = CryptoJs.SHA512(combinedString).toString();
+    // const uniqueId = hashString ? hashString.substring(0, 15) : '';
+    const uniqueId = hashString ? 'TXN' + hashString.replace(/\D/g, '').substring(0, 16) : '';
+    return uniqueId;
+}
+
+const generateSecureRandomString = (length: number) => {
+    const randomBytes = CryptoJs.lib.WordArray.random(length);
+    const convertedRandomBytes = randomBytes.toString(CryptoJs.enc.Hex);
+    return convertedRandomBytes;
+}
+
+function generateUUID() {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
+function generateRandomEmailWithUUID() {
+    const username = generateUUID();
+    const domain = DOMAIN + '.com';
+    return `${username}@${domain}`;
+}
+
+
+export interface Payment {
+    txnid: string;
+    productinfo: string;
+    amount: string;
+    email: string;
+    firstname: string;
+    lastname?: string;
+    phone: string;
+    surl: string;
+    furl: string;
+    hash: string;
+}
+
+export class PaymentProvider {
+    key: string;
+    txnId: string;
+    productinfo: string;
+    amount: string;
+    email: string;
+    firstname: string;
+    phone: string;
+    hash: string;
+
+    constructor(
+        key: string = MERCHANT_KEY_TEST,
+        txnId: string,
+        productinfo: string,
+        amount: string,
+        email: string,
+        firstname: string,
+        phone: string,
+        hash: string = HASH_STRING
+    ) {
+        this.key = key;
+        this.txnId = txnId;
+        this.productinfo = productinfo;
+        this.amount = amount;
+        this.email = email;
+        this.firstname = firstname;
+        this.phone = phone;
+        this.hash = hash;
+    }
 }

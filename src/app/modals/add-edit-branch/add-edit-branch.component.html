@@ -34,7 +34,10 @@
         </div>
       </div>
       <div class="w-full flex justify-center lg:my-5 items-center">
-        @if(imageName){
+        @if(isEditMode){
+          <image-picker *ngIf="imageName" [src]="imagePath" [fileName]="imageName" (selectedImage)="handleSelectedImage($event)"
+          label="Add Image" />
+        }@else{
           <image-picker [src]="imagePath" [fileName]="imageName" (selectedImage)="handleSelectedImage($event)"
           label="Add Image" />
         }

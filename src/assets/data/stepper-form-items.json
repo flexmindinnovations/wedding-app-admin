@@ -101,5 +101,22 @@
             "isActive": false,
             "isCompleted": false
         }
+    },
+    {
+        "id": 6,
+        "title": "Payment",
+        "route": "payment",
+        "key": "payment",
+        "isActive": false,
+        "isCompleted": false,
+        "icon": "cash-outline",
+        "next": null,
+        "previous": {
+            "id": 4,
+            "title": "Photos",
+            "route": "photos",
+            "isActive": false,
+            "isCompleted": false
+        }
     }
 ]

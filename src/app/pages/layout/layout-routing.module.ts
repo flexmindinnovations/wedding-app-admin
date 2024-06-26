@@ -29,6 +29,10 @@ const routes: Routes = [
       //     import('../../pages/branch/branch.module').then(m => m.BranchPageModule)
       // },
       {
+        path: 'payment-status',
+        loadChildren: () => import('../payment/payment.module').then(m => m.PaymentPageModule)
+      },
+      {
         path: 'blog',
         loadChildren: () =>
           import('../../pages/blog/blog.module').then(m => m.BlogPageModule)

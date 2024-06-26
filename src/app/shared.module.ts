@@ -77,7 +77,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AddEditSubscriptionPlanComponent } from "./modals/add-edit-subscription-plan/add-edit-subscription-plan.component";
 import { AddEditBranchComponent } from "./modals/add-edit-branch/add-edit-branch.component";
-
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 
 const modules: any = [
@@ -121,7 +121,8 @@ const modules: any = [
     CardModule,
     IconFieldModule,
     InputIconModule,
-    InputSwitchModule
+    InputSwitchModule,
+    RadioButtonModule
 ];
 
 @NgModule({

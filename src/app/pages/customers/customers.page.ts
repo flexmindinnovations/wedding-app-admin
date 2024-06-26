@@ -186,15 +186,17 @@ export class CustomersPage implements OnInit, AfterViewInit {
     this.customerService.getCustomerDetailsById(customerId).subscribe({
       next: (data: any) => {
         if (data) {
-          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = data;
+
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill } = data;
           if (customerId) {
             if (!isPersonInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
             else if (!isFamilyInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/family`);
             else if (!isContactInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/contact`);
             else if (!isOtherInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/other`);
             else if (!isImagesAdded) this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
+            else if (!isPaymentInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/payment`);
             else this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
-            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill);
           }
         }
       },
@@ -204,26 +206,27 @@ export class CustomersPage implements OnInit, AfterViewInit {
     })
   }
 
-  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean,isPaymentInfoFill:boolean) {
     const props: FormStep = {
-      source: this.getSource(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded),
+      source: this.getSource(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill),
       data: {},
       formId: 1,
       active: true,
       isCompleted: isPersonInfoFill,
       previous: null,
       completeKey: StepPath.PERSONAL,
-      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded }
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded,payment:isPaymentInfoFill }
     }
     this.sharedService.stepData.next(props);
   }
 
-  getSource(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+  getSource(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean,isPaymentInfoFill:boolean) {
     if (!isPersonInfoFill) return StepPath.PERSONAL;
     else if (!isFamilyInfoFill) return StepPath.FAMILY;
     else if (!isContactInfoFill) return StepPath.CONTACT;
     else if (!isOtherInfoFill) return StepPath.OTHER;
     else if (!isImagesAdded) return StepPath.PHOTOS;
+    else if (!isPaymentInfoFill) return StepPath.PAYMENT;
     else return StepPath.PERSONAL;
   }
 
