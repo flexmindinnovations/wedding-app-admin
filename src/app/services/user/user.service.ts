@@ -27,4 +27,11 @@ export class UserService {
     return this.http.delete(`${this.endpoint}/deleteUser/${id}`)
   }
 
+  deleteCustomer(id: any): Observable<any> {
+    const endpoint = environment.endpoint + '/api/Customer/DeleteCustomer';
+    return this.http.delete(`${endpoint}/${id}`);
+  }
+
+
+
 }

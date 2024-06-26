@@ -4,9 +4,15 @@
       <h1 class="m-0 text-base">{{data?.title}}</h1>
     </div>
   </div>
+  <div class="body p-5">
+    <p>
+      {{messageBody}}
+    </p>
+  </div>
   <div class="actions flex items-center h-16 justify-end p-3 gap-4">
-    <mt-button [title]="'Cancel'" size="small" [isCancel]="true" [textOnly]="true" (action)="handleButtonClick($event)" />
-    <mt-button size="small" [title]="'Delete'" [isDelete]="true" [icon]="'save-outline'"
+    <mt-button [title]="'Cancel'" size="small" [isCancel]="true" [textOnly]="true"
+      (action)="handleButtonClick($event)" />
+    <mt-button size="small" [title]="'Delete'" [isDelete]="true" [icon]="'pi pi-trash'"
       (action)="handleButtonClick($event)" />
   </div>
 </div>

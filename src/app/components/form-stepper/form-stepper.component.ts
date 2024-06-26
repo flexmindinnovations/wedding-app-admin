@@ -133,6 +133,8 @@ export class FormStepperComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   handleOnStepperClick(step: StepperFormItem) {
+    console.log('isAddMode: ', this.isAddMode);
+    
     if (this.isAddMode) {
       this.router.navigateByUrl(`customers/add/${step.route}`);
     } else {

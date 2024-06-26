@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { debounceTime, forkJoin, of } from 'rxjs';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { RoleAccessService } from 'src/app/services/role-access.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 
@@ -29,7 +30,8 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   permissionId = 0;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService: AuthService
   ) {
   }
   ngAfterViewInit(): void {
@@ -37,7 +39,10 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.getRoleAccessData();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getRoleAccessData();
+    }
     this.initFormGroup();
     const data = this.data?.data;
     this.alreadyRoleList = data?.alreadyRolesList;
@@ -220,7 +225,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
     // const value = event?.currentTarget.checked;
     item.enabled = event;
     // console.log('event: ', event);
-    
+
     item.actions.forEach((action: any) => action.enabled = event);
     // console.log('item: ', item);
   }
@@ -229,7 +234,7 @@ export class AddEditRoleComponent implements OnInit, AfterViewInit {
     // const value = event?.currentTarget.checked;
     // console.log('event: ', event);
     // console.log('item: ', item);
-    
+
     item.enabled = event;
   }
 

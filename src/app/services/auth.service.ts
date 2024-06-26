@@ -20,9 +20,10 @@ export class AuthService {
   sharedService = inject(SharedService);
   constructor() { }
 
-  isLoggedIn(): boolean {
-    const token = localStorage.getItem('token');
-    return !!token;
+  isLoggedIn() {
+    const user = JSON.parse(localStorage.getItem('profile') || '{}');
+    const hasUserObj = user && typeof user === 'object' && Object.keys(user).length > 0;
+    return hasUserObj && !!localStorage.getItem('token');
   }
 
   loginUser(payload: any): Observable<any> {

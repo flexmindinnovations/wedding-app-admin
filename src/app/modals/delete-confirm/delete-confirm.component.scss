@@ -1,6 +1,6 @@
-::ng-deep .delete-modal::part(content) {
+::ng-deep .delete-confirm-modal::part(content) {
     min-width: 20%;
-    min-height: 20%;
+    min-height: 25%;
     position: relative;
 
     --height: auto;

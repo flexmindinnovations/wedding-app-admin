@@ -1,6 +1,7 @@
 <div class="personal-info-container h-full flex flex-col items-start justify-center ion-padding">
   <form class="ion-padding w-full flex-grow">
-    <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4" *ngIf="isDataLoaded">
+    <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 md:lg:gap-4"
+      *ngIf="isDataLoaded">
       <image-picker [src]="thumbnailImage" [fileName]="imageName"
         (selectedImage)="handleSelectedImage($event, 'thumbnail')" label="Thumbnail" />
 
@@ -14,7 +15,7 @@
   </form>
   <div class="action-buttons ion-padding-horizontal max-h-14 w-full flex items-center justify-end gap-5">
     <!-- <mt-button [size]="'md'" [disabled]="completedStep.isCompleted" title="Previous" [icon]="'arrow-back'" [iconSlot]="'start'" (action)="handleClickOnPrevious('photos')" /> -->
-    <mt-button [disabled]="selectedFiles.length !== 2 || imageData.length !== 2" [size]="'small'"
-      title="Complete Registration" [icon]="'pi pi-check-circle'" iconPos="left" (action)="handleClickOnNext('photos')" />
+    <mt-button [disabled]="selectedFiles.length !== 2 || imageData.length !== 2" [size]="'small'" title="Next" iconPos="right"
+      [icon]="'pi pi-arrow-right'" (action)="handleClickOnNext('photos')" />
   </div>
 </div>

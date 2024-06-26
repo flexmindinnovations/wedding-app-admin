@@ -89,7 +89,7 @@ export class FamilyInfoComponent implements OnInit {
       next: (response) => {
         if (response) {
           this.customerData = response;
-          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded } = response;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill } = response;
           this.customerId = response?.customerId
           this.isFamilyInfoFill = response?.isFamilyInfoFill;
           if (isPersonInfoFill) {

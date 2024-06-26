@@ -2,6 +2,7 @@
   <div class="header flex justify-between items-center">
     <div class="data-grid flex-grow">
       <app-data-grid [showExport]="true" [showFilter]="filteredRowData.length ? true : false" [showAddButton]="isAddActive" [addButtonTitle]="'Add Customer'"
+      (refreshGridAction)="refreshGridData()"
         (buttonAction)="handleClick()" [rowDefs]="filteredRowData" [gridSize]="'lg'" [columnDefs]="colDefs" />
     </div>
   </div>

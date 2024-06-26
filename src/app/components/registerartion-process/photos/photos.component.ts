@@ -69,13 +69,13 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
           this.customerData = response;
           const isOtherInfoFill = response?.isOtherInfoFill;
           if (isOtherInfoFill) {
-            const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill } = response;
+            const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill } = response;
             this.customerData = response;
             this.isEditMode = response?.isImagesAdded;
             this.photosData = response?.imageInfoModel;
             if (this.isEditMode) this.getCustomerImages();
             else this.isDataLoaded = true;
-            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded);
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill);
           } else {
             this.router.navigateByUrl(`customers/edit/${customerId}/other`);
           }
@@ -87,7 +87,7 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
-  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean) {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean, isPaymentInfoFill: boolean) {
     const props: FormStep = {
       source: StepPath.PHOTOS,
       data: [],
@@ -103,7 +103,13 @@ export class PhotosComponent implements OnInit, AfterViewInit, OnChanges {
         active: this.activePath === StepPath.OTHER,
         isCompleted: isOtherInfoFill
       },
-      next: null
+      next: {
+        source: StepPath.PAYMENT,
+        data: {},
+        formId: 3,
+        active: this.activePath === StepPath.PAYMENT,
+        isCompleted: isPaymentInfoFill
+      }
     }
     this.sharedService.stepData.next(props);
   }

@@ -27,6 +27,7 @@ export class DataGridComponent implements OnInit {
   @Input() showAddButton: boolean = false;
   @Input() addButtonTitle: string = 'Add';
   @Output() buttonAction: EventEmitter<any> = new EventEmitter();
+  @Output() refreshGridAction: EventEmitter<any> = new EventEmitter();
   themeName: any = 'ag-theme-themeName ag-data-grid';
   agGridTheme = 'balham';
   themeService = inject(ThemeService);
@@ -110,6 +111,11 @@ export class DataGridComponent implements OnInit {
 
   handleClick() {
     this.buttonAction.emit();
+  }
+  
+  
+  refreshGrid() {
+    this.refreshGridAction.emit();
   }
 
   async exportToPDF() {
@@ -208,17 +214,13 @@ export class DataGridComponent implements OnInit {
   }
 
   async getTableData() {
-    console.log('columnDefs: ', this.columnDefs);
-    
     const columns = this.columnDefs.map((col: any) => {
       let fieldName = col.field;
       if (fieldName === 'imagePath1') fieldName = 'Photo';
       let colName = fieldName[0].toUpperCase() + fieldName.slice(1);
       colName = colName.replace(/([a-z])([A-Z])/g, '$1 $2');
       return colName;
-    }).filter((col) => col !== 'Action' && col !== 'Photo');
-    console.log('columns: ', columns);
-    
+    }).filter((col) => col !== 'Action' && col !== 'Photo');    
     let rowsData: any[] = [];
     await new Promise((resolve, reject) => {
       this.rowDefs.forEach(async (row: any) => {

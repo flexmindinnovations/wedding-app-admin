@@ -16,6 +16,8 @@ import { ModalController } from '@ionic/angular';
 import { FormStep } from 'src/app/interfaces/form-step-item';
 import { StepPath } from 'src/util/util';
 import { SharedService } from 'src/app/services/shared.service';
+import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
+import { UserService } from 'src/app/services/user/user.service';
 
 
 @Component({
@@ -30,6 +32,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
   customerService = inject(CustomerRegistrationService);
   alertService = inject(AlertService);
   sharedService = inject(SharedService);
+  userService = inject(UserService);
   rowData: any = [];
   filteredRowData: any[] = [];
   searchQuery: string = '';
@@ -104,7 +107,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
         if (permissionList) {
           const newList = permissionList?.filter((item: any) => item?.moduleName === 'Customers')[0];
           this.isAddActive = newList?.canAdd;
-          const refData = { fromCustomerPage:true,canEdit: newList?.canEdit, canDelete: newList?.canDelete };
+          const refData = { fromCustomerPage: true, canEdit: newList?.canEdit, canDelete: newList?.canDelete };
           this.rowData = this.rowData?.map((item: any) => {
             item['refData'] = refData;
             return item;
@@ -177,8 +180,55 @@ export class CustomersPage implements OnInit, AfterViewInit {
     if (action === GridActions.edit) {
       this.redirectToIncompleteStep(data);
     } else {
-      // console.log('>>>>> event delete: ', event);
+      this.showDeleteConfirmDialog(event);
     }
+  }
+
+  async showDeleteConfirmDialog(event: any) {
+    let fullName = event?.rowData?.fullName;
+    fullName = fullName.replace(/\s/g, '').length > 0 ? fullName : null;
+    this.canShowModal = true;
+    let isEditMode = false;
+    if (event?.src === GridActions.edit) {
+      isEditMode = true;
+    }
+    const modal = await this.modalCtrl.create({
+      component: DeleteConfirmComponent,
+      backdropDismiss: false,
+      componentProps: {
+        data: {
+          title: 'Delete: ' + (fullName ? fullName : 'Customer'),
+          data: { ...event, message: 'Are you sure you want to delete customer?  This action cannot be undone.' }
+        },
+      },
+      cssClass: 'delete-confirm-modal'
+    });
+    await modal.present();
+    const data = await modal.onWillDismiss();
+    const eventType = data?.data?.event;
+    if (eventType === 'delete') {
+      this.deleteCustomer(event?.rowData);
+    }
+  }
+
+  deleteCustomer(event: any) {
+    this.userService.deleteCustomer(event?.customerId).subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.alertService.setAlertMessage(response?.message, AlertType.success);
+          this.getCustomerList();
+        }
+      },
+      error: (error: any) => {
+        if (error) {
+          this.alertService.setAlertMessage('Error: Something went wrong', AlertType.error);
+        }
+      }
+    })
+  }
+
+  refreshGridData() {
+    this.getCustomerList();
   }
 
   redirectToIncompleteStep(data: any) {
@@ -187,7 +237,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
       next: (data: any) => {
         if (data) {
 
-          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill } = data;
+          const { isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill } = data;
           if (customerId) {
             if (!isPersonInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
             else if (!isFamilyInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/family`);
@@ -196,7 +246,7 @@ export class CustomersPage implements OnInit, AfterViewInit {
             else if (!isImagesAdded) this.router.navigateByUrl(`customers/edit/${customerId}/photos`);
             else if (!isPaymentInfoFill) this.router.navigateByUrl(`customers/edit/${customerId}/payment`);
             else this.router.navigateByUrl(`customers/edit/${customerId}/personal`);
-            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill);
+            this.setStepperData(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill);
           }
         }
       },
@@ -206,21 +256,21 @@ export class CustomersPage implements OnInit, AfterViewInit {
     })
   }
 
-  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean,isPaymentInfoFill:boolean) {
+  setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean, isPaymentInfoFill: boolean) {
     const props: FormStep = {
-      source: this.getSource(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded,isPaymentInfoFill),
+      source: this.getSource(isPersonInfoFill, isFamilyInfoFill, isContactInfoFill, isOtherInfoFill, isImagesAdded, isPaymentInfoFill),
       data: {},
       formId: 1,
       active: true,
       isCompleted: isPersonInfoFill,
       previous: null,
       completeKey: StepPath.PERSONAL,
-      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded,payment:isPaymentInfoFill }
+      steps: { personal: isPersonInfoFill, family: isFamilyInfoFill, contact: isContactInfoFill, other: isOtherInfoFill, photos: isImagesAdded, payment: isPaymentInfoFill }
     }
     this.sharedService.stepData.next(props);
   }
 
-  getSource(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean,isPaymentInfoFill:boolean) {
+  getSource(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean, isPaymentInfoFill: boolean) {
     if (!isPersonInfoFill) return StepPath.PERSONAL;
     else if (!isFamilyInfoFill) return StepPath.FAMILY;
     else if (!isContactInfoFill) return StepPath.CONTACT;
