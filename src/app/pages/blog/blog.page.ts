@@ -13,6 +13,7 @@ import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/gri
 import { RolesService } from 'src/app/services/role/roles.service';
 import { ModalController } from '@ionic/angular';
 import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-blog',
@@ -70,15 +71,18 @@ export class BlogPage implements OnInit, AfterViewInit {
     },
   ];
 
-  constructor() {
+  constructor( private authService: AuthService) {
     this.frameworkComponents = {
       buttonRenderer: GridButtonsComponent
     }
   }
 
   ngOnInit() {
-    this.getBlogList();
-    this.getPermissionListByRoleId();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getBlogList();
+      this.getPermissionListByRoleId();
+    }
   }
 
   ngAfterViewInit(): void {

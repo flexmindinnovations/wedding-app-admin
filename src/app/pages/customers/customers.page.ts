@@ -18,6 +18,7 @@ import { StepPath } from 'src/util/util';
 import { SharedService } from 'src/app/services/shared.service';
 import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
 import { UserService } from 'src/app/services/user/user.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 @Component({
@@ -79,12 +80,19 @@ export class CustomersPage implements OnInit, AfterViewInit {
     },
   ];
 
+  constructor( private authService: AuthService) {
+  }
+
   ngOnChanges() {
     this.filterData();
   }
 
   ngOnInit() {
-    this.getCustomerList();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getCustomerList();
+    }
+    
   }
 
   ngAfterViewInit(): void {

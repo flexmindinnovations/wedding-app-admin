@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -24,13 +25,16 @@ export class AddEditUserComponent implements OnInit {
   alreadyUserList: any;
   roleList: any = [];
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,private authService: AuthService
   ) {
   }
 
   ngOnInit() {
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getRoleData();
+    }
     this.initFormGroup();
-    this.getRoleData();
     const data = this.data?.data;
     this.alreadyUserList = data?.alreadyUserList;
     this.isEditMode = data?.isEditMode;

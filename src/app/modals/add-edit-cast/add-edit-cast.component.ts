@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { ModalController } from '@ionic/angular';
 import { AlertType } from 'src/app/enums/alert-types';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { CastService } from 'src/app/services/cast/cast.service';
 import { SharedService } from 'src/app/services/shared.service';
 
@@ -34,7 +35,7 @@ export class AddEditCastComponent implements OnInit {
   alreadyCastList: any;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,private authService: AuthService
   ) {
   }
 
@@ -46,7 +47,10 @@ export class AddEditCastComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.getReligionList();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getReligionList();
+    }
   }
 
   patchFormData() {

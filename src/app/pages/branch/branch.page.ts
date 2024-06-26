@@ -8,6 +8,7 @@ import { AlertType } from 'src/app/enums/alert-types';
 import { GridActions } from 'src/app/enums/grid-actions';
 import { IBranch } from 'src/app/interfaces/IBranch';
 import { AlertService } from 'src/app/services/alert/alert.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { BranchService } from 'src/app/services/branch/branch.service';
 import { RolesService } from 'src/app/services/role/roles.service';
 import { SidebarItemsService } from 'src/app/services/sidebar-items.service';
@@ -62,9 +63,15 @@ export class BranchPage implements OnInit {
     },
   ];
 
+  constructor( private authService: AuthService) {
+  }
+
   ngOnInit() {
-    this.getBranchList();
-    this.getPermissionListByRoleId();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getBranchList();
+      this.getPermissionListByRoleId();
+    }
     this.branchService.getUpdate().subscribe(() => {
       this.getBranchList();
     });

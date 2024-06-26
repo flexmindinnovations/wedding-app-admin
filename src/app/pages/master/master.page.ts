@@ -27,6 +27,7 @@ import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-
 import { GridCellStatusComponent } from 'src/app/components/grid-cell-status/grid-cell-status.component';
 import { BranchService } from 'src/app/services/branch/branch.service';
 import { AddEditBranchComponent } from 'src/app/modals/add-edit-branch/add-edit-branch.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-master',
@@ -91,9 +92,17 @@ export class MasterPage implements OnInit {
   isBranchActive: boolean = false;
   canCastAdd: boolean = false;
 
+  constructor( private authService: AuthService) {
+  }
+
+
   ngOnInit() {
-    this.setMasterData();
-    this.getPermissionListByRoleId();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.setMasterData();
+      this.getPermissionListByRoleId();
+    }
+  
   }
 
   getPermissionListByRoleId() {

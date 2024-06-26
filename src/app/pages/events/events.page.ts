@@ -13,6 +13,7 @@ import { GridCellImageComponent } from 'src/app/components/grid-cell-image/grid-
 import { RolesService } from 'src/app/services/role/roles.service';
 import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
 import { ModalController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-events',
@@ -66,8 +67,16 @@ export class EventsPage implements OnInit, AfterViewInit {
     },
   ];
 
+  constructor( private authService: AuthService) {
+  }
+
+
   ngOnInit() {
-    this.getEventList();
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.getEventList();
+    }
+   
   }
   getPermissionListByRoleId() {
     const roleId = localStorage.getItem('role');
