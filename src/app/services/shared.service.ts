@@ -1,4 +1,4 @@
-import { Injectable, inject,isDevMode  } from '@angular/core';
+import { Injectable, inject, isDevMode } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IBranch } from '../interfaces/IBranch';
@@ -130,6 +130,10 @@ export class SharedService {
     const endpoint = `http://localhost:3000/api/v1/payment/${this.envPath}`;
 
     return this.http.post(prodUrl, payload);
+  }
+
+  getMembershipPlanList(): Observable<any> {
+    return this.http.get(`${this.endpoint}/MembershipPlan/getMembershipPlanList`);
   }
 
   generateHash(value: string) {

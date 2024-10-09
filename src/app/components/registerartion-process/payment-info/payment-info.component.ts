@@ -29,8 +29,10 @@ export class PaymentInfoComponent implements OnInit {
 
   currentCustomerPaymentDetails: any;
   customerPaymentHistory: any[] = [];
+  amountOptions: any = [];
+  cardItems: any[] = [];
+  cashAmount: string = '1499';
 
-  amount: any = 249;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -47,11 +49,12 @@ export class PaymentInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobile: [''],
+      mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      amount: ['249', [Validators.required]]
+      amount: ['', [Validators.required]],
     })
-
+    this.getPlanAmount();
+    this.setCardItems();
     this.activedRoute.params.subscribe((params) => {
       const urlPath = window.location.pathname;
       const splittedUrl = urlPath.split('/');
@@ -60,6 +63,91 @@ export class PaymentInfoComponent implements OnInit {
         this.getCustomerDetails(extractCustomerId);
       }
     })
+  }
+
+  setCardItems() {
+    this.sharedService.getMembershipPlanList().subscribe({
+      next: (response) => {
+        if (response) {
+          this.cardItems = response.map((plan: any) => ({
+            planName: plan.planName || '',
+            planType: plan.planType || '',
+            styleClass: plan.styleClass || '',
+            planFeature: [
+              { id: 1, text: 'Access to unlimited profiles' }
+            ],
+            originalAmount: plan.originalAmount || 0,
+            discountAmount: plan.discountAmount || 0,
+            actualAmount: plan.actualAmount || '',
+            planStartDate: moment(plan.planStartDate || new Date()),
+            actionName: `Get ${plan.planName}` || '',
+            isActive: plan.isActive || false,
+            isSelected: false
+          }));
+          this.cardItems = this.cardItems.sort((plan1: any, plan2: any) => plan1.discountAmount - plan2.discountAmount);
+          if (this.cardItems && this.cardItems.length > 0) {
+            this.cardItems[0].isSelected = true;
+            const amount = this.cardItems[0]?.discountAmount;
+            this.formGroup.patchValue({ amount });
+          }
+        }
+      },
+      error: (error) => {
+        this.alertService.setAlertMessage('Error: Something went wrong ', AlertType.error)
+      }
+    });
+    // this.cardItems = [
+    //   {
+    //     planName: 'Amazing Plan',
+    //     planType: 'Basic',
+    //     styleClass: '',
+    //     planFeature: [
+    //       { id: 1, text: 'Access upto 50 profiles per week' }
+    //     ],
+    //     originalAmount: 2499,
+    //     discountAmount: 1499,
+    //     actualAmount: '',
+    //     planStartDate: moment(new Date()),
+    //     actionName: 'Get Amazing Plan',
+    //     isActive: true
+    //   },
+    //   {
+    //     planName: 'Delux',
+    //     planType: 'Delux',
+    //     planFeature: [
+    //       { id: 1, text: 'Access to unlimited profiles' }
+    //     ],
+    //     styleClass: 'pricing',
+    //     originalAmount: 5000,
+    //     discountAmount: 2499,
+    //     actualAmount: '',
+    //     planStartDate: moment(new Date()),
+    //     actionName: 'Get Delux',
+    //     isActive: true
+    //   }
+    // ];
+  }
+  getPlanAmount() {
+    this.sharedService.getMembershipPlanList().subscribe({
+      next: (response) => {
+        if (response) {
+          this.amountOptions = response.map((plan: any) => ({
+            id: plan.actualAmount,
+            title: plan.actualAmount,
+          }));
+        }
+      },
+      error: (error) => {
+        this.alertService.setAlertMessage('Error: Something went wrong ', AlertType.error);
+      }
+    });
+  }
+
+  onPlanClick(item: any) {
+    this.cardItems.forEach((each) => each.isSelected = false);
+    item.isSelected = true;
+    const amount = item?.discountAmount;
+    this.formGroup.patchValue({ amount });
   }
 
   setStepperData(isPersonInfoFill: boolean, isFamilyInfoFill: boolean, isContactInfoFill: boolean, isOtherInfoFill: boolean, isImagesAdded: boolean, isPaymentInfoFill: boolean) {
@@ -156,6 +244,9 @@ export class PaymentInfoComponent implements OnInit {
       return { width: '30vw', padding: '0' }; // Default to 25% of screen width on larger screens
     }
   }
+  isAnyCardSelected(): boolean {
+    return this.cardItems.some(item => item.isSelected);
+  }
 
   handleSubmit() {
     const payload = {
@@ -164,7 +255,7 @@ export class PaymentInfoComponent implements OnInit {
       "mihpayid": "",
       "mode": "CASH",
       "txnid": "",
-      "amount": parseFloat(this.amount),
+      "amount": parseFloat(this.cashAmount),
       "discount": 0,
       "net_amount_debit": 0,
       "bank_ref_num": "",
